@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -29,10 +29,8 @@ import {
   tick,
   waitForAsync,
 } from '@angular/core/testing';
-import {
-  DtDatepickerModule,
-  DtTimeInput,
-} from '@dynatrace/barista-components/experimental/datepicker';
+import { DtDatepickerModule } from './datepicker-module';
+import { DtTimeInput } from './timeinput';
 import {
   createComponent,
   dispatchFakeEvent,

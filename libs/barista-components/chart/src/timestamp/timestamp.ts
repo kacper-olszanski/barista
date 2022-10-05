@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { CdkTrapFocus } from '@angular/cdk/a11y';
 import {
   BACKSPACE,
   DELETE,
@@ -68,7 +67,6 @@ export class TimestampStateChangedEvent {
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: 'dt-chart-timestamp',
-    cdkTrapFocus: 'true',
   },
 })
 export class DtChartTimestamp implements AfterViewInit, OnDestroy {
@@ -123,13 +121,6 @@ export class DtChartTimestamp implements AfterViewInit, OnDestroy {
    */
   @ViewChild(TemplateRef, { static: true })
   _overlayTemplate: TemplateRef<unknown>;
-
-  /**
-   * @internal The focus trap for the selected timestamp,
-   * used by the selection area to chain the focus group of the timestamp and the overlay.
-   */
-  @ViewChild(CdkTrapFocus)
-  _selectedFocusTrap: CdkTrapFocus;
 
   /**
    * @internal
@@ -321,8 +312,8 @@ export class DtChartTimestamp implements AfterViewInit, OnDestroy {
     // to prevent scrolling on page up and down
     event.preventDefault();
 
-    const maxWidth = this._elementRef.nativeElement.getBoundingClientRect()
-      .width;
+    const maxWidth =
+      this._elementRef.nativeElement.getBoundingClientRect().width;
 
     this._position = updateTimestampWithKeyboardEvent(
       event,
@@ -344,8 +335,8 @@ export class DtChartTimestamp implements AfterViewInit, OnDestroy {
   /** Reflects the position of the timestamp to the element */
   private _reflectStyleToDom(): void {
     if (this._timestampElementRef && this._timestampElementRef.first) {
-      const element: HTMLElement = this._timestampElementRef.first
-        .nativeElement;
+      const element: HTMLElement =
+        this._timestampElementRef.first.nativeElement;
       if (element.style) {
         element.style.transform = `translateX(${this._positionX}px)`;
       }

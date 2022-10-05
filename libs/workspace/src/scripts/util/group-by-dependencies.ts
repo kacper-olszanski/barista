@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -22,6 +22,7 @@ import { splitArrayIntoChunks } from './split-array-into-chunks';
  * To run the projects with the same dependencies on the same node.
  * The components are always run on the last node to avoid building two heavy tasks on the same node.
  * Because the last node always consists out of the dependency less projects.
+ *
  * @param arr The array of affected projects with their dependencies
  * @param chunkSize The size of the chunks
  */

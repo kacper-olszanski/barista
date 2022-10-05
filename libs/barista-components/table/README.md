@@ -40,11 +40,12 @@ class MyModule {}
 The `DtTable` component supports the following inputs. Find details about the
 usage of each input below.
 
-| Name          | Type                                   | Default | Description                                                          |
-| ------------- | -------------------------------------- | ------- | -------------------------------------------------------------------- |
-| `dataSource`  | `object[] \| Observable \| DataSource` |         | Data to be shown in the table.                                       |
-| `loading`     | `boolean`                              | `false` | Whether the table is [loading](#loading) or not.                     |
-| `multiExpand` | `boolean`                              | `false` | Whether the table allows [multiple rows to be expanded]() at a time. |
+| Name           | Type                                   | Default | Description                                                          |
+| -------------- | -------------------------------------- | ------- | -------------------------------------------------------------------- |
+| `dataSource`   | `object[] \| Observable \| DataSource` |         | Data to be shown in the table.                                       |
+| `loading`      | `boolean`                              | `false` | Whether the table is [loading](#loading) or not.                     |
+| `multiExpand`  | `boolean`                              | `false` | Whether the table allows [multiple rows to be expanded]() at a time. |
+| `exportButton` | `boolean \| 'table' \| 'visible'`      | `false` | Whether the table includes an export button.                         |
 
 ## Simple columns for basic use cases
 
@@ -206,12 +207,12 @@ You can set the following inputs and outputs on the `dtSort` directive.
 
 #### Inputs
 
-| Name              | Type              | Default | Description                                                                                              |
-| ----------------- | ----------------- | ------- | -------------------------------------------------------------------------------------------------------- |
-| `dtSortActive`    | `string`          |         | The ID of the most recent active column.                                                                 |
-| `dtSortDirection` | `DtSortDirection` | `asc`   | The sort direction of the currently active column.                                                       |
-| `dtSortDisabled`  | `boolean`         | `false` | Whether sorting is disabled for the entire table.                                                        |
-| `dtSortStart`     | `DtSortDirection` |         | Sort direction in which a column is initially sorted. May be overriden by the DtSortHeader's sort start. |
+| Name              | Type              | Default | Description                                                                                                                              |
+| ----------------- | ----------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `dtSortActive`    | `string`          |         | The ID of the most recent active column.                                                                                                 |
+| `dtSortDirection` | `DtSortDirection` | `asc`   | The sort direction of the currently active colum, which can be used for initially sorting it.                                            |
+| `dtSortDisabled`  | `boolean`         | `false` | Whether sorting is disabled for the entire table.                                                                                        |
+| `dtSortStart`     | `DtSortDirection` |         | Sort direction in which a column is initially sorted when the user interacts with it. May be overriden by the DtSortHeader's sort start. |
 
 #### Outputs
 
@@ -675,3 +676,37 @@ simpleColumn could look like this (example from the `dt-simple-number-column`).
 ```
 
 <ba-ux-snippet name="table-in-use"></ba-ux-snippet>
+
+## Exporting
+
+### Simple
+
+By setting the `showExportButton` input to `true`, an `dtContextDialog` button
+is added just below the table, or in line with pagination if present.
+Alternatively, you may set it to `visible` or `table` to only show those
+buttons. Developers should prefer `true` over the alternatives as it gives the
+user the most value; however, limiting the output may be desirable if there are,
+for example, many columns in the table data which should not be exported. This
+dialog can contain up to 2 buttons:
+
+- **Export table data** which triggers a download of the currently filtered data
+  as shown, without regard for pagination.
+- **Export visible data** which triggers a download of the filtered data from
+  the datasource and does not use a displayAccessor.
+
+To exclude certain columns from export, set `exportExcludeList` to a string
+array of column names to exclude.
+
+<ba-live-example name="DtExampleTableExport" fullwidth></ba-live-example>
+
+### Selection
+
+If `dtTableSelection` is enabled and you have connected `dtTableSelection` to
+`dtTableDataSource` (similar to `dtSort`), you also will have a third button:
+
+- **Export selected rows** which triggers a download of the display data, but
+  just for selected rows.
+
+Note: in this example `showExportButton` is set to `visible` to demonstrate the
+suppression of the **Export table data** button.
+<ba-live-example name="DtExampleTableExportSelection" fullwidth></ba-live-example>

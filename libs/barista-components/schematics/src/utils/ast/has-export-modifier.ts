@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,6 +21,7 @@ import * as ts from 'typescript';
  * exported nodes (types, interfaces, classes, etc…)
  *
  * Look if the `export` keyword exist on node
+ *
  * @example
  * ```typescript
  * export class SampleClassname { … }
@@ -29,6 +30,6 @@ import * as ts from 'typescript';
  * @returns {boolean}
  */
 export function hasExportModifier(node: ts.Declaration): boolean {
-  // tslint:disable-next-line: no-bitwise
+  // eslint-disable-next-line no-bitwise
   return (ts.getCombinedModifierFlags(node) & ts.ModifierFlags.Export) !== 0;
 }

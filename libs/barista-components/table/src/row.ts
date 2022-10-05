@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -146,6 +146,7 @@ export class DtRow extends CdkRow implements OnDestroy {
 
   /**
    * Reset the row's animation state and the order cell's order changed property
+   *
    * @param $event
    */
   _handleOrderChangedAnimationEvent($event: AnimationEvent): void {
@@ -177,7 +178,8 @@ export class DtRow extends CdkRow implements OnDestroy {
     const hasError = !!cells.find((cell) => cell.hasError);
     const hasWarning = !!cells.find((cell) => cell.hasWarning);
     const hasRecovered = !!cells.find((cell) => cell.hasRecovered);
-    const hasIndicator = hasError || hasWarning || hasRecovered;
+    const isCritical = !!cells.find((cell) => cell.isCritical);
+    const hasIndicator = hasError || hasWarning || hasRecovered || isCritical;
     const orderCell = this._getChangedOrderCell();
     if (hasIndicator) {
       _addCssClass(this._elementRef.nativeElement, 'dt-table-row-indicator');
@@ -216,6 +218,16 @@ export class DtRow extends CdkRow implements OnDestroy {
       _removeCssClass(this._elementRef.nativeElement, 'dt-color-error');
     }
 
+    if (isCritical) {
+      _replaceCssClass(
+        this._elementRef.nativeElement,
+        'dt-color-error',
+        'dt-color-critical',
+      );
+    } else {
+      _removeCssClass(this._elementRef.nativeElement, 'dt-color-critical');
+    }
+
     if (orderCell) {
       this._orderChangedIndicatorAnimationState = 'changed';
     }
@@ -225,13 +237,16 @@ export class DtRow extends CdkRow implements OnDestroy {
    * Returns the row's order cell if it contains one and the cell's order
    * has been changed, indicated by the '_animateOrderChangedIndicator' property
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private _getChangedOrderCell(): DtOrderCell<any> | undefined {
     return Array.from(this._cells.values()).find(
       // Prevent circular reference by checking for the order-cell-specific property being defined
       // instead of checking for the cell being an instance of DtOrderCell
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (cell: DtOrderCell<any>) =>
         isDefined(cell._animateOrderChangedIndicator) &&
         cell._animateOrderChangedIndicator,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ) as DtOrderCell<any>;
   }
 }

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -42,6 +42,7 @@ export interface DtSunburstChartOverlayData {
  * Slice, label, value and selection for sunburst-chart
  */
 @Component({
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'svg:g[dt-sunburst-chart-segment]',
   templateUrl: 'sunburst-chart-segment.html',
   styleUrls: ['sunburst-chart-segment.scss'],
@@ -58,7 +59,8 @@ export class DtSunburstChartSegment
   extends DtOverlayTrigger<{
     $implicit: Partial<DtSunburstChartOverlayData>;
   }>
-  implements AfterContentInit {
+  implements AfterContentInit
+{
   /**
    * @internal
    * All data needed to render the path that visualizes

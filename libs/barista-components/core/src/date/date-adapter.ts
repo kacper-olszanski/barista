@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import {
   Inject,
@@ -199,6 +201,7 @@ export class DtNativeDateAdapter implements DtDateAdapter<Date> {
     return DEFAULT_DATE_NAMES;
   }
 
+  // eslint-disable-next-line @typescript-eslint/ban-types
   format(date: Date, displayFormat: Object): string {
     displayFormat = { ...displayFormat, timeZone: 'utc' };
     const dateFormat = new Intl.DateTimeFormat(this.locale, displayFormat);
@@ -314,7 +317,7 @@ export abstract class DtDateAdapter<T> {
   /** A stream that emits when the locale changes. */
   abstract get localeChanges(): Observable<void>;
 
-  abstract _localeChanges = new Subject<void>();
+  abstract _localeChanges: Subject<void>;
 
   /** Sets the locale used for all dates. */
   abstract setLocale(locale: any): void;
@@ -322,6 +325,7 @@ export abstract class DtDateAdapter<T> {
   /**
    * Creates a date with the given year, month, and date. Does not allow over/under-flow of the
    * month and date.
+   *
    * @param year The full year of the date. (e.g. 89 means the year 89, not the year 1989).
    * @param month The month of the date (0-indexed, 0 = January). Must be an integer 0 - 11.
    * @param date The date of month of the date. Must be an integer 1 - length of the given month.
@@ -343,6 +347,7 @@ export abstract class DtDateAdapter<T> {
 
   /**
    * Gets the day of the week component of the given date.
+   *
    * @param date The date to extract the day of the week from.
    * @returns The month component (0-indexed, 0 = Sunday).
    */
@@ -353,6 +358,7 @@ export abstract class DtDateAdapter<T> {
 
   /**
    * Gets a list of names for the days of the week.
+   *
    * @param style The naming style (e.g. long = 'Sunday', short = 'Sun', narrow = 'S').
    * @returns An ordered list of all weekday names.
    */
@@ -371,6 +377,7 @@ export abstract class DtDateAdapter<T> {
   abstract isValid(date: T): boolean;
 
   /** Formats a date as a string according to the given format. */
+  // eslint-disable-next-line @typescript-eslint/ban-types
   abstract format(date: T, displayFormat: Object): string;
 
   /**

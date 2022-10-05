@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -65,11 +65,12 @@ export const _DtButtonGroup = mixinTabIndex(
 })
 export class DtButtonGroup<T>
   extends _DtButtonGroup
-  implements CanDisable, HasTabIndex, AfterContentInit {
+  implements CanDisable, HasTabIndex, AfterContentInit
+{
   private _value: T | null = null;
   private _disabled = false;
 
-  // tslint:disable-next-line: no-use-before-declare no-forward-ref
+  // eslint-disable-next-line no-use-before-define, @typescript-eslint/no-use-before-define, @angular-eslint/no-forward-ref
   @ContentChildren(forwardRef(() => DtButtonGroupItem), { descendants: true })
   private _items: QueryList<DtButtonGroupItem<T>>;
 
@@ -196,7 +197,8 @@ export class DtButtonGroupItem<T>
     CanColor<DtButtonGroupThemePalette>,
     HasTabIndex,
     AfterContentInit,
-    OnDestroy {
+    OnDestroy
+{
   private _checked = false;
   private _value: T;
   private _disabled = false;

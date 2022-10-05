@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -40,17 +40,17 @@ import { DtTable } from '../table';
 export type DtSimpleColumnDisplayAccessorFunction<T> = (
   data: T,
   name: string,
-) => any; // tslint:disable-line:no-any
+) => any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
 /** Signature type for the sortAccessor function which can be passed to the simpleColumn. */
-// tslint:disable-next-line: no-any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type DtSimpleColumnSortAccessorFunction<T> = (
   data: T,
   name: string,
 ) => string | number;
 
 /** Signature type for the hasProblem function, which can be passed to the simpleColumn. */
-// tslint:disable-next-line: no-any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type DtSimpleColumnHasProblemFunction<T> = (
   data: T,
   name: string,
@@ -69,12 +69,13 @@ export type DtSimpleColumnComparatorFunction<T> = (
 
 /** Signature type for the hasProblem function, which can be passed to the simpleColumn. */
 export type DtSimpleColumnFormatFunction = (
-  displayValue: any, // tslint:disable-line:no-any
+  displayValue: any, // eslint-disable-line @typescript-eslint/no-explicit-any
 ) => string | DtFormattedValue;
 
 @Directive({})
 export abstract class DtSimpleColumnBase<T>
-  implements OnInit, OnChanges, OnDestroy {
+  implements OnInit, OnChanges, OnDestroy
+{
   /** Input for the name with which the columnDefinition will register itself to the table. */
   @Input()
   get name(): string {
@@ -208,11 +209,11 @@ export abstract class DtSimpleColumnBase<T>
    * @internal Get data function either returns a data access with the given name or calls the
    * dataAccessor function to get the simpleData for display.
    */
-  // tslint:disable-next-line: no-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   _getData(data: T): any {
     const output = this.displayAccessor
       ? this.displayAccessor(data, this.name)
-      : (data as any)[this.name]; // tslint:disable-line:no-any
+      : (data as any)[this.name]; // eslint-disable-line @typescript-eslint/no-explicit-any
     return this.formatter ? this.formatter(output) : output;
   }
 

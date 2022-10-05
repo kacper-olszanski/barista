@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -26,9 +26,8 @@ export const DT_ERROR_ENTER_ANIMATION: AnimationReferenceMetadata = animation([
   animate('150ms cubic-bezier(0.55, 0, 0.55, 0.2)'),
 ]);
 
-export const DT_ERROR_ENTER_DELAYED_ANIMATION: AnimationReferenceMetadata = animation(
-  [
+export const DT_ERROR_ENTER_DELAYED_ANIMATION: AnimationReferenceMetadata =
+  animation([
     style({ opacity: 0, transform: 'scaleY(0)' }),
     animate(`250ms 150ms cubic-bezier(0.55, 0, 0.55, 0.2)`),
-  ],
-);
+  ]);

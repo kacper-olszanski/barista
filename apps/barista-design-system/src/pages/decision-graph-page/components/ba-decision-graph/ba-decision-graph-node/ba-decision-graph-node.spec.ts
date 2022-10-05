@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -48,8 +48,9 @@ describe('BaDecisionGraphNode', () => {
 
   it('should set next node to decisiongraph steps', () => {
     expect(component._decisionGraphSteps.length).toBe(1);
-    const buttonElement = fixture.debugElement.query(By.css('.ba-uxd-yes-edge'))
-      .nativeElement;
+    const buttonElement = fixture.debugElement.query(
+      By.css('.ba-uxd-yes-edge'),
+    ).nativeElement;
     dispatchFakeEvent(buttonElement, 'click');
     fixture.detectChanges();
     expect(component._decisionGraphSteps.length).toBe(2);
@@ -57,8 +58,9 @@ describe('BaDecisionGraphNode', () => {
 
   it('should undo last step', () => {
     expect(component._decisionGraphSteps.length).toBe(1);
-    const buttonElement = fixture.debugElement.query(By.css('.ba-uxd-yes-edge'))
-      .nativeElement;
+    const buttonElement = fixture.debugElement.query(
+      By.css('.ba-uxd-yes-edge'),
+    ).nativeElement;
     dispatchFakeEvent(buttonElement, 'click');
     fixture.detectChanges();
     expect(component._decisionGraphSteps.length).toBe(2);
@@ -71,8 +73,9 @@ describe('BaDecisionGraphNode', () => {
 
   it('should set edge state to undefined', () => {
     expect(component._decisionGraphSteps[0].path[0].selected).not.toBeDefined();
-    const buttonElement = fixture.debugElement.query(By.css('.ba-uxd-yes-edge'))
-      .nativeElement;
+    const buttonElement = fixture.debugElement.query(
+      By.css('.ba-uxd-yes-edge'),
+    ).nativeElement;
     dispatchFakeEvent(buttonElement, 'click');
     fixture.detectChanges();
     expect(component._decisionGraphSteps[0].path[0].selected).toBe(true);
@@ -82,8 +85,9 @@ describe('BaDecisionGraphNode', () => {
   });
 
   it('should reset progress when start over button is clicked', () => {
-    const buttonElement = fixture.debugElement.query(By.css('.ba-uxd-yes-edge'))
-      .nativeElement;
+    const buttonElement = fixture.debugElement.query(
+      By.css('.ba-uxd-yes-edge'),
+    ).nativeElement;
     dispatchFakeEvent(buttonElement, 'click');
     expect(component._decisionGraphSteps.length).toBe(2);
     const startOverElement = fixture.debugElement.query(

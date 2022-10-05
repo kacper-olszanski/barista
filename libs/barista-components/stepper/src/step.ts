@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -51,7 +51,7 @@ export class DtStep extends CdkStep implements ErrorStateMatcher {
   errorMessage: string;
 
   constructor(
-    // tslint:disable-next-line: no-forward-ref
+    // eslint-disable-next-line @angular-eslint/no-forward-ref
     stepper: DtStepper,
     @SkipSelf() private _errorStateMatcher: ErrorStateMatcher,
     @Optional() @Inject(STEPPER_GLOBAL_OPTIONS) stepperOptions: StepperOptions,

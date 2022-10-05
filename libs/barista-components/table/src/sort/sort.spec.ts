@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-// tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers
-// tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
+// eslint-disable  @angular-eslint/no-lifecycle-call, no-use-before-define, @typescript-eslint/no-use-before-define, no-magic-numbers
+// eslint-disable  @typescript-eslint/no-explicit-any, max-lines, @typescript-eslint/unbound-method, @angular-eslint/use-component-selector
 
 import { CollectionViewer, DataSource } from '@angular/cdk/collections';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -35,18 +35,15 @@ import { map } from 'rxjs/operators';
 import { DtSortDirection } from '@dynatrace/barista-components/core';
 import { DtIconModule } from '@dynatrace/barista-components/icon';
 import {
-  DtCell,
-  DtSort,
-  DtSortEvent,
-  DtSortHeader,
-  DtTableModule,
-  getDtSortHeaderNotContainedWithinSortError,
-} from '@dynatrace/barista-components/table';
-import {
   createComponent,
   dispatchMouseEvent,
   wrappedErrorMessage,
 } from '@dynatrace/testing/browser';
+import { DtTableModule } from '../table-module';
+import { getDtSortHeaderNotContainedWithinSortError } from './sort-errors';
+import { DtCell } from '../cell';
+import { DtSort, DtSortEvent } from './sort';
+import { DtSortHeader } from './sort-header';
 
 describe('DtSort', () => {
   let fixture: ComponentFixture<DtTableSortApp>;
@@ -139,6 +136,26 @@ describe('DtSort', () => {
       expect(checkCellsSorted(component.cells, false, 'column_a')).toBeTruthy();
       expect(checkCellsSorted(component.cells, true, 'column_b')).toBeTruthy();
       expect(checkCellsSorted(component.cells, false, 'column_c')).toBeTruthy();
+    });
+
+    it('should initially sort using the given sort direction', () => {
+      component.dataSource = DATA_SOURCE;
+      component.start = 'asc';
+      component.active = 'column_a';
+      component.direction = 'desc';
+      fixture.detectChanges();
+
+      let sortHeaderElement = fixture.nativeElement.querySelector('#column_a');
+      expect(checkCellsSorted(component.cells, true, 'column_a')).toBeTruthy();
+      expect(sortHeaderElement.getAttribute('aria-sort')).toBe('descending');
+
+      component.active = 'column_b';
+      component.direction = 'asc';
+      fixture.detectChanges();
+
+      sortHeaderElement = fixture.nativeElement.querySelector('#column_b');
+      expect(checkCellsSorted(component.cells, true, 'column_b')).toBeTruthy();
+      expect(sortHeaderElement.getAttribute('aria-sort')).toBe('ascending');
     });
 
     it('should apply the isSorted to appended rows as well', () => {
@@ -422,7 +439,7 @@ describe('DtSort', () => {
 
 function checkCellsSorted(
   cells: QueryList<DtCell>,
-  sorted: boolean = false,
+  sorted = false,
   colName?: string,
 ): boolean {
   const filteredCells = colName
@@ -431,6 +448,7 @@ function checkCellsSorted(
 
   return filteredCells.every((cell) => cell._isSorted === sorted);
 }
+
 /**
  * Performs a sequence of sorting on a single column to see if the sort directions are
  * consistent with expectations. Detects any changes in the fixture to reflect any changes in

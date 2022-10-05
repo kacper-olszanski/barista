@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -24,7 +24,7 @@ export const CHANGELOG_FILE_NAME = 'CHANGELOG.md';
 export async function prependChangelogFromLatestTag(
   changelogPath: string,
   headerPartialPath: string,
-  releaseName: string = '',
+  releaseName = '',
 ): Promise<void> {
   const headerPartial = await fs.readFile(headerPartialPath, {
     encoding: 'utf-8',

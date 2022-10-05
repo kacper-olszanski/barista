@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -88,14 +88,15 @@ export class DtTabBody {
 })
 export class DtTabBodyPortalOutlet
   extends CdkPortalOutlet
-  implements OnInit, OnDestroy {
+  implements OnInit, OnDestroy
+{
   /** Subscription to events for when the active tab changes */
   private _activeChangedSub = Subscription.EMPTY;
 
   constructor(
     componentFactoryResolver: ComponentFactoryResolver,
     viewContainerRef: ViewContainerRef,
-    // tslint:disable-next-line:no-forward-ref
+    // eslint-disable-next-line @angular-eslint/no-forward-ref
     @Inject(forwardRef(() => DtTabBody)) private _host: DtTabBody,
   ) {
     super(componentFactoryResolver, viewContainerRef);
@@ -110,7 +111,7 @@ export class DtTabBodyPortalOutlet
     });
   }
 
-  /**  Attaches the content to the portal outlet if necessary */
+  /** Attaches the content to the portal outlet if necessary */
   private _handleActiveTabChange(active: boolean): void {
     if (active && !this.hasAttached() && this._host && this._host.content) {
       this.attach(this._host.content);

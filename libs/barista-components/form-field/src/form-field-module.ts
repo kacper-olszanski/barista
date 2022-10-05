@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -38,6 +38,7 @@ import { DtFormFieldControl } from './form-field-control';
     DtSuffix,
     // @breaking-change Will be removed with upgrade to ivy for libraries
     // can be removed once `DtFormFieldControl` is turned into a selector-less directive.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     DtFormFieldControl as any,
   ],
 })

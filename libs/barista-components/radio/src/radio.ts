@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -86,7 +86,8 @@ export const _DtRadioButtonMixinBase = mixinTabIndex(DtRadioButtonBase);
 })
 export class DtRadioButton<T>
   extends _DtRadioButtonMixinBase
-  implements OnInit, AfterViewInit, OnDestroy, CanDisable, HasTabIndex {
+  implements OnInit, AfterViewInit, OnDestroy, CanDisable, HasTabIndex
+{
   private _uniqueId = `dt-radio-${++nextUniqueId}`;
   private _required: boolean;
   private _checked = false;
@@ -180,20 +181,20 @@ export class DtRadioButton<T>
   @Input() name: string;
 
   /** Used to set the 'aria-label' attribute on the underlying input element. */
-  // tslint:disable-next-line:no-input-rename
+  // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('aria-label') ariaLabel: string;
 
   /** The 'aria-labelledby' attribute takes precedence as the element's text alternative. */
-  // tslint:disable-next-line:no-input-rename
+  // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('aria-labelledby') ariaLabelledby: string;
 
   /** The 'aria-describedby' attribute is read after the element's label and field type. */
-  // tslint:disable-next-line:no-input-rename
+  // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('aria-describedby') ariaDescribedby: string;
 
   /** Emits when this radio button becomes selected or not. */
   // Disabling no-output-native rule because we want to keep a similar API to the native radio button
-  // tslint:disable-next-line: no-output-native
+  // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() readonly change = new EventEmitter<DtRadioChange<T>>();
 
   /** @internal ID of the native input element */

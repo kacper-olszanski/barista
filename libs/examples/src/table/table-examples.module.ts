@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -27,6 +27,7 @@ import { DtKeyValueListModule } from '@dynatrace/barista-components/key-value-li
 import { DtFormattersModule } from '@dynatrace/barista-components/formatters';
 import { DtContainerBreakpointObserverModule } from '@dynatrace/barista-components/container-breakpoint-observer';
 import { DtHighlightModule } from '@dynatrace/barista-components/highlight';
+import { DtContextDialogModule } from '@dynatrace/barista-components/context-dialog';
 
 import { DtExampleTableColumnProportion } from './table-column-proportion-example/table-column-proportion-example';
 import { DtExampleTableExpandableRows } from './table-expandable-rows-example/table-expandable-rows-example';
@@ -37,6 +38,8 @@ import { DtExampleTableCustomColumns } from './table-custom-columns-example/tabl
 import { DtExampleTableDefault } from './table-default-example/table-default-example';
 import { DtExampleTableDynamicColumns } from './table-dynamic-columns-example/table-dynamic-columns-example';
 import { DtExampleTableEmptyState } from './table-empty-state-example/table-empty-state-example';
+import { DtExampleTableExport } from './table-export-example/table-export-example';
+import { DtExampleTableExportSelection } from './table-export-selection-example/table-export-selection-example';
 import { DtExampleTableFavoriteColumn } from './table-favorite-column-example/table-favorite-column-example';
 import { DtExampleTableFavoriteColumnNoHeader } from './table-favorite-column-no-header-example/table-favorite-column-no-header-example';
 import { DtExampleTableInteractiveRows } from './table-interactive-rows-example/table-interactive-rows-example';
@@ -75,6 +78,7 @@ import { FormsModule } from '@angular/forms';
     DtFormattersModule,
     DtContainerBreakpointObserverModule,
     DtHighlightModule,
+    DtContextDialogModule,
   ],
   declarations: [
     DtExampleTableButtons,
@@ -85,6 +89,8 @@ import { FormsModule } from '@angular/forms';
     DtExampleTableDefault,
     DtExampleTableDynamicColumns,
     DtExampleTableEmptyState,
+    DtExampleTableExport,
+    DtExampleTableExportSelection,
     DtExampleTableExpandableRows,
     DtExampleTableFavoriteColumn,
     DtExampleTableFavoriteColumnNoHeader,

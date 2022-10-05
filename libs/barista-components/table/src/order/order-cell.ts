@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -60,7 +60,8 @@ const INPUT_PATTERN = '[0-9]*';
 })
 export class DtOrderCell<T>
   extends DtCell
-  implements AfterViewInit, OnChanges, OnDestroy {
+  implements AfterViewInit, OnChanges, OnDestroy
+{
   /** Index of the row to display in the input field */
   @Input() index: string;
 
@@ -104,9 +105,11 @@ export class DtOrderCell<T>
     this._order._disabledChange
       .pipe(startWith(false), takeUntil(this._destroy$))
       .subscribe((value) => {
-        value
-          ? this._orderFormControl.disable()
-          : this._orderFormControl.enable();
+        if (value) {
+          this._orderFormControl.disable();
+        } else {
+          this._orderFormControl.enable();
+        }
       });
   }
 

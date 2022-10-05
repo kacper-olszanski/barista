@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -36,6 +36,7 @@ import { DtSunburstChart } from './sunburst-chart';
 import { sunburstChartMock } from './sunburst-chart.mock';
 import { DtSunburstChartModule } from './sunburst-chart.module';
 import {
+  DtSunburstChartHoverData,
   DtSunburstChartNode,
   DtSunburstChartNodeSlice,
 } from './sunburst-chart.util';
@@ -84,8 +85,9 @@ describe('DtSunburstChart', () => {
         TestBed.compileComponents();
         fixture = createComponent(TestApp);
         rootComponent = fixture.componentInstance;
-        component = fixture.debugElement.query(By.directive(DtSunburstChart))
-          .componentInstance;
+        component = fixture.debugElement.query(
+          By.directive(DtSunburstChart),
+        ).componentInstance;
 
         selectedChangeSpy = jest.spyOn(component.selectedChange, 'emit');
         selectSpy = jest.spyOn(component, '_select');
@@ -353,6 +355,38 @@ describe('DtSunburstChart', () => {
         expect(actual.length).toBe(4);
       });
     });
+    describe('Hover events', () => {
+      beforeEach(function (): void {
+        rootComponent.series = sunburstChartMock;
+        fixture.detectChanges();
+      });
+      it('Should emit hover info when hover events start on a slice', () => {
+        const firstSegment = fixture.debugElement.query(
+          By.css(selectors.segment),
+        );
+        dispatchFakeEvent(firstSegment.nativeElement, 'mouseenter');
+        expect(rootComponent.hoverStart).toMatchObject({
+          name: sunburstChartMock[0].label,
+          color: '#fff29a',
+          isCurrent: false,
+          active: false,
+          value: 0.5,
+        });
+      });
+      it('Should emit hover info when hover events end on a slice', () => {
+        const firstSegment = fixture.debugElement.query(
+          By.css(selectors.segment),
+        );
+        dispatchFakeEvent(firstSegment.nativeElement, 'mouseleave');
+        expect(rootComponent.hoverEnd).toMatchObject({
+          name: sunburstChartMock[0].label,
+          color: '#fff29a',
+          isCurrent: false,
+          active: false,
+          value: 0.5,
+        });
+      });
+    });
   });
 
   describe('Overlay', () => {
@@ -380,8 +414,9 @@ describe('DtSunburstChart', () => {
 
       fixture = createComponent(TestWithOverlayApp);
       rootComponent = fixture.componentInstance;
-      component = fixture.debugElement.query(By.directive(DtSunburstChart))
-        .componentInstance;
+      component = fixture.debugElement.query(
+        By.directive(DtSunburstChart),
+      ).componentInstance;
 
       selectedChangeSpy = jest.spyOn(component.selectedChange, 'emit');
       selectSpy = jest.spyOn(component, '_select');
@@ -397,7 +432,7 @@ describe('DtSunburstChart', () => {
       component.openOverlay(component.slices[0]);
       fixture.detectChanges();
 
-      let overlayPane = overlayContainerElement.querySelector(
+      const overlayPane = overlayContainerElement.querySelector(
         selectors.overlay,
       );
       expect(overlayPane).toBeDefined();
@@ -425,6 +460,8 @@ describe('DtSunburstChart', () => {
       [selected]="selected"
       [valueDisplayMode]="valueDisplayMode"
       [noSelectionLabel]="noSelectionLabel"
+      (hoverStart)="hoverStart = $event"
+      (hoverEnd)="hoverEnd = $event"
     >
     </dt-sunburst-chart>
   `,
@@ -436,6 +473,9 @@ class TestApp {
   valueDisplayMode;
 
   @ViewChild(DtSunburstChart) sunburstChart: DtSunburstChart;
+
+  hoverStart: DtSunburstChartHoverData;
+  hoverEnd: DtSunburstChartHoverData;
 }
 
 /** Test component that contains an DtSunburstChart with overlay. */
@@ -447,6 +487,8 @@ class TestApp {
       [selected]="selected"
       [valueDisplayMode]="valueDisplayMode"
       [noSelectionLabel]="noSelectionLabel"
+      (hoverStart)="hoverStart = $event"
+      (hoverEnd)="hoverEnd = $event"
     >
       <ng-template dtSunburstChartOverlay let-tooltip>
         <div>
@@ -463,4 +505,7 @@ class TestWithOverlayApp {
   valueDisplayMode;
 
   @ViewChild(DtSunburstChart) sunburstChart: DtSunburstChart;
+
+  hoverStart: DtSunburstChartHoverData;
+  hoverEnd: DtSunburstChartHoverData;
 }

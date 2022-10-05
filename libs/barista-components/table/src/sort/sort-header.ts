@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -39,6 +39,7 @@ import { getDtSortHeaderNotContainedWithinSortError } from './sort-errors';
 
 /**
  * Boilerplate for applying mixins to the sort header.
+ *
  * @internal
  */
 export class DtSortHeaderBase {}
@@ -65,13 +66,15 @@ export const _DtSortHeaderMixinBase = mixinDisabled(DtSortHeaderBase);
 })
 export class DtSortHeader
   extends _DtSortHeaderMixinBase
-  implements CanDisable, OnDestroy, OnInit {
+  implements CanDisable, OnDestroy, OnInit
+{
   static ngAcceptInputType_disabled: BooleanInput;
 
   private _rerenderSubscription = Subscription.EMPTY;
 
   /**
    * The direction the arrow should be facing according to the current state.
+   *
    * @internal
    */
   _sortIconName: 'sorter2-down' | 'sorter2-up' | 'sorter-double' =
@@ -111,6 +114,7 @@ export class DtSortHeader
 
   /**
    * Wether the entire table sorting is disabled or the column is disabled
+   *
    * @internal
    */
   get _isDisabled(): boolean {
@@ -119,6 +123,7 @@ export class DtSortHeader
 
   /**
    * Whether this DtSortHeader is currently sorted in either ascending or descending order.
+   *
    * @internal
    */
   get _isSorted(): boolean {
@@ -166,6 +171,7 @@ export class DtSortHeader
 
   /**
    * Triggers the sort on this sort header
+   *
    * @internal
    */
   _handleClick(): void {
@@ -180,6 +186,7 @@ export class DtSortHeader
    * is not sorted, returns null so that the attribute is removed from the host element. Aria spec
    * says that the aria-sort property should only be present on one header at a time, so removing
    * ensures this is true.
+   *
    * @internal
    */
   _getAriaSortAttribute(): string | null {

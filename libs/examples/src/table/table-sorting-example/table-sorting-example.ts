@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -28,18 +28,18 @@ export class DtExampleTableSorting {
 
   dataSource = [
     {
-      host: 'et-demo-2-win4',
-      cpu: 30,
-      memoryPerc: 38,
-      memoryTotal: 5830000000,
-      traffic: 98700000,
-    },
-    {
       host: 'et-demo-2-win3',
       cpu: 26,
       memoryPerc: 46,
       memoryTotal: 6000000000,
       traffic: 62500000,
+    },
+    {
+      host: 'et-demo-2-win4',
+      cpu: 30,
+      memoryPerc: 38,
+      memoryTotal: 5830000000,
+      traffic: 98700000,
     },
     {
       host: 'docker-host2',

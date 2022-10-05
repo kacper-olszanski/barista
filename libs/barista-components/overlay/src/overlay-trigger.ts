@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,12 +21,15 @@ import {
   Attribute,
   Directive,
   ElementRef,
+  EventEmitter,
   Input,
   NgZone,
   OnDestroy,
+  Output,
   TemplateRef,
 } from '@angular/core';
-import { Subscription, fromEvent } from 'rxjs';
+import { Subscription, fromEvent, EMPTY, merge, of } from 'rxjs';
+import { delay } from 'rxjs/operators';
 
 import {
   CanDisable,
@@ -60,7 +63,8 @@ export const _DtOverlayTriggerMixin = mixinTabIndex(
 })
 export class DtOverlayTrigger<T>
   extends _DtOverlayTriggerMixin
-  implements CanDisable, HasTabIndex, OnDestroy {
+  implements CanDisable, HasTabIndex, OnDestroy
+{
   private _content: TemplateRef<T>;
   private _config: DtOverlayConfig = new DtOverlayConfig();
   private _dtOverlayRef: DtOverlayRef<T> | null = null;
@@ -84,12 +88,24 @@ export class DtOverlayTrigger<T>
     this._config = value;
   }
 
+  /** Emits on every pinned state change */
+  @Output()
+  pinnedChanged = new EventEmitter<boolean>();
+
+  /** Whether the underlying overlay is pinned or not */
+  get isOverlayPinned(): boolean | undefined {
+    return this._dtOverlayRef?.pinned;
+  }
+
+  private _pinnedChangedSubscribtion: Subscription = EMPTY.subscribe();
+
   constructor(
     private elementRef: ElementRef<Element>,
     private _dtOverlayService: DtOverlay,
     private _ngZone: NgZone,
     private _focusMonitor: FocusMonitor,
     @Attribute('tabindex') tabIndex: string,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     private _platform: Platform,
   ) {
@@ -101,7 +117,7 @@ export class DtOverlayTrigger<T>
   ngOnDestroy(): void {
     this._moveSub.unsubscribe();
     if (this._dtOverlayRef) {
-      this._dtOverlayRef.dismiss();
+      this._dismissOverlay();
     }
   }
 
@@ -119,11 +135,12 @@ export class DtOverlayTrigger<T>
       enterEvent.stopPropagation();
       this._moveSub.unsubscribe();
       this._moveSub = this._ngZone.runOutsideAngular(() =>
-        fromEvent(this.elementRef.nativeElement, 'mousemove').subscribe(
-          (ev: MouseEvent) => {
-            this._handleMouseMove(ev, enterEvent);
-          },
-        ),
+        merge(
+          of(enterEvent).pipe(delay(0)),
+          fromEvent(this.elementRef.nativeElement, 'mousemove'),
+        ).subscribe((ev: MouseEvent) => {
+          this._handleMouseMove(ev, enterEvent);
+        }),
       );
     }
   }
@@ -133,7 +150,7 @@ export class DtOverlayTrigger<T>
     event.stopPropagation();
     this._moveSub.unsubscribe();
     if (this._dtOverlayRef && !this._dtOverlayRef.pinned) {
-      this._dtOverlayRef.dismiss();
+      this._dismissOverlay();
     }
   }
 
@@ -173,6 +190,7 @@ export class DtOverlayTrigger<T>
       if (keyCode === ENTER || keyCode === SPACE) {
         event.preventDefault();
         this._createOverlay();
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this._dtOverlayRef!.pin(true);
       }
     }
@@ -190,6 +208,15 @@ export class DtOverlayTrigger<T>
         this._dtOverlayRef = null;
       });
       this._dtOverlayRef = ref;
+      this._pinnedChangedSubscribtion =
+        this._dtOverlayRef.pinnedChanged.subscribe((pinnedChanged) => {
+          this.pinnedChanged.emit(pinnedChanged);
+        });
     }
+  }
+
+  private _dismissOverlay(): void {
+    this._dtOverlayRef?.dismiss();
+    this._pinnedChangedSubscribtion.unsubscribe();
   }
 }

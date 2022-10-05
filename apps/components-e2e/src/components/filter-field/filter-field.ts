@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-// tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers deprecation
-// tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
+// eslint-disable  @angular-eslint/no-lifecycle-call, no-use-before-define, @typescript-eslint/no-use-before-define, no-magic-numbers, import/no-deprecated
+// eslint-disable  @typescript-eslint/no-explicit-any, max-lines, @typescript-eslint/unbound-method, @angular-eslint/use-component-selector
 
 import {
   ChangeDetectorRef,
@@ -78,6 +78,17 @@ export class DtE2EFilterField implements OnDestroy {
           this._changeDetectorRef.markForCheck();
         }
       });
+  }
+
+  setupMultiselectEditScenario(): void {
+    this._dataSource = new DtFilterFieldDefaultDataSource(DATA[1]);
+    const multiselectNoneFilter = [
+      DATA[1].autocomplete[3],
+      { name: 'None' },
+      { name: 'Homemade', options: [{ name: 'Ketchup' }] },
+    ];
+
+    this._filterfield.filters = [multiselectNoneFilter];
   }
 
   formSubmitted = false;

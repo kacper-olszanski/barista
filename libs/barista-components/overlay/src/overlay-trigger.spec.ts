@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-// tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers
-// tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
+// eslint-disable  @angular-eslint/no-lifecycle-call, no-use-before-define, @typescript-eslint/no-use-before-define, no-magic-numbers
+// eslint-disable  @typescript-eslint/no-explicit-any, max-lines, @typescript-eslint/unbound-method, @angular-eslint/use-component-selector
 
 import { ENTER, ESCAPE, SPACE } from '@angular/cdk/keycodes';
 import { OverlayContainer } from '@angular/cdk/overlay';
@@ -24,17 +24,15 @@ import {
   ComponentFixture,
   TestBed,
   fakeAsync,
-  flush,
   inject,
+  tick,
 } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
-import {
-  DT_OVERLAY_DEFAULT_OFFSET,
-  DtOverlayConfig,
-  DtOverlayModule,
-} from '@dynatrace/barista-components/overlay';
+import { DtOverlayModule } from './overlay-module';
+import { DT_OVERLAY_DEFAULT_OFFSET } from './overlay';
+import { DtOverlayConfig } from './overlay-config';
 
 import {
   createComponent,
@@ -63,8 +61,9 @@ describe('DtOverlayTrigger', () => {
 
   beforeEach(() => {
     fixture = createComponent(TestComponent);
-    trigger = fixture.debugElement.query(By.css('.dt-overlay-trigger'))
-      .nativeElement;
+    trigger = fixture.debugElement.query(
+      By.css('.dt-overlay-trigger'),
+    ).nativeElement;
   });
 
   afterEach(() => {
@@ -82,7 +81,7 @@ describe('DtOverlayTrigger', () => {
 
     dispatchMouseEvent(trigger, 'mouseleave');
     fixture.detectChanges();
-    flush();
+    tick();
 
     overlay = getContainerElement(overlayContainerElement);
     expect(overlay).toBeNull();
@@ -100,7 +99,7 @@ describe('DtOverlayTrigger', () => {
       trigger.getBoundingClientRect().top + offset,
     );
     fixture.detectChanges();
-    flush();
+    tick();
 
     const overlayPane = overlayContainerElement.querySelector(
       '.cdk-overlay-pane',
@@ -136,13 +135,63 @@ describe('DtOverlayTrigger', () => {
 
     dispatchMouseEvent(trigger, 'click');
     fixture.detectChanges();
-    flush();
+    tick();
 
     dispatchMouseEvent(trigger, 'mouseleave');
-    flush();
+    tick();
 
     const overlay = getContainerElement(overlayContainerElement);
     expect(overlay).not.toBeNull();
+  }));
+
+  it('should fire pinnedChanged when pinned', fakeAsync(() => {
+    fixture.componentInstance.config = { pinnable: true };
+    fixture.detectChanges();
+    initOverlay(fixture, trigger);
+
+    dispatchMouseEvent(trigger, 'click');
+    fixture.detectChanges();
+    tick();
+
+    expect(fixture.componentInstance.pinned).toBeTruthy();
+  }));
+
+  it('should not fire pinnedChanged on subsequent mouseenter', fakeAsync(() => {
+    fixture.componentInstance.config = { pinnable: true };
+    fixture.detectChanges();
+    initOverlay(fixture, trigger);
+
+    dispatchMouseEvent(trigger, 'click');
+    fixture.detectChanges();
+    tick();
+
+    expect(fixture.componentInstance.pinned).toBeTruthy();
+
+    dispatchMouseEvent(trigger, 'mouseleave');
+    dispatchMouseEvent(trigger, 'mouseenter');
+    dispatchMouseEvent(trigger, 'mousemove');
+    fixture.detectChanges();
+    tick();
+
+    expect(fixture.componentInstance.pinned).toBeTruthy();
+  }));
+
+  it('should fire pinnedChanged when pinned then overlay is dismissed', fakeAsync(() => {
+    fixture.componentInstance.config = { pinnable: true };
+    fixture.detectChanges();
+    initOverlay(fixture, trigger);
+
+    dispatchMouseEvent(trigger, 'click');
+    fixture.detectChanges();
+    tick();
+
+    expect(fixture.componentInstance.pinned).toBeTruthy();
+
+    fixture.componentInstance.showTrigger = false;
+    fixture.detectChanges();
+    tick();
+
+    expect(fixture.componentInstance.pinned).toBeFalsy();
   }));
 
   it('should stay pinned on subsequent mouseenter', fakeAsync(() => {
@@ -152,24 +201,26 @@ describe('DtOverlayTrigger', () => {
 
     dispatchMouseEvent(trigger, 'click');
     fixture.detectChanges();
-    flush();
+    tick();
 
     dispatchMouseEvent(trigger, 'mouseleave');
     fixture.detectChanges();
+    tick();
 
     let overlay = getOverlayPane(overlayContainerElement);
+    expect(overlay).not.toBeNull();
 
     dispatchMouseEvent(trigger, 'mouseenter');
     dispatchMouseEvent(trigger, 'mousemove');
     fixture.detectChanges();
-    flush();
+    tick();
 
     overlay = getOverlayPane(overlayContainerElement);
 
     expect(overlay).not.toBeNull();
   }));
 
-  // tslint:disable-next-line: dt-no-focused-tests
+  // eslint-disable-next-line
   it.skip('should lock movement to xAxis', fakeAsync(() => {
     const offset = 1;
     fixture.componentInstance.config = { movementConstraint: 'xAxis' };
@@ -182,7 +233,7 @@ describe('DtOverlayTrigger', () => {
       trigger.getBoundingClientRect().top + offset,
     );
     fixture.detectChanges();
-    flush();
+    tick();
 
     const overlayPane = overlayContainerElement.querySelector(
       '.cdk-overlay-pane',
@@ -195,7 +246,7 @@ describe('DtOverlayTrigger', () => {
     );
   }));
 
-  // tslint:disable-next-line: dt-no-focused-tests
+  // eslint-disable-next-line
   it.skip('should lock movement to yAxis', fakeAsync(() => {
     const offset = 1;
     fixture.componentInstance.config = { movementConstraint: 'yAxis' };
@@ -208,7 +259,7 @@ describe('DtOverlayTrigger', () => {
       trigger.getBoundingClientRect().top + offset,
     );
     fixture.detectChanges();
-    flush();
+    tick();
 
     const overlayPane = overlayContainerElement.querySelector(
       '.cdk-overlay-pane',
@@ -237,7 +288,7 @@ describe('DtOverlayTrigger', () => {
     expect(document.activeElement).toBe(previouslyFocused);
   }));
 
-  // tslint:disable-next-line: dt-no-focused-tests
+  // eslint-disable-next-line
   it.skip('should change the focus if the overlay pinned', fakeAsync(() => {
     const previouslyFocused = document.activeElement;
     fixture.componentInstance.config = { pinnable: true };
@@ -246,7 +297,7 @@ describe('DtOverlayTrigger', () => {
 
     dispatchMouseEvent(trigger, 'click');
     fixture.detectChanges();
-    flush();
+    tick();
 
     expect(document.activeElement).not.toBe(previouslyFocused);
   }));
@@ -274,7 +325,7 @@ describe('DtOverlayTrigger', () => {
     expect(overlay).not.toBeNull();
     dispatchKeyboardEvent(trigger, 'keydown', ESCAPE);
     fixture.detectChanges();
-    flush();
+    tick();
     overlay = getContainerElement(overlayContainerElement);
 
     expect(overlay).toBeNull();
@@ -298,7 +349,7 @@ describe('DtOverlayTrigger', () => {
 
     fixture.componentInstance.showTrigger = false;
     fixture.detectChanges();
-    flush();
+    tick();
 
     overlay = getContainerElement(overlayContainerElement);
     expect(overlay).toBeNull();
@@ -312,7 +363,7 @@ function initOverlay(
   dispatchMouseEvent(trigger, 'mouseenter');
   dispatchMouseEvent(trigger, 'mousemove');
   fixture.detectChanges();
-  flush();
+  tick();
 }
 
 function getContainerElement(
@@ -337,6 +388,7 @@ function getOverlayPane(overlayContainerElement: HTMLElement): HTMLElement {
       [dtOverlay]="overlay"
       [dtOverlayConfig]="config"
       [disabled]="disabled"
+      (pinnedChanged)="handlePinnedChanged($event)"
     >
       trigger
     </div>
@@ -348,4 +400,9 @@ class TestComponent {
   config: DtOverlayConfig = {};
   disabled = false;
   showTrigger = true;
+  pinned = false;
+
+  handlePinnedChanged(event: boolean): void {
+    this.pinned = event;
+  }
 }

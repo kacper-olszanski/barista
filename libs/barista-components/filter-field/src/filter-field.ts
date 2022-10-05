@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -22,13 +22,15 @@ import {
   useAnimation,
 } from '@angular/animations';
 import { FocusMonitor } from '@angular/cdk/a11y';
-import { coerceBooleanProperty, BooleanInput } from '@angular/cdk/coercion';
+import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion';
 import {
   BACKSPACE,
   DELETE,
   ENTER,
   ESCAPE,
   LEFT_ARROW,
+  SPACE,
+  TAB,
   UP_ARROW,
 } from '@angular/cdk/keycodes';
 import { DOCUMENT } from '@angular/common';
@@ -59,12 +61,12 @@ import {
   DtAutocompleteTrigger,
 } from '@dynatrace/barista-components/autocomplete';
 import {
+  _readKeyCode,
   CanDisable,
   DT_ERROR_ENTER_ANIMATION,
   DT_ERROR_ENTER_DELAYED_ANIMATION,
   ErrorStateMatcher,
   isDefined,
-  _readKeyCode,
 } from '@dynatrace/barista-components/core';
 import {
   fromEvent,
@@ -89,8 +91,11 @@ import {
 import {
   DT_FILTER_EDITION_VALUES_DEFAULT_PARSER_CONFIG,
   DT_FILTER_EDITION_VALUES_PARSER_CONFIG,
+  DT_FILTER_FIELD_CONFIG,
+  DT_FILTER_FIELD_DEFAULT_CONFIG,
   DT_FILTER_VALUES_DEFAULT_PARSER_CONFIG,
   DT_FILTER_VALUES_PARSER_CONFIG,
+  DtFilterFieldConfig,
   EditionParserFunction,
   TagParserFunction,
 } from './filter-field-config';
@@ -126,6 +131,7 @@ import {
 } from './filter-field-util';
 import { DtFilterFieldControl } from './filter-field-validation';
 import {
+  _getSourcesOfDtFilterValues,
   DefaultSearchOption,
   DtAutocompleteValue,
   DtFilterFieldTagData,
@@ -148,10 +154,9 @@ import {
   isDtRangeDef,
   isDtRangeValue,
   isPartialDtOptionDef,
-  _getSourcesOfDtFilterValues,
 } from './types';
 
-// tslint:disable:no-any
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 export class DtFilterFieldChangeEvent<T> {
   constructor(
@@ -204,7 +209,8 @@ let currentlyOpenFilterField: DtFilterField<any> | null = null;
   ],
 })
 export class DtFilterField<T = any>
-  implements CanDisable, OnInit, AfterViewInit, OnDestroy, OnChanges {
+  implements CanDisable, OnInit, AfterViewInit, OnDestroy, OnChanges
+{
   /** Label for the filter field (e.g. "Filter by"). Will be placed next to the filter icon. */
   @Input() label = '';
 
@@ -329,16 +335,15 @@ export class DtFilterField<T = any>
 
       if (this._disabled) {
         this._closeFilterPanels();
+      }
 
-        this._tags.forEach((item) => {
-          this._previousTagDisabledState.set(item, item.disabled);
-          item.disabled = this._disabled;
-        });
-      } else {
-        this._tags.forEach(
-          (item) =>
-            (item.disabled = !!this._previousTagDisabledState.get(item)),
-        );
+      for (const tag of this._tags) {
+        if (this._disabled) {
+          this._previousTagDisabledState.set(tag, tag.disabled);
+          tag.disabled = this._disabled;
+        } else {
+          tag.disabled = !!this._previousTagDisabledState.get(tag);
+        }
       }
 
       this._changeDetectorRef.markForCheck();
@@ -366,7 +371,7 @@ export class DtFilterField<T = any>
   >();
 
   /** Emits the interaction-state (whether the filter-field is being interacted with or not) */
-  @Output() readonly interactionStateChange = new EventEmitter<Boolean>();
+  @Output() readonly interactionStateChange = new EventEmitter<boolean>();
 
   /**
    * List of tags that are the visual representation for selected nodes.
@@ -388,7 +393,7 @@ export class DtFilterField<T = any>
   );
 
   /** Whether the filter-field is being interacted with */
-  interactionState: boolean = false;
+  interactionState = false;
 
   /** @internal Reference to the internal input element */
   @ViewChild('input', { static: true }) _inputEl: ElementRef;
@@ -511,6 +516,17 @@ export class DtFilterField<T = any>
     return this._currentDef !== null && this._currentDef !== this._rootDef;
   }
 
+  /**
+   * Check if there is any option focused with keymanager on the opened multiselect panel
+   */
+  get isOptionOnMultiSelectSelected(): boolean {
+    return (
+      this._currentDef !== null &&
+      isDtMultiSelectDef(this._currentDef) &&
+      this._multiSelectTrigger.element._keyManager.activeItemIndex !== -1
+    );
+  }
+
   /** Emits whenever the component is destroyed. */
   private readonly _destroy$ = new Subject<void>();
 
@@ -547,7 +563,7 @@ export class DtFilterField<T = any>
     private _focusMonitor: FocusMonitor,
     private _elementRef: ElementRef,
     defaultErrorStateMatcher: ErrorStateMatcher,
-    // tslint:disable-next-line:no-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     @Optional()
     @Inject(DOCUMENT)
     private _document: any,
@@ -557,7 +573,13 @@ export class DtFilterField<T = any>
     @Optional()
     @Inject(DT_FILTER_EDITION_VALUES_PARSER_CONFIG)
     private editionValuesParser: EditionParserFunction,
+    @Optional()
+    @Inject(DT_FILTER_FIELD_CONFIG)
+    readonly _filterFieldConfig: DtFilterFieldConfig,
   ) {
+    this._filterFieldConfig =
+      this._filterFieldConfig || DT_FILTER_FIELD_DEFAULT_CONFIG;
+
     this.tagValuesParser =
       this.tagValuesParser || DT_FILTER_VALUES_DEFAULT_PARSER_CONFIG;
 
@@ -677,7 +699,7 @@ export class DtFilterField<T = any>
         }
       });
 
-    // tslint:disable-next-line:no-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     this._autocomplete.optionSelected
       .pipe(takeUntil(this._destroy$))
       .subscribe((event: DtAutocompleteSelectedEvent<any>) => {
@@ -783,6 +805,7 @@ export class DtFilterField<T = any>
     this.inputChange.emit(value);
 
     this._validateInput();
+    this._resetFocusOnMultiSelectDef();
     this._changeDetectorRef.markForCheck();
   }
 
@@ -817,6 +840,20 @@ export class DtFilterField<T = any>
       }
     } else if (keyCode === ESCAPE || (keyCode === UP_ARROW && event.altKey)) {
       this._closeFilterPanels();
+    } else if (isDtMultiSelectDef(this._currentDef)) {
+      if (keyCode === TAB) {
+        this._multiSelectTrigger.closePanel();
+        return;
+      }
+      // if there is any option focused dont allow typing on input, but allow the use of space to mark/unmarked the checkbox
+      if (
+        keyCode === SPACE &&
+        this._multiSelectTrigger.element._keyManager.activeItemIndex !== null &&
+        this._multiSelectTrigger.element._keyManager.activeItemIndex > -1
+      ) {
+        event.preventDefault();
+      }
+      this._multiSelectTrigger.handleCustomArrowKeyNavigation(keyCode);
     } else {
       if (this._inputFieldKeyboardLocked) {
         return;
@@ -866,6 +903,16 @@ export class DtFilterField<T = any>
     }
   }
 
+  /** @internal Handles focus on the input */
+  _handleFocus(): void {
+    this._resetFocusOnMultiSelectDef();
+  }
+
+  /** @internal Handles mousemove on the input */
+  _handleMouseMove(): void {
+    this._resetFocusOnMultiSelectDef(false);
+  }
+
   /** @internal Handles the navigation through the list of tags when using arrow keys */
   _handleArrowKeyNavigation(navigationEvent: {
     /** Contains the currently focused tag from which the event was fired from */
@@ -885,6 +932,7 @@ export class DtFilterField<T = any>
       .toArray()
       .findIndex((tag) => tag.editButton === currentTag?.editButton);
 
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     this._getCurrentlyFocusedTagType(currentTag!);
 
     if (direction === 'left') {
@@ -1007,7 +1055,7 @@ export class DtFilterField<T = any>
     tag: DtFilterFieldTag,
     deleteButtonFirst: boolean,
   ): ElementRef<HTMLButtonElement> | undefined {
-    if (!tag.temporarilyDisabled) {
+    if (tag && !tag.temporarilyDisabled) {
       if (deleteButtonFirst) {
         if (tag.deleteButton) {
           return tag.deleteButton;
@@ -1095,14 +1143,23 @@ export class DtFilterField<T = any>
         // previously set values.
         if (removed.length === 1) {
           // Needed to reassign in order for typescript to understand the type.
-          const recentRangeValue = removed[0];
-          if (isDtRangeValue(recentRangeValue) && this._currentDef.range) {
+          const initialRecentlyRemoved = removed[0];
+          if (
+            isDtRangeValue(initialRecentlyRemoved) &&
+            this._currentDef.range
+          ) {
             // Needed to set this in typescript, because template binding of input would be evaluated to late.
-            this._filterfieldRange.enabledOperators = this._currentDef.range.operatorFlags;
-            this._filterfieldRange._setValues(recentRangeValue.range);
+            this._filterfieldRange.enabledOperators =
+              this._currentDef.range.operatorFlags;
+            this._filterfieldRange._setValues(initialRecentlyRemoved.range);
             this._filterfieldRange._setOperator(
-              recentRangeValue.operator as DtFilterFieldRangeOperator,
+              initialRecentlyRemoved.operator as DtFilterFieldRangeOperator,
             );
+          }
+          if (isDtFreeTextDef(this._currentDef)) {
+            this._inputValue = isDtAutocompleteValue(initialRecentlyRemoved)
+              ? initialRecentlyRemoved.option.viewValue
+              : initialRecentlyRemoved.toString();
           }
         }
         if (isDtMultiSelectValue<T>(value)) {
@@ -1306,49 +1363,61 @@ export class DtFilterField<T = any>
   private _handleAutocompleteSelected(
     event: DtAutocompleteSelectedEvent<DtNodeDef>,
   ): void {
-    const submittedOption = event.option.value as
-      | DtAutocompleteValue<T>
-      | DefaultSearchOption<T>;
-    if (isDefaultSearchOption(submittedOption)) {
-      this._peekCurrentFilterValues().push(submittedOption.defaultSearchDef);
-      this._writeInputValue(submittedOption.inputValue);
-      this._handleFreeTextSubmitted();
-      this._switchToRootDef(true);
-    } else if (
-      isDtAutocompleteDef(submittedOption) ||
-      isDtFreeTextDef(submittedOption) ||
-      isDtRangeDef(submittedOption) ||
-      isDtMultiSelectDef(submittedOption)
+    if (
+      isDtFreeTextDef(this._currentDef) &&
+      isDtOptionDef(event.option.value)
     ) {
-      this._peekCurrentFilterValues().push(submittedOption);
-      this._currentDef = submittedOption;
-      this._updateControl();
-      this._updateLoading();
-      this._updateFilterByLabel();
-      this._updateAutocompleteOptionsOrGroups();
-      this._updateDefaultSearchDef();
-      this._emitCurrentFilterChanges([submittedOption], []);
+      this._inputValue = event.option.value.option.viewValue;
+      this._handleFreeTextSubmitted();
     } else {
-      this._peekCurrentFilterValues().push(submittedOption);
-      this._switchToRootDef(true);
-    }
-    // Reset input value to empty string after handling the value provided by the autocomplete.
-    // Otherwise the value of the autocomplete would be in the input elements and the next options
-    // would be filtered by the input value
-    this._writeInputValue('');
+      const submittedOption = event.option.value as
+        | DtAutocompleteValue<T>
+        | DefaultSearchOption<T>;
+      if (isDefaultSearchOption(submittedOption)) {
+        this._peekCurrentFilterValues().push(submittedOption.defaultSearchDef);
+        this._writeInputValue(submittedOption.inputValue);
+        this._handleFreeTextSubmitted();
+        this._switchToRootDef(true);
+      } else if (
+        isDtAutocompleteDef(submittedOption) ||
+        isDtFreeTextDef(submittedOption) ||
+        isDtRangeDef(submittedOption) ||
+        isDtMultiSelectDef(submittedOption)
+      ) {
+        this._peekCurrentFilterValues().push(submittedOption);
+        this._currentDef = submittedOption;
+        this._updateControl();
+        this._updateLoading();
+        this._updateFilterByLabel();
+        this._updateAutocompleteOptionsOrGroups();
+        this._updateDefaultSearchDef();
+        this._emitCurrentFilterChanges([submittedOption], []);
 
-    // Clear any previous selected option.
-    this._autocomplete._options.forEach((option) => {
-      if (option.selected) {
-        option.deselect();
+        if (isDtMultiSelectDef(submittedOption)) {
+          this._multiSelect._setInitialSelection([]);
+        }
+      } else {
+        this._peekCurrentFilterValues().push(submittedOption);
+        this._switchToRootDef(true);
       }
-    });
+      // Reset input value to empty string after handling the value provided by the autocomplete.
+      // Otherwise the value of the autocomplete would be in the input elements and the next options
+      // would be filtered by the input value
+      this._writeInputValue('');
 
-    // if any changes happen, cancel the edit-mode.
-    this._resetEditMode();
+      // Clear any previous selected option.
+      this._autocomplete._options.forEach((option) => {
+        if (option.selected) {
+          option.deselect();
+        }
+      });
 
-    this._stateChanges.next();
-    this._changeDetectorRef.markForCheck();
+      // if any changes happen, cancel the edit-mode.
+      this._resetEditMode();
+
+      this._stateChanges.next();
+      this._changeDetectorRef.markForCheck();
+    }
   }
 
   /**
@@ -1397,7 +1466,7 @@ export class DtFilterField<T = any>
   _handleMultiSelectSubmitted(
     event: DtFilterFieldMultiSelectSubmittedEvent<T>,
   ): void {
-    for (let option of event.multiSelect) {
+    for (const option of event.multiSelect) {
       this._peekCurrentFilterValues().push(
         option as T & DtNodeDef<DtOptionDef> & { option: DtOptionDef },
       );
@@ -1417,7 +1486,7 @@ export class DtFilterField<T = any>
 
   /** Write a value to the native input elements and set _inputValue property  */
   private _writeInputValue(value: string): void {
-    // tslint:disable-next-line:no-unused-expression
+    // eslint-disable-next-line no-unused-expressions, @typescript-eslint/no-unused-expressions
     this._inputEl && (this._inputEl.nativeElement.value = value);
     if (value === '') {
       this._inputReset$.next();
@@ -1532,7 +1601,7 @@ export class DtFilterField<T = any>
       return observableOf();
     }
 
-    return (merge(
+    return merge(
       fromEvent<MouseEvent>(this._document, 'click'),
       fromEvent<TouchEvent>(this._document, 'touchend'),
     ).pipe(
@@ -1545,7 +1614,7 @@ export class DtFilterField<T = any>
           (!filterField || !filterField.contains(clickTarget))
         );
       }),
-    ) as any) as Observable<void>;
+    ) as any as Observable<void>;
   }
 
   /**
@@ -1709,13 +1778,15 @@ export class DtFilterField<T = any>
         this._inputValue,
       );
       this._autocompleteOptionsOrGroups = def
-        ? def.autocomplete!.optionsOrGroups
+        ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          def.autocomplete!.optionsOrGroups
         : [];
     } else if (
       isDtFreeTextDef(currentDef) &&
       !isAsyncDtFreeTextDef(currentDef)
     ) {
       const def = filterFreeTextDef(currentDef, this._inputValue);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this._autocompleteOptionsOrGroups = def ? def.freeText!.suggestions : [];
     } else {
       this._autocompleteOptionsOrGroups = [];
@@ -1772,7 +1843,8 @@ export class DtFilterField<T = any>
         this._inputValue,
       );
       this._multiSelectOptionsOrGroups = def
-        ? def.multiSelect!.multiOptions
+        ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          def.multiSelect!.multiOptions
         : [];
     } else {
       this._multiSelectOptionsOrGroups = [];
@@ -1863,5 +1935,15 @@ export class DtFilterField<T = any>
       }
     }
   }
+
+  private _resetFocusOnMultiSelectDef(doScroll: boolean = true): void {
+    if (
+      isDtMultiSelectDef(this._currentDef) &&
+      this._multiSelect._keyManager.activeItemIndex !== -1
+    )
+      this._multiSelectTrigger.resetActiveItemAndKeyManagerLimitsOnPanel(
+        doScroll,
+      );
+  }
 }
-// tslint:disable:max-file-line-count
+/* eslint-disable max-lines */

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -23,18 +23,27 @@ import { DtExampleStackedSeriesChartConnectedLegend } from './stacked-series-cha
 import { DtExampleStackedSeriesChartGeneric } from './stacked-series-chart-generic-example/stacked-series-chart-generic-example';
 import { DtExampleStackedSeriesChartFilled } from './stacked-series-chart-filled-example/stacked-series-chart-filled-example';
 import { DtExampleStackedSeriesChartColumn } from './stacked-series-chart-column-example/stacked-series-chart-column-example';
+import { DtExampleStackedSeriesChartLinear } from './stacked-series-chart-linear-example/stacked-series-chart-linear-example';
+import { DtExampleStackedSeriesChartDate } from './stacked-series-chart-date-example/stacked-series-chart-date-example';
+
 import { CommonModule } from '@angular/common';
 import { DtTableModule } from '@dynatrace/barista-components/table';
 import { DtButtonGroupModule } from '@dynatrace/barista-components/button-group';
-
+import { DtInputModule } from '@dynatrace/barista-components/input';
+import { DtSwitchModule } from '@dynatrace/barista-components/switch';
+import { FormsModule } from '@angular/forms';
+import { DtExampleStackedSeriesChartHeatField } from './stacked-series-chart-heat-field-example/stacked-series-chart-heat-field-example';
 @NgModule({
   imports: [
     CommonModule,
     DtStackedSeriesChartModule,
     DtFormattersModule,
     DtButtonGroupModule,
+    DtInputModule,
     DtLegendModule,
     DtTableModule,
+    DtSwitchModule,
+    FormsModule,
   ],
   declarations: [
     DtExampleStackedSeriesChartSingle,
@@ -42,6 +51,9 @@ import { DtButtonGroupModule } from '@dynatrace/barista-components/button-group'
     DtExampleStackedSeriesChartGeneric,
     DtExampleStackedSeriesChartFilled,
     DtExampleStackedSeriesChartColumn,
+    DtExampleStackedSeriesChartLinear,
+    DtExampleStackedSeriesChartDate,
+    DtExampleStackedSeriesChartHeatField,
   ],
 })
 export class DtExamplesStackedSeriesChartModule {}

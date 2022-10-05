@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -78,7 +78,7 @@ describe('DtDrawerTable', () => {
 
   it('should show the selected row in drawer', () => {
     const lastRow = fixture.debugElement.nativeElement.querySelector(
-      'dt-row:last-child',
+      'dt-row:last-of-type',
     );
     lastRow.click();
     fixture.detectChanges();
@@ -105,7 +105,7 @@ describe('DtDrawerTable', () => {
  */
 @Component({
   selector: 'dt-test-component',
-  // tslint:disable-next-line:component-max-inline-declarations
+  // eslint-disable-next-line @angular-eslint/component-max-inline-declarations
   template: `
     <dt-drawer-table>
       <ng-template dtDrawerContent let-row>

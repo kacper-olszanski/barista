@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -38,10 +38,11 @@ export async function generateShareableExampleProject(
     componentClassFile.ast,
   );
   //Get the template and styles files from the component file
-  const exampleTemplatesAndStyles = await getTemplateAndStyleFilesFromComponentSourceFiles(
-    componentClassFile.ast,
-    exampleRoot,
-  );
+  const exampleTemplatesAndStyles =
+    await getTemplateAndStyleFilesFromComponentSourceFiles(
+      componentClassFile.ast,
+      exampleRoot,
+    );
   // Get files that are relatively imported from the example class file.
   const relativeImports = await getRelativeImportsFromSourceFile(
     componentClassFile.ast,

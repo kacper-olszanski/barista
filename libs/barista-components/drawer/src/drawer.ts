@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -270,6 +270,7 @@ export class DtDrawer implements OnInit, AfterContentChecked, OnDestroy {
 
   /**
    * Toggles the open state of the drawer.
+   *
    * @param opened the state the drawer should be toggled to – `'open' | 'close'`
    * Default the opposite of the current open state.
    */

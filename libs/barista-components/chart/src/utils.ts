@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { FocusTrap } from '@angular/cdk/a11y';
 import {
   DOWN_ARROW,
   LEFT_ARROW,
@@ -71,7 +70,7 @@ export function getKeyboardNavigationOffset(event: KeyboardEvent): number {
  */
 export function captureAndMergeEvents<
   E extends Element,
-  T extends keyof WindowEventMap
+  T extends keyof WindowEventMap,
 >(
   type: T,
   elements: E[],
@@ -97,6 +96,7 @@ export function captureAndMergeEvents<
  */
 export function getElementRef<T>(
   queryList: QueryList<ElementRef<T>>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): OperatorFunction<any, ElementRef<T>> {
   return (input$) =>
     input$.pipe(
@@ -195,7 +195,7 @@ export function getRelativeMousePosition(
   const boundingClientRect = container.getBoundingClientRect();
   const scroll = getScrollOffset();
 
-  // tslint:disable-next-line no-magic-numbers
+  // eslint-disable-next-line  no-magic-numbers
   const borderSize = (boundingClientRect.width - container.clientWidth) / 2;
   const offsetLeft = boundingClientRect.left + scroll.x;
   const offsetTop = boundingClientRect.top + scroll.y;
@@ -216,58 +216,6 @@ export function getRelativeMousePosition(
 
 /**
  * @internal
- * Joins multiple focus traps together.
- * @param traps The array of traps that should be joined
- * @param trapContainers The trap containers of the traps in the same sort direction as the traps
- */
-export function chainFocusTraps(
-  traps: FocusTrap[],
-  trapContainers: HTMLElement[],
-): void {
-  if (traps.length !== trapContainers.length) {
-    return;
-  }
-
-  // tslint:disable-next-line: one-variable-per-declaration
-  for (let i = 0, max = traps.length; i < max; i++) {
-    const anchors: HTMLElement[] = [].slice.call(
-      trapContainers[i].querySelectorAll('.cdk-focus-trap-anchor'),
-    );
-    const nextTrap = i + 1 === max ? traps[0] : traps[i + 1];
-
-    // Focus trap has always two elements a start and an end
-    // tslint:disable-next-line: no-magic-numbers
-    if (anchors.length === 2) {
-      chainFocusToNextTrap(anchors[0], nextTrap, false);
-      chainFocusToNextTrap(anchors[1], nextTrap, true);
-    }
-  }
-}
-
-/**
- * @internal
- * Chain Focus to another trap when a focus is triggered on a provided element
- * @param target The target element where the focus should be captured
- * @param nextTrap The next trap where the focus should be set
- * @param first Wether the focus should be set to the last or first tabbable element.
- */
-export function chainFocusToNextTrap(
-  target: HTMLElement,
-  nextTrap: FocusTrap,
-  first: boolean,
-): void {
-  target.addEventListener('focus', (event: FocusEvent) => {
-    event.preventDefault();
-    if (first) {
-      nextTrap.focusFirstTabbableElement();
-    } else {
-      nextTrap.focusLastTabbableElement();
-    }
-  });
-}
-
-/**
- * @internal
  * Returns the plotBackground information (sizing and positioning) of a provided
  * plot background element.
  * @param plotBackground plot background element of Highcharts
@@ -276,10 +224,10 @@ export function getPlotBackgroundInfo(
   plotBackground: SVGRectElement,
 ): DtPlotBackgroundInfo {
   return {
-    width: parseInt(plotBackground.getAttribute('width')!, 10) || 0,
-    height: parseInt(plotBackground.getAttribute('height')!, 10) || 0,
-    left: parseInt(plotBackground.getAttribute('x')!, 10) || 0,
-    top: parseInt(plotBackground.getAttribute('y')!, 10) || 0,
+    width: parseInt(plotBackground.getAttribute('width') ?? '0', 10),
+    height: parseInt(plotBackground.getAttribute('height') ?? '0', 10),
+    left: parseInt(plotBackground.getAttribute('x') ?? '0', 10),
+    top: parseInt(plotBackground.getAttribute('y') ?? '0', 10),
   };
 }
 

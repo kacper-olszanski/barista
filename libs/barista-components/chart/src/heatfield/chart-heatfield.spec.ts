@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-// tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers
-// tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
+// eslint-disable  @angular-eslint/no-lifecycle-call, no-use-before-define, @typescript-eslint/no-use-before-define, no-magic-numbers
+// eslint-disable  @typescript-eslint/no-explicit-any, max-lines, @typescript-eslint/unbound-method, @angular-eslint/use-component-selector
 
 import { ENTER, ESCAPE } from '@angular/cdk/keycodes';
 import { OverlayContainer } from '@angular/cdk/overlay';
@@ -37,13 +37,13 @@ import {
 } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { DtChartModule } from '../chart-module';
 import {
-  DtChart,
   DtChartHeatfield,
   DtChartHeatfieldActiveChange,
-  DtChartModule,
-  DtChartOptions,
-} from '@dynatrace/barista-components/chart';
+} from './chart-heatfield';
+import { DtChart } from '../chart';
+import { DtChartOptions } from '../chart.interface';
 import {
   createComponent,
   dispatchKeyboardEvent,
@@ -92,8 +92,9 @@ describe('DtChartHeatfield', () => {
       const chartDebug = fixture.debugElement.query(By.directive(DummyChart));
       chart = chartDebug.componentInstance as DummyChart;
       fixture.detectChanges();
-      marker = chartDebug.query(By.css('.dt-chart-heatfield-marker'))
-        .nativeElement;
+      marker = chartDebug.query(
+        By.css('.dt-chart-heatfield-marker'),
+      ).nativeElement;
     });
 
     describe('Positioning', () => {
@@ -258,9 +259,8 @@ describe('DtChartHeatfield', () => {
         By.directive(DtChartHeatfield),
       ).componentInstance;
       const activeChangeSpy = jest.fn();
-      const sub: Subscription = heatfield.activeChange.subscribe(
-        activeChangeSpy,
-      );
+      const sub: Subscription =
+        heatfield.activeChange.subscribe(activeChangeSpy);
       expect(activeChangeSpy).not.toHaveBeenCalled();
       instance.isActive = true;
       fixture.detectChanges();

@@ -5,11 +5,58 @@
 See stacked-series-chart.layout.md
 */
 
+$track-wrapper-height: calc(
+  (var(--dt-stacked-series-chart-max-bar-size) + #{$gap}) *
+    calc(var(--dt-stacked-series-chart-track-amount) - 1)
+);
+$track-wrapper-margin-top: $gap;
+$track-wrapper-margin-bottom: calc(#{$gap} / 2);
+
 :host(.dt-stacked-series-chart-bar) {
+  .dt-stacked-series-chart-track-label-wrapper,
+  .dt-stacked-series-chart-track-wrapper,
+  .dt-stacked-series-chart-heat-field-wrapper {
+    position: relative;
+  }
+
+  .dt-stacked-series-chart-track-label-wrapper,
+  .dt-stacked-series-chart-track-wrapper,
+  .dt-stacked-series-chart-heat-field-wrapper {
+    min-height: $track-wrapper-height;
+    grid-column: 2;
+    grid-row: 1;
+    margin: calc(var(--dt-stacked-series-chart-max-bar-size) / 2) 0;
+    height: calc(100% - var(--dt-stacked-series-chart-max-bar-size));
+  }
+
+  .dt-stacked-series-chart-heat-field-wrapper {
+    width: $heat-field-size-by-levels;
+    margin-left: calc(
+      (#{$heat-field-size-by-levels} + #{$heat-field-margin}) * -1
+    );
+  }
+
+  .dt-stacked-series-chart-track-label-wrapper {
+    display: grid;
+    grid-column: 1;
+  }
+
+  .dt-stacked-series-chart-track-label {
+    @include fullWidthAxis();
+    justify-content: center;
+  }
+
   .dt-stacked-series-chart-container {
     align-items: center;
     grid-template-columns: auto 1fr;
-    @include gridPosition('grid-column', 1, 2);
+
+    &.dt-stacked-series-chart-has-heat-field {
+      column-gap: calc(#{$tick-gutter} + #{$heat-field-size-by-levels});
+    }
+
+    &:not(.dt-stacked-series-chart-value-axis-none) {
+      grid-template-rows: 1fr auto;
+    }
   }
 
   .dt-stacked-series-chart-label-none.dt-stacked-series-chart-container {
@@ -18,13 +65,23 @@ See stacked-series-chart.layout.md
 
   /* TRACK */
   .dt-stacked-series-chart-track {
+    position: absolute;
+    top: var(--dt-stacked-series-chart-tick-position);
+    transform: translate(0%, -50%);
+    width: 100%;
     min-height: 1px;
     height: var(--dt-stacked-series-chart-max-bar-size);
+
+    grid-row: 1;
     grid-column: 2;
   }
 
-  .dt-stacked-series-chart-label-none .dt-stacked-series-chart-track {
-    grid-column: 1;
+  .dt-stacked-series-chart-label-none {
+    .dt-stacked-series-chart-track-wrapper,
+    .dt-stacked-series-chart-value-axis,
+    .dt-stacked-series-chart-heat-field-wrapper {
+      grid-column: 1;
+    }
   }
 
   /* SLICE */
@@ -51,26 +108,55 @@ See stacked-series-chart.layout.md
   }
 
   .dt-stacked-series-chart-value-axis {
+    position: relative;
+    display: grid;
     grid-column: 2;
-    border-top: 1px solid $axis-color;
-    grid-row: calc(1 + var(--dt-stacked-series-chart-track-amount));
-    height: 40px;
-  }
-
-  .dt-stacked-series-chart-label-none .dt-stacked-series-chart-value-axis {
-    grid-column: 1;
+    border-top: $axis-width solid $axis-color;
   }
 
   .dt-stacked-series-chart-axis-tick {
+    position: relative;
     padding-top: $tick-gutter;
-    text-align: center;
-    width: 100px;
-    left: (calc(var(--dt-stacked-series-chart-tick-position) - 50px));
+    left: var(--dt-stacked-series-chart-tick-position);
+    transform: translateX(-50%);
+    grid-row: 1;
+    grid-column: 1;
+
+    display: flex;
+    justify-content: center;
+    width: 0;
+    white-space: nowrap;
 
     &::after {
-      top: -1px;
+      top: -$axis-width;
       left: 50%;
       height: $tick-length;
     }
+  }
+
+  /** Heat fields */
+  .dt-stacked-series-chart-heat-field,
+  .dt-stacked-series-chart-heat-field-area {
+    top: var(--dt-stacked-series-chart-heat-field-position);
+    height: calc(
+      var(--dt-stacked-series-chart-heat-field-size) - #{$heat-field-gap}
+    );
+
+    transform: translate(0%, -50%);
+  }
+
+  .dt-stacked-series-chart-heat-field {
+    left: $heat-field-margin-by-level;
+    width: $heat-field-size;
+    min-height: $heat-field-size;
+
+    &.dt-stacked-series-chart-heat-field-selected {
+      width: $heat-field-size-selected;
+    }
+  }
+
+  .dt-stacked-series-chart-heat-field-area {
+    width: 100%;
+    left: 0;
   }
 }

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,6 +15,7 @@
  */
 
 /** Mocks an object property with the provided value */
+// eslint-disable-next-line @typescript-eslint/ban-types
 export const mockObjectProperty = <T extends {}, K extends keyof T>(
   object: T,
   property: K,

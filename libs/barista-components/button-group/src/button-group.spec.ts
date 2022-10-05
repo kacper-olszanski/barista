@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,20 +14,15 @@
  * limitations under the License.
  */
 
-// tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers
-// tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
+// eslint-disable  @angular-eslint/no-lifecycle-call, no-use-before-define, @typescript-eslint/no-use-before-define, no-magic-numbers
+// eslint-disable  @typescript-eslint/no-explicit-any, max-lines, @typescript-eslint/unbound-method, @angular-eslint/use-component-selector
 
 import { Component, DebugElement } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-
-import {
-  DtButtonGroup,
-  DtButtonGroupItem,
-  DtButtonGroupModule,
-} from '@dynatrace/barista-components/button-group';
-
+import { DtButtonGroupModule } from './button-group-module';
 import { createComponent } from '@dynatrace/testing/browser';
+import { DtButtonGroup, DtButtonGroupItem } from './button-group';
 
 describe('DtButtonGroup', () => {
   beforeEach(
@@ -168,9 +163,8 @@ describe('DtButtonGroup', () => {
         groupDebugElement = fixture.debugElement.query(
           By.css('.dt-button-group'),
         );
-        groupInstance = groupDebugElement.injector.get<DtButtonGroup<string>>(
-          DtButtonGroup,
-        );
+        groupInstance =
+          groupDebugElement.injector.get<DtButtonGroup<string>>(DtButtonGroup);
 
         itemDebugElements = fixture.debugElement.queryAll(
           By.css('.dt-button-group-item'),
@@ -206,9 +200,8 @@ describe('DtButtonGroup', () => {
         groupDebugElement = fixture.debugElement.query(
           By.directive(DtButtonGroup),
         );
-        groupInstance = groupDebugElement.injector.get<DtButtonGroup<string>>(
-          DtButtonGroup,
-        );
+        groupInstance =
+          groupDebugElement.injector.get<DtButtonGroup<string>>(DtButtonGroup);
 
         const itemDebugElements = fixture.debugElement.queryAll(
           By.directive(DtButtonGroupItem),

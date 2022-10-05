@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -19,6 +19,10 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { DtButtonModule } from '@dynatrace/barista-components/button';
 import { DtCheckboxModule } from '@dynatrace/barista-components/checkbox';
+import {
+  DtTriggerableViewportResizer,
+  DtViewportResizer,
+} from '@dynatrace/barista-components/core';
 import { DtDrawerModule } from '@dynatrace/barista-components/drawer';
 import { DtFilterFieldModule } from '@dynatrace/barista-components/filter-field';
 import { DtIconModule } from '@dynatrace/barista-components/icon';
@@ -45,5 +49,8 @@ const COMPONENTS = [DtQuickFilter, DtQuickFilterSubTitle, DtQuickFilterTitle];
   ],
   exports: COMPONENTS,
   declarations: [...COMPONENTS, DtQuickFilterGroup],
+  providers: [
+    { provide: DtViewportResizer, useClass: DtTriggerableViewportResizer },
+  ],
 })
 export class DtQuickFilterModule {}

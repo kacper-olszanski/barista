@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,7 +18,7 @@ import { Component, ViewChild } from '@angular/core';
 
 import { DtExpandableText } from '@dynatrace/barista-components/expandable-text';
 
-// tslint:disable-next-line: use-component-selector
+// eslint-disable-next-line @angular-eslint/use-component-selector
 @Component({
   templateUrl: './expandable-text-demo.component.html',
 })

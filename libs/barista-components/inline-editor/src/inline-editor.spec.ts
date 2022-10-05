@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,20 +14,15 @@
  * limitations under the License.
  */
 
-// tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers
-// tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
+// eslint-disable  @angular-eslint/no-lifecycle-call, no-use-before-define, @typescript-eslint/no-use-before-define, no-magic-numbers
+// eslint-disable  @typescript-eslint/no-explicit-any, max-lines, @typescript-eslint/unbound-method, @angular-eslint/use-component-selector
 
 import { ENTER, ESCAPE } from '@angular/cdk/keycodes';
 import { PlatformModule } from '@angular/cdk/platform';
 import { HttpXhrBackend } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, ViewChild } from '@angular/core';
-import {
-  TestBed,
-  tick,
-  fakeAsync,
-  ComponentFixture,
-} from '@angular/core/testing';
+import { TestBed, tick, fakeAsync, inject } from '@angular/core/testing';
 import {
   FormsModule,
   ReactiveFormsModule,
@@ -41,18 +36,19 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Observable } from 'rxjs';
 
 import { DtIconModule } from '@dynatrace/barista-components/icon';
-import {
-  DtInlineEditor,
-  DtInlineEditorModule,
-} from '@dynatrace/barista-components/inline-editor';
+import { DtInlineEditorModule } from './inline-editor-module';
 
 import {
   createComponent,
   dispatchFakeEvent,
   dispatchKeyboardEvent,
 } from '@dynatrace/testing/browser';
+import { OverlayContainer } from '@angular/cdk/overlay';
+import { DtInlineEditor } from './inline-editor';
 
 describe('DtInlineEditor', () => {
+  let overlayContainerElement: HTMLElement;
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -81,6 +77,10 @@ describe('DtInlineEditor', () => {
     });
 
     TestBed.compileComponents();
+
+    inject([OverlayContainer], (oc: OverlayContainer) => {
+      overlayContainerElement = oc.getContainerElement();
+    })();
   });
 
   it('should create controls', fakeAsync(() => {
@@ -160,8 +160,9 @@ describe('DtInlineEditor', () => {
     instance.enterEditing();
     fixture.detectChanges();
 
-    const inputElement = fixture.debugElement.query(By.css('input'))
-      .nativeElement;
+    const inputElement = fixture.debugElement.query(
+      By.css('input'),
+    ).nativeElement;
 
     expect(inputElement.getAttribute('aria-required')).toBe('true');
     expect(inputElement.getAttribute('aria-invalid')).toBe('false');
@@ -184,15 +185,14 @@ describe('DtInlineEditor', () => {
     instance.enterEditing();
     fixture.detectChanges();
 
-    const inputElement = fixture.debugElement.query(By.css('input'))
-      .nativeElement;
+    const inputElement = fixture.debugElement.query(
+      By.css('input'),
+    ).nativeElement;
 
     expect(inputElement.getAttribute('aria-invalid')).toBe('false');
 
     // Expected zero error messages to have been rendered.
-    expect(
-      fixture.debugElement.nativeElement.querySelectorAll('dt-error').length,
-    ).toBe(0);
+    expect(overlayContainerElement.querySelectorAll('dt-error').length).toBe(0);
 
     component.errorState = true;
     dispatchFakeEvent(inputElement, 'input');
@@ -201,9 +201,7 @@ describe('DtInlineEditor', () => {
     expect(inputElement.getAttribute('aria-invalid')).toBe('true');
 
     // Expected one error messages to have been rendered.
-    expect(
-      fixture.debugElement.nativeElement.querySelectorAll('dt-error').length,
-    ).toBe(1);
+    expect(overlayContainerElement.querySelectorAll('dt-error').length).toBe(1);
   }));
 
   it('should call save method and apply changes', fakeAsync(() => {
@@ -259,13 +257,14 @@ describe('DtInlineEditor', () => {
     instance.enterEditing();
     fixture.detectChanges();
 
-    const inputReferenceElement = fixture.debugElement.query(By.css('input'))
-      .nativeElement;
+    const inputReferenceElement = fixture.debugElement.query(
+      By.css('input'),
+    ).nativeElement;
 
     dispatchKeyboardEvent(inputReferenceElement, 'keydown', ENTER);
     fixture.detectChanges();
 
-    // tslint:disable-next-line:no-unbound-method
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(instance.saveAndQuitEditing).toHaveBeenCalled();
   });
 
@@ -277,12 +276,13 @@ describe('DtInlineEditor', () => {
     instance.enterEditing();
     fixture.detectChanges();
 
-    const inputReferenceElement = fixture.debugElement.query(By.css('input'))
-      .nativeElement;
+    const inputReferenceElement = fixture.debugElement.query(
+      By.css('input'),
+    ).nativeElement;
 
     dispatchKeyboardEvent(inputReferenceElement, 'keydown', ESCAPE);
 
-    // tslint:disable-next-line:no-unbound-method
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(instance.cancelAndQuitEditing).toHaveBeenCalled();
   });
 
@@ -316,34 +316,35 @@ describe('DtInlineEditor', () => {
     instance.enterEditing();
     fixture.detectChanges();
 
-    const inputElement = fixture.debugElement.query(By.css('input'))
-      .nativeElement;
+    const inputElement = fixture.debugElement.query(
+      By.css('input'),
+    ).nativeElement;
 
     // Expected zero error messages to have been rendered.
-    expect(getErrorHtmlElement(fixture)).toBe(null);
+    expect(getErrorHtmlElement(overlayContainerElement)).toBe(null);
 
     inputElement.value = 'bar';
     dispatchFakeEvent(inputElement, 'input');
     fixture.detectChanges();
 
     // Expected one error messages to have been rendered.
-    expect(getErrorHtmlElement(fixture)!.textContent!.trim()).toBe(
-      "Value must include the string 'barista'",
-    );
+    expect(
+      getErrorHtmlElement(overlayContainerElement)!.textContent!.trim(),
+    ).toBe("Value must include the string 'barista'");
 
     inputElement.value = 'barista';
     dispatchFakeEvent(inputElement, 'input');
     fixture.detectChanges();
 
     // Expected one error messages to have been rendered.
-    expect(getErrorHtmlElement(fixture)).toBe(null);
+    expect(getErrorHtmlElement(overlayContainerElement)).toBe(null);
   }));
 });
 
-function getErrorHtmlElement<T>(
-  fixture: ComponentFixture<T>,
+function getErrorHtmlElement(
+  overlayContainerElement: HTMLElement,
 ): HTMLElement | null {
-  return fixture.debugElement.nativeElement.querySelector('dt-error');
+  return overlayContainerElement.querySelector('dt-error');
 }
 
 @Component({
@@ -447,7 +448,7 @@ function baristaValidator(): ValidatorFn {
 class TestComponentWithWithValidator {
   @ViewChild(DtInlineEditor) inlineEditor: DtInlineEditor;
   queryTitleControl = new FormControl('123', [
-    // tslint:disable-next-line: no-unbound-method
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     baristaValidator(),
   ]);
   queryTitleForm = new FormGroup({

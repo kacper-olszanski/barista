@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -44,18 +44,16 @@ describe('DtAlert', () => {
   it('expects css class to be present', () => {
     const fixture = createComponent(TestApp);
 
-    const tileNativeElement = fixture.debugElement.nativeElement.querySelector(
-      'dt-alert',
-    );
+    const tileNativeElement =
+      fixture.debugElement.nativeElement.querySelector('dt-alert');
     expect(tileNativeElement.classList.contains('dt-alert')).toBeTruthy();
   });
 
   it('expects correct css class after change', () => {
     const fixture = createComponent(TestApp);
 
-    const tileNativeElement = fixture.debugElement.nativeElement.querySelector(
-      'dt-alert',
-    );
+    const tileNativeElement =
+      fixture.debugElement.nativeElement.querySelector('dt-alert');
 
     const groupDebugElement = fixture.debugElement.query(By.directive(DtAlert));
     const groupInstance = groupDebugElement.injector.get<DtAlert>(DtAlert);
@@ -73,9 +71,8 @@ describe('DtAlert', () => {
   it('expects no css class to be present by default', () => {
     const fixture = createComponent(TestAppEmpty);
 
-    const tileNativeElement = fixture.debugElement.nativeElement.querySelector(
-      'dt-alert',
-    );
+    const tileNativeElement =
+      fixture.debugElement.nativeElement.querySelector('dt-alert');
     expect(tileNativeElement.classList.contains('dt-alert-error')).toBeFalsy();
     expect(
       tileNativeElement.classList.contains('dt-alert-warning'),

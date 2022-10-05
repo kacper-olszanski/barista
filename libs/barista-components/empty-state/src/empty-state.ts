@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -45,6 +45,7 @@ const ITEMS_HORIZONTAL_BREAKPOINT = 540;
 /** The min-width from which the empty state items are aligned next to each other. */
 const LAYOUT_HORIZONTAL_BREAKPOINT = 760;
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare const window: any;
 
 /**
@@ -115,7 +116,7 @@ export class DtEmptyStateItemTitle {}
  *   </dt-empty-state-footer-actions>
  */
 @Directive({
-  selector: 'dt-empty-state-footer-actions',
+  selector: 'dt-empty-state-footer-actions, [dtEmptyStateFooterActions]',
   host: {
     class: 'dt-empty-state-footer-actions',
   },
@@ -152,13 +153,15 @@ export class DtEmptyStateFooterActions {}
   ],
 })
 export class DtEmptyState
-  implements AfterContentInit, AfterViewInit, OnDestroy {
+  implements AfterContentInit, AfterViewInit, OnDestroy
+{
   /** @internal Empty state items (1..n) */
   @ContentChildren(DtEmptyStateItem)
   _items: QueryList<DtEmptyStateItem>;
 
   private readonly _destroy$ = new Subject<void>();
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private _containerSizeObserver: any;
 
   /**

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -22,8 +22,8 @@ import { Component } from '@angular/core';
 })
 export class SliderDemo {
   disabled = false;
-  value: number = 0;
-  step: number = 1;
-  min: number = 0;
-  max: number = 10;
+  value = 0;
+  step = 1;
+  min = 0;
+  max = 10;
 }

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -52,6 +52,7 @@ export interface DtOrderReorderEvent {
 
 /**
  * Boilerplate for applying mixins to DtOrder.
+ *
  * @internal
  */
 export class DtOrderBase {}
@@ -68,7 +69,8 @@ export const _DtOrderMixinBase = mixinDisabled(DtOrderBase);
 })
 export class DtOrder<T>
   extends _DtOrderMixinBase
-  implements CanDisable, AfterViewInit, OnChanges, OnDestroy {
+  implements CanDisable, AfterViewInit, OnChanges, OnDestroy
+{
   /**
    * @internal Event that is emitted whenever the input value of the order column
    * changes due to user input or dragging an item to a new position.

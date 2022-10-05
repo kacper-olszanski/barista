@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-// tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers
-// tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
+// eslint-disable  @angular-eslint/no-lifecycle-call, no-use-before-define, @typescript-eslint/no-use-before-define, no-magic-numbers
+// eslint-disable  @typescript-eslint/no-explicit-any, max-lines, @typescript-eslint/unbound-method, @angular-eslint/use-component-selector
 
 import {
   Component,
@@ -39,12 +39,9 @@ import {
 } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 
-import {
-  DtRadioButton,
-  DtRadioChange,
-  DtRadioGroup,
-  DtRadioModule,
-} from '@dynatrace/barista-components/radio';
+import { DtRadioModule } from './radio-module';
+import { DtRadioGroup } from './radio-group';
+import { DtRadioButton, DtRadioChange } from './radio';
 import { createComponent, dispatchFakeEvent } from '@dynatrace/testing/browser';
 
 describe('DtRadio', () => {
@@ -88,9 +85,8 @@ describe('DtRadio', () => {
         groupDebugElement = fixture.debugElement.query(
           By.directive(DtRadioGroup),
         );
-        groupInstance = groupDebugElement.injector.get<DtRadioGroup<any>>(
-          DtRadioGroup,
-        );
+        groupInstance =
+          groupDebugElement.injector.get<DtRadioGroup<any>>(DtRadioGroup);
 
         radioDebugElements = fixture.debugElement.queryAll(
           By.directive(DtRadioButton),
@@ -378,9 +374,8 @@ describe('DtRadio', () => {
       groupDebugElement = fixture.debugElement.query(
         By.directive(DtRadioGroup),
       );
-      groupInstance = groupDebugElement.injector.get<DtRadioGroup<any>>(
-        DtRadioGroup,
-      );
+      groupInstance =
+        groupDebugElement.injector.get<DtRadioGroup<any>>(DtRadioGroup);
       groupNgModel = groupDebugElement.injector.get<NgModel>(NgModel);
 
       radioDebugElements = fixture.debugElement.queryAll(
@@ -493,9 +488,8 @@ describe('DtRadio', () => {
       groupDebugElement = fixture.debugElement.query(
         By.directive(DtRadioGroup),
       );
-      groupInstance = groupDebugElement.injector.get<DtRadioGroup<any>>(
-        DtRadioGroup,
-      );
+      groupInstance =
+        groupDebugElement.injector.get<DtRadioGroup<any>>(DtRadioGroup);
     });
 
     it('should toggle the disabled state', () => {
@@ -526,12 +520,10 @@ describe('DtRadio', () => {
       const radioDebugElement = fixture.debugElement.query(
         By.directive(DtRadioButton),
       );
-      radioInstance = radioDebugElement.injector.get<DtRadioButton<any>>(
-        DtRadioButton,
-      );
-      radioNativeElement = radioDebugElement.nativeElement.querySelector(
-        'input',
-      );
+      radioInstance =
+        radioDebugElement.injector.get<DtRadioButton<any>>(DtRadioButton);
+      radioNativeElement =
+        radioDebugElement.nativeElement.querySelector('input');
     });
 
     it('should toggle the disabled state', () => {
@@ -711,9 +703,8 @@ describe('DtRadio', () => {
     });
 
     it('should not add the "name" attribute if it is not passed in', () => {
-      const radio = fixture.debugElement.nativeElement.querySelector(
-        '#nameless input',
-      );
+      const radio =
+        fixture.debugElement.nativeElement.querySelector('#nameless input');
       expect(radio.hasAttribute('name')).toBe(false);
     });
   });
@@ -729,8 +720,9 @@ describe('DtRadio', () => {
       const radioButtonEl = fixture.debugElement.query(
         By.css('.dt-radio-button'),
       ).nativeElement;
-      const inputEl = fixture.debugElement.query(By.css('.dt-radio-input'))
-        .nativeElement;
+      const inputEl = fixture.debugElement.query(
+        By.css('.dt-radio-input'),
+      ).nativeElement;
 
       radioButtonEl.focus();
       // Focus events don't always fire in tests, so we need to fake it.
@@ -769,9 +761,8 @@ describe('DtRadio', () => {
         groupDebugElement = fixture.debugElement.query(
           By.directive(DtRadioGroup),
         );
-        groupInstance = groupDebugElement.injector.get<DtRadioGroup<any>>(
-          DtRadioGroup,
-        );
+        groupInstance =
+          groupDebugElement.injector.get<DtRadioGroup<any>>(DtRadioGroup);
         radioDebugElements = fixture.debugElement.queryAll(
           By.directive(DtRadioButton),
         );
@@ -882,19 +873,21 @@ class RadioGroupWithFormControl {
 
 @Component({
   template: `
-    <dt-radio-group>
-      <dt-radio-button value="Group1-Option1" checked>One</dt-radio-button>
+    <dt-radio-group [value]="value1">
+      <dt-radio-button value="Group1-Option1">One</dt-radio-button>
       <dt-radio-button value="Group1-Option2">Two</dt-radio-button>
       <dt-radio-button value="Group1-Option3">Three</dt-radio-button>
     </dt-radio-group>
-    <dt-radio-group>
-      <dt-radio-button value="Group2-Option1" checked>One</dt-radio-button>
+    <dt-radio-group [value]="value2">
+      <dt-radio-button value="Group2-Option1">One</dt-radio-button>
       <dt-radio-button value="Group2-Option2">Two</dt-radio-button>
       <dt-radio-button value="Group2-Option3">Three</dt-radio-button>
     </dt-radio-group>
   `,
 })
 class DoubleRadioGroups {
+  value1 = 'Group1-Option1';
+  value2 = 'Group2-Option1';
   @ViewChildren(DtRadioGroup) groups: QueryList<DtRadioGroup<any>>;
 }
 
@@ -931,4 +924,4 @@ class InterleavedRadioGroup {
 })
 class TranscludingWrapper {}
 
-// tslint:enable:no-any no-magic-numbers
+/* eslint-enable @typescript-eslint/no-explicit-any, no-magic-numbers */

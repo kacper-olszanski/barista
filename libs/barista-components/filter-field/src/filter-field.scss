@@ -1,3 +1,4 @@
+@use 'sass:math';
 @import '../../core/src/style/variables';
 @import '../../style/font-mixins';
 @import '../../core/src/style/form-control';
@@ -67,6 +68,7 @@ $dt-filter-field-inner-height: 30px;
   height: $dt-filter-field-inner-height;
   align-items: center;
   margin-right: 8px;
+
   ::ng-deep svg {
     width: 16px;
     height: 16px;
@@ -76,9 +78,13 @@ $dt-filter-field-inner-height: 30px;
 
 .dt-filter-field-infix {
   display: flex;
-  flex-grow: 0;
+  flex-grow: 1;
   flex-shrink: 1;
   margin-left: 8px;
+}
+
+.dt-filter-field-infix-edit {
+  max-width: 400px;
 }
 
 .dt-filter-field-category {
@@ -89,13 +95,16 @@ $dt-filter-field-inner-height: 30px;
   @include dt-main-font();
   line-height: $dt-filter-field-inner-height;
   color: $gray-500;
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .dt-filter-field-input {
   display: block;
-  min-width: 112px; // Minimum with of the autocomplete
+  min-width: 100px; // Minimum width of the autocomplete
   width: 100%;
-  max-width: 300px;
   flex-grow: 1;
   flex-shrink: 1;
   position: relative;
@@ -119,8 +128,8 @@ $dt-filter-field-inner-height: 30px;
 }
 
 dt-filter-field-tag {
-  margin-top: ($dt-filter-field-inner-height - 24) / 2;
-  margin-bottom: ($dt-filter-field-inner-height - 24) / 2;
+  margin-top: math.div($dt-filter-field-inner-height - 24, 2);
+  margin-bottom: math.div($dt-filter-field-inner-height - 24, 2);
   margin-left: 8px;
 }
 
@@ -161,7 +170,9 @@ button.dt-filter-field-clear-all-button-hidden {
   color: $error-color;
 
   // Make sure the error is not overlapped by other elements
-  z-index: 1;
+  // This needs to be higher than the drawer in order to
+  // allow the error message to be over the drawer's content
+  z-index: 4;
 
   &::before {
     content: '';
@@ -177,6 +188,17 @@ button.dt-filter-field-clear-all-button-hidden {
 
 .dt-filter-field-error p {
   margin: 0;
+}
+
+::ng-deep .dt-filter-field-panel .dt-filter-field-hint-partial {
+  @include dt-text-ellipsis();
+  @include dt-custom-font-styles(
+    $custom-color: $gray-500,
+    $custom-font-size: 12px
+  );
+  text-align: center;
+  border-bottom: solid 1px $gray-200;
+  padding: 0 8px;
 }
 
 ::ng-deep .dt-filter-field-panel .dt-option {

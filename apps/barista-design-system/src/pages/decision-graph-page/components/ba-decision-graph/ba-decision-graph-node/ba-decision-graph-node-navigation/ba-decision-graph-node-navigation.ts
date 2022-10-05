@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -24,11 +24,11 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 export class BaDecisiongraphNodeNavigation {
   /** Whether the show back button should be displayed */
   @Input()
-  showBackButton: boolean = false;
+  showBackButton = false;
 
   /** Whether navigation is in a tasknode */
   @Input()
-  inTasknode: boolean = false;
+  inTasknode = false;
 
   /** Eventemitter which undos last step */
   @Output()

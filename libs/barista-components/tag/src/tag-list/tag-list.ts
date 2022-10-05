@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -159,8 +159,8 @@ export class DtTagList implements AfterContentInit, OnDestroy {
     this._hiddenTagCount = tagArray.length - index;
     // Reapplying wrapper height because changing the viewsize might result in tags being rendered on multiple lines
     // but we only want to show the first row
-    const wrapperLeft = this._wrapperTagList.nativeElement.getBoundingClientRect()
-      .left;
+    const wrapperLeft =
+      this._wrapperTagList.nativeElement.getBoundingClientRect().left;
     this._wrapperWidth = getWrapperWidth(
       tagArray.map((elRef) => elRef.nativeElement)[index - 1],
       wrapperLeft,
@@ -171,8 +171,10 @@ export class DtTagList implements AfterContentInit, OnDestroy {
   /** @internal Sets the wrappers height and width properties */
   _setWrapperBoundingProperties(isCollapsed: boolean): void {
     if (isCollapsed) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this._wrapperTagList.nativeElement.style.maxWidth = `${this
         ._wrapperWidth!}px`;
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this._wrapperTagList.nativeElement.style.minWidth = `${this
         ._wrapperWidth!}px`;
       this._wrapperTagList.nativeElement.style.height = `${DT_TAG_LIST_HEIGHT}px`;
@@ -187,7 +189,7 @@ export class DtTagList implements AfterContentInit, OnDestroy {
   private _subscribeToTagAddElements(): void {
     this._tagAddElements.map((el) =>
       this._tagAddSubscriptions.push(
-        el.tagAdded.pipe(takeUntil(this._destroy$)).subscribe(() => {
+        el.submitted.pipe(takeUntil(this._destroy$)).subscribe(() => {
           this._expand();
           this._changeDetectorRef.markForCheck();
         }),

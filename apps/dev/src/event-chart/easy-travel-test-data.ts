@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -29,8 +29,7 @@ export const EASY_TRAVEL_TEST_DATA = [
         x: 0,
         y: 0,
         source: {
-          id:
-            '1565268603832x1565268607398x567_515858017@0@1565268603832@1565268606796@MOBILE_APPLICATION-752C288D59734C79@0',
+          id: '1565268603832x1565268607398x567_515858017@0@1565268603832@1565268606796@MOBILE_APPLICATION-752C288D59734C79@0',
           currentValues: {
             eActionTime: 2964,
             eHttpReqError: 0,
@@ -155,7 +154,7 @@ export class EasyTravelDataSource implements EventChartDemoDataSource {
     for (const event of EASY_TRAVEL_TEST_DATA[0].data) {
       const name = event.y.toString();
       if (!lanes.find((l) => l.name === name)) {
-        // tslint:disable-next-line: no-any
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let color: any = 'default';
         if (event.marker.fillColor === '#dc172a') {
           color = 'error';
@@ -198,6 +197,22 @@ export class EasyTravelDataSource implements EventChartDemoDataSource {
           pageGroup: '/booking',
         },
         color: 'error',
+      },
+      {
+        start: 2000,
+        end: 2000,
+        data: {
+          page: '/cart/asdf3',
+          pageGroup: '/cart',
+        },
+      },
+      {
+        start: 2000,
+        end: 2000,
+        data: {
+          page: '/cart/asdf1',
+          pageGroup: '/cart',
+        },
       },
       {
         start: 2000,

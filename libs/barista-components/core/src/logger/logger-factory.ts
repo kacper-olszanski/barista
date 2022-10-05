@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,7 +17,7 @@
 import { DT_STATIC_LOG_CONSUMER } from './log-consumer';
 import { DtLogger } from './logger';
 
-// tslint:disable:no-unnecessary-class
+/* eslint-disable @typescript-eslint/no-extraneous-class */
 export class DtLoggerFactory {
   /** Creates a new logger for the provided namespace. */
   static create(name: string): DtLogger {

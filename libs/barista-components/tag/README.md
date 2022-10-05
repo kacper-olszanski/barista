@@ -49,11 +49,49 @@ The `dt-tag-list` element evaluates whether an amount of `dt-tag` elements fit
 in one line and displays a 'more' button when it doesn't fit. If provided
 `dt-tag-add` will always be displayed at the end of the `dt-tag-list`.
 
-## Inputs
+### Inputs
 
-| Name         | Type     | Default      | Description                                                               |
-| ------------ | -------- | ------------ | ------------------------------------------------------------------------- |
-| `aria-label` | `string` | `undefinded` | `Used to set the 'aria-label' attribute on the underlying input element.` |
+| Name         | Type     | Default      | Description                                                             |
+| ------------ | -------- | ------------ | ----------------------------------------------------------------------- |
+| `aria-label` | `string` | `undefinded` | Used to set the 'aria-label' attribute on the underlying input element. |
+
+## Tag add button
+
+The `dt-tag-add` button allows manual tag entries to an entity. The tag add
+button should be placed inside the `dt-tag-list` wrapper and after your `dt-tag`
+elements.
+
+<ba-live-example name="DtExampleTagListWithTagAdd"></ba-live-example>
+
+### Inputs
+
+| Name          | Type     | Default      | Description                                                             |
+| ------------- | -------- | ------------ | ----------------------------------------------------------------------- |
+| `placeholder` | `string` | `undefined`  | Placeholder string for the add tag input overlay.                       |
+| `aria-label`  | `string` | `undefinded` | Used to set the 'aria-label' attribute on the underlying input element. |
+| `title`       | `string` | `Add Tag`    | Title of the 'Add' button and overlay.                                  |
+
+### Outputs
+
+| Name        | Type                  | Description                                                                                                                    |
+| ----------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `submitted` | `EventEmitter<event>` | Emits event when the form is submitted. With the default form the event contains a `tag` key that holds the value of the input |
+
+### Methods
+
+| Name       | Type   | Description                                    |
+| ---------- | ------ | ---------------------------------------------- |
+| `open()`   | `void` | Opens the input overlay.                       |
+| `close()`  | `void` | Closes the input overlay.                      |
+| `submit()` | `void` | Triggers `submitted` **if** the form is valid. |
+
+## Custom tag add form
+
+A custom form can be passed to the `dt-tag-add` component. You need to include a
+`FormGroupDirective` (from `@angular/forms`) inside the ng-content and the
+form's value will be used when the form is submitted in the output.
+
+<ba-live-example name="DtExampleCustomAddFormTag"></ba-live-example>
 
 ## Examples
 
@@ -68,32 +106,3 @@ in one line and displays a 'more' button when it doesn't fit. If provided
 ### Interactive example
 
 <ba-live-example name="DtExampleTagInteractive"></ba-live-example>
-
-## Tag add button
-
-The `dt-tag-add` button allows manual tag entries to an entity.
-
-<ba-live-example name="DtExampleTagListWithTagAdd"></ba-live-examples>
-
-The tag add button should be placed inside the `dt-tag-list` wrapper and after
-your `dt-tag` elements.
-
-### Inputs
-
-| Name          | Type     | Default      | Description                                                               |
-| ------------- | -------- | ------------ | ------------------------------------------------------------------------- |
-| `placeholder` | `string` | `undefined`  | `Placeholder string for the add tag input overlay.`                       |
-| `aria-label`  | `string` | `undefinded` | `Used to set the 'aria-label' attribute on the underlying input element.` |
-
-### Outputs
-
-| Name       | Type                  | Description                      |
-| ---------- | --------------------- | -------------------------------- |
-| `tagAdded` | `EventEmitter<event>` | Emits event when a tag is added. |
-
-### Methods
-
-| Name      | Type   | Description                 |
-| --------- | ------ | --------------------------- |
-| `open()`  | `void` | `Opens the input overlay.`  |
-| `close()` | `void` | `Closes the input overlay.` |

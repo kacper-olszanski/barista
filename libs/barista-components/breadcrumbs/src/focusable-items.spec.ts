@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,11 +17,9 @@
 import { Component, QueryList, ViewChildren } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
 
-import {
-  DtBreadcrumbsItem2,
-  DtBreadcrumbsModule,
-} from '@dynatrace/barista-components/breadcrumbs';
 import { createComponent } from '@dynatrace/testing/browser';
+import { DtBreadcrumbsItem2 } from './breadcrumbs-item';
+import { DtBreadcrumbsModule } from './breadcrumbs-module';
 
 import { findFirstFocusableItem } from './focusable-items';
 

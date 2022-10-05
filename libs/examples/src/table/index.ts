@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -24,6 +24,8 @@ export * from './table-dynamic-columns-example/table-dynamic-columns-example';
 export * from './table-empty-state-example/table-empty-state-example';
 export * from './table-examples.module';
 export * from './table-expandable-rows-example/table-expandable-rows-example';
+export * from './table-export-example/table-export-example';
+export * from './table-export-selection-example/table-export-selection-example';
 export * from './table-favorite-column-example/table-favorite-column-example';
 export * from './table-favorite-column-no-header-example/table-favorite-column-no-header-example';
 export * from './table-interactive-rows-example/table-interactive-rows-example';

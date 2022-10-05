@@ -1,5 +1,5 @@
 # Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
-version: v1.19.0
+version: v1.22.1
 # ignores vulnerabilities until expiry date; change duration by modifying expiry date
 ignore:
   SNYK-JS-LODASH-567746:
@@ -223,4 +223,47 @@ ignore:
     - '@angular/localize > @babel/core > resolve > path-parse':
         reason: Transitive dependency outside of our control
         expires: '2021-06-03T09:28:32.360Z'
+  SNYK-JS-D3COLOR-1076592:
+    - d3-scale > d3-interpolate > d3-color:
+        reason: transitive-dependency
+        expires: '2022-08-24T09:36:16.859Z'
+  SNYK-JS-ANSIREGEX-1583908:
+    - '@angular/localize > yargs > string-width > strip-ansi > ansi-regex':
+        reason: Transient dependency and still an issue
+        expires: '2021-11-17T11:35:40.242Z'
+    - '@angular/localize > yargs > cliui > strip-ansi > ansi-regex':
+        reason: Transient dependency and still an issue
+        expires: '2021-11-17T11:35:40.242Z'
+    - '@angular/localize > yargs > cliui > string-width > strip-ansi > ansi-regex':
+        reason: Transient dependency and still an issue
+        expires: '2021-11-17T11:35:40.242Z'
+    - '@angular/localize > yargs > cliui > wrap-ansi > strip-ansi > ansi-regex':
+        reason: Transient dependency and still an issue
+        expires: '2021-11-17T11:35:40.242Z'
+    - '@angular/localize > yargs > cliui > wrap-ansi > string-width > strip-ansi > ansi-regex':
+        reason: Transient dependency and still an issue
+        expires: '2021-11-17T11:35:40.242Z'
+  SNYK-JS-TRIMNEWLINES-1298042:
+    - '@commitlint/cli > @commitlint/read > git-raw-commits > meow > trim-newlines':
+        reason: None given
+        expires: '2022-01-19T08:40:14.038Z'
+    - '@commitlint/cli > @commitlint/lint > @commitlint/parse > conventional-commits-parser > meow > trim-newlines':
+        reason: None given
+        expires: '2022-01-19T08:40:14.038Z'
+  SNYK-JS-LODASHTEMPLATE-1088054:
+    - '@commitlint/cli > @commitlint/read > git-raw-commits > lodash.template':
+        reason: None given
+        expires: '2022-01-19T08:40:14.038Z'
+  SNYK-JS-NANOID-2332193:
+    - '@nguniversal/common > critters > postcss > nanoid':
+        reason: Will hopefully be resolved by a future version of @nguniversal/common
+        expires: '2022-08-24T09:36:16.858Z'
+  SNYK-JS-MINIMIST-2429795:
+    - '@angular/localize > @babel/core > json5 > minimist':
+        reason: Transient dependency
+        expires: '2022-08-24T09:36:16.858Z'
+  SNYK-JS-NWSAPI-2841516:
+    - '@nguniversal/common > jsdom > nwsapi':
+        reason: Will hopefully be resolved by a future version of @nguniversal/common
+        expires: '2022-08-24T09:36:16.859Z'
 patch: {}

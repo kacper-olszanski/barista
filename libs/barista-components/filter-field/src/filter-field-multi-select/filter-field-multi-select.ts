@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,9 +15,8 @@
  */
 
 import { ActiveDescendantKeyManager, Highlightable } from '@angular/cdk/a11y';
-import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { TemplatePortal } from '@angular/cdk/portal';
-// tslint:disable: template-cyclomatic-complexity
+/* eslint-disable @angular-eslint/template/cyclomatic-complexity */
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -36,7 +35,6 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { DtOption } from '@dynatrace/barista-components/core';
-import { xor } from 'lodash-es';
 import { merge, Subject } from 'rxjs';
 import { startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { DtFilterFieldElement } from '../shared/filter-field-element';
@@ -47,6 +45,7 @@ let _uniqueIdCounter = 0;
 export class DtFilterFieldMultiSelectSubmittedEvent<T> {
   constructor(
     /** Reference to the filter field multiSelect panel that emitted the event. */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public source: DtFilterFieldMultiSelect<any>,
     /** Selected option(s) */
     public multiSelect: T[],
@@ -63,20 +62,8 @@ export class DtFilterFieldMultiSelectSubmittedEvent<T> {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DtFilterFieldMultiSelect<T>
-  implements DtFilterFieldElement<T>, AfterViewInit {
-  /**
-   * Whether the first option should be highlighted when the multi-select panel is opened.
-   * Can be configured globally through the `DT_MULTI_SELECT_DEFAULT_OPTIONS` token.
-   */
-  @Input()
-  get autoActiveFirstOption(): boolean {
-    return this._autoActiveFirstOption;
-  }
-  set autoActiveFirstOption(value: boolean) {
-    this._autoActiveFirstOption = coerceBooleanProperty(value);
-  }
-  private _autoActiveFirstOption: boolean;
-
+  implements DtFilterFieldElement<T>, AfterViewInit
+{
   /**
    * Specify the width of the multi-select panel.  Can be any CSS sizing value, otherwise it will
    * match the width of its host.
@@ -92,6 +79,7 @@ export class DtFilterFieldMultiSelect<T>
     return this._optionsOrGroups ?? [];
   }
   set optionsOrGroups(opts: Array<T & DtNodeDef>) {
+    // eslint-disable-next-line no-extra-boolean-cast
     this._optionsOrGroups = !!opts ? opts : [];
     this._filterOptions();
   }
@@ -132,7 +120,8 @@ export class DtFilterFieldMultiSelect<T>
   _isOpen = false;
 
   /** @internal */
-  @ViewChild(TemplateRef, { static: true }) _template: TemplateRef<{}>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  @ViewChild(TemplateRef, { static: true }) _template: TemplateRef<any>;
 
   /**
    * @internal Reference to the panel which will be created in the overlay.
@@ -171,7 +160,8 @@ export class DtFilterFieldMultiSelect<T>
   ) {}
 
   ngAfterViewInit(): void {
-    this._portal = new TemplatePortal<{}>(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    this._portal = new TemplatePortal<any>(
       this._template,
       this._viewContainerRef,
     );
@@ -179,7 +169,7 @@ export class DtFilterFieldMultiSelect<T>
     // init keymanager with options
     this._keyManager = new ActiveDescendantKeyManager<DtOption<T>>(
       this._options,
-    ).withWrap();
+    );
 
     this._options.changes
       .pipe(
@@ -190,9 +180,11 @@ export class DtFilterFieldMultiSelect<T>
         takeUntil(this._destroy$),
       )
       .subscribe((option) => {
-        this._ngZone?.run(() => {
-          this._keyManager.setActiveItem(option);
-        });
+        if (!option.disabled) {
+          this._ngZone?.run(() => {
+            this._keyManager.setActiveItem(option);
+          });
+        }
       });
   }
 
@@ -225,7 +217,7 @@ export class DtFilterFieldMultiSelect<T>
     return `${this.id}-${suffix}`;
   }
 
-  /**  Handles the submit of multiSelect values. */
+  /** Handles the submit of multiSelect values. */
   _handleSubmit(event: Event): void {
     event.preventDefault();
     event.stopImmediatePropagation();
@@ -289,10 +281,7 @@ export class DtFilterFieldMultiSelect<T>
   }
 
   private _checkApplyDisable(): void {
-    this._applyDisabled =
-      this._currentSelection.size === 0 ||
-      xor(Array.from(this._currentSelection.values()), this._initialSelection)
-        .length === 0;
+    this._applyDisabled = this._currentSelection.size === 0;
   }
 
   private _filterOptions(): void {
@@ -330,6 +319,9 @@ export class DtFilterFieldMultiSelect<T>
   }
 
   focus(): void {
-    this._keyManager.setActiveItem(this._options.first);
+    const firstOption = this._options.find((option) => !option.disabled);
+    if (firstOption) {
+      this._keyManager.setActiveItem(firstOption);
+    }
   }
 }

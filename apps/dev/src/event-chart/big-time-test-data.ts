@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -24,7 +24,7 @@ import {
   EventChartDemoHeatfield,
 } from './event-chart-demo-data';
 
-// tslint:disable: max-file-line-count
+/* eslint-disable max-lines */
 
 const BIG_TIME_TEST_DATA = [
   {
@@ -32,8 +32,7 @@ const BIG_TIME_TEST_DATA = [
     value: 1567749909410,
     lane: 'MobileAction',
     source: {
-      id:
-        '1567749909410x1567750027435xc1t1u202i1567745315857r367_100@0@1567749909410@1567749909433@MOBILE_APPLICATION-752C288D59734C79@0',
+      id: '1567749909410x1567750027435xc1t1u202i1567745315857r367_100@0@1567749909410@1567749909433@MOBILE_APPLICATION-752C288D59734C79@0',
       currentValues: {
         eActionTime: 23,
         eHttpReqError: 0,
@@ -63,8 +62,7 @@ const BIG_TIME_TEST_DATA = [
     value: 1567749909410,
     lane: 'MobileAction',
     source: {
-      id:
-        '1567749909410x1567750027435xc1t1u202i1567745315857r367_100@1@1567749909410@1567749910303@MOBILE_APPLICATION-752C288D59734C79@0',
+      id: '1567749909410x1567750027435xc1t1u202i1567745315857r367_100@1@1567749909410@1567749910303@MOBILE_APPLICATION-752C288D59734C79@0',
       currentValues: {
         eActionTime: 893,
         eHttpReqError: 0,
@@ -94,8 +92,7 @@ const BIG_TIME_TEST_DATA = [
     value: 1567789938792,
     lane: 'MobileAction',
     source: {
-      id:
-        '1567749909410x1567750027435xc1t1u202i1567745315857r367_100@5@1567789938792@1567749939758@MOBILE_APPLICATION-752C288D59734C79@0',
+      id: '1567749909410x1567750027435xc1t1u202i1567745315857r367_100@5@1567789938792@1567749939758@MOBILE_APPLICATION-752C288D59734C79@0',
       currentValues: {
         eActionTime: 966,
         eHttpReqError: 0,
@@ -125,8 +122,7 @@ const BIG_TIME_TEST_DATA = [
     value: 1567792026549,
     lane: 'MobileAction',
     source: {
-      id:
-        '1567749909410x1567750027435xc1t1u202i1567745315857r367_100@13@1567792026549@1567750027435@MOBILE_APPLICATION-752C288D59734C79@0',
+      id: '1567749909410x1567750027435xc1t1u202i1567745315857r367_100@13@1567792026549@1567750027435@MOBILE_APPLICATION-752C288D59734C79@0',
       currentValues: {
         eActionTime: 886,
         eHttpReqError: 0,

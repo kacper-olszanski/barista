@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,7 +18,7 @@
 // file to change something in the barrel file or generate by running
 // npm run examples-tools
 
-// tslint:disable: max-file-line-count
+/* eslint-disable max-lines */
 
 import { Type } from '@angular/core';
 
@@ -86,7 +86,7 @@ import { DtExampleCheckboxIndeterminate } from './checkbox/checkbox-indeterminat
 import { DtExampleCheckboxResponsive } from './checkbox/checkbox-responsive-example/checkbox-responsive-example';
 import { DtExampleComboboxCustomOptionHeight } from './combobox/combobox-custom-option-height-example/combobox-custom-option-height-example';
 import { DtExampleComboboxSimple } from './combobox/combobox-simple-example/combobox-simple-example';
-import { DtExampleComboboxFormControl } from './combobox/combobox-form-control-example/combobox-form-control-example';
+import { DtExampleComboboxFormField } from './combobox/combobox-form-field-example/combobox-form-field-example';
 import { DtExampleConfirmationDialogDefault } from './confirmation-dialog/confirmation-dialog-default-example/confirmation-dialog-default-example';
 import { DtExampleConfirmationDialogShowBackdrop } from './confirmation-dialog/confirmation-dialog-show-backdrop-example/confirmation-dialog-show-backdrop-example';
 import { DtExampleConsumptionDefault } from './consumption/consumption-default-example/consumption-default-example';
@@ -150,7 +150,6 @@ import { DtExampleFilterFieldAsync } from './filter-field/filter-field-async-exa
 import { DtExampleFilterFieldClearall } from './filter-field/filter-field-clearall-example/filter-field-clearall-example';
 import { DtExampleFilterFieldCustomParser } from './filter-field/filter-field-custom-parser-example/filter-field-custom-parser-example';
 import { DtExampleFilterFieldCustomPlaceholder } from './filter-field/filter-field-custom-placeholder-example/filter-field-custom-placeholder-example';
-import { DtExampleFilterFieldDefault } from './filter-field/filter-field-default-example/filter-field-default-example';
 import { DtExampleFilterFieldDefaultSearch } from './filter-field/filter-field-default-search-example/filter-field-default-search-example';
 import { DtExampleFilterFieldDisabled } from './filter-field/filter-field-disabled-example/filter-field-disabled-example';
 import { DtExampleFilterFieldDistinct } from './filter-field/filter-field-distinct-example/filter-field-distinct-example';
@@ -279,6 +278,8 @@ import { DtExampleStackedSeriesChartConnectedLegend } from './stacked-series-cha
 import { DtExampleStackedSeriesChartFilled } from './stacked-series-chart/stacked-series-chart-filled-example/stacked-series-chart-filled-example';
 import { DtExampleStackedSeriesChartGeneric } from './stacked-series-chart/stacked-series-chart-generic-example/stacked-series-chart-generic-example';
 import { DtExampleStackedSeriesChartSingle } from './stacked-series-chart/stacked-series-chart-single-example/stacked-series-chart-single-example';
+import { DtExampleStackedSeriesChartLinear } from './stacked-series-chart/stacked-series-chart-linear-example/stacked-series-chart-linear-example';
+import { DtExampleStackedSeriesChartDate } from './stacked-series-chart/stacked-series-chart-date-example/stacked-series-chart-date-example';
 import { DtExampleStepperDefault } from './stepper/stepper-default-example/stepper-default-example';
 import { DtExampleStepperEditable } from './stepper/stepper-editable-example/stepper-editable-example';
 import { DtExampleStepperLinear } from './stepper/stepper-linear-example/stepper-linear-example';
@@ -297,6 +298,8 @@ import { DtExampleTableDefault } from './table/table-default-example/table-defau
 import { DtExampleTableDynamicColumns } from './table/table-dynamic-columns-example/table-dynamic-columns-example';
 import { DtExampleTableEmptyState } from './table/table-empty-state-example/table-empty-state-example';
 import { DtExampleTableExpandableRows } from './table/table-expandable-rows-example/table-expandable-rows-example';
+import { DtExampleTableExport } from './table/table-export-example/table-export-example';
+import { DtExampleTableExportSelection } from './table/table-export-selection-example/table-export-selection-example';
 import { DtExampleTableFavoriteColumn } from './table/table-favorite-column-example/table-favorite-column-example';
 import { DtExampleTableFavoriteColumnNoHeader } from './table/table-favorite-column-no-header-example/table-favorite-column-no-header-example';
 import { DtExampleTableInteractiveRows } from './table/table-interactive-rows-example/table-interactive-rows-example';
@@ -326,6 +329,7 @@ import { DtExampleTagRemovable } from './tag/tag-removable-example/tag-removable
 import { DtExampleTileDefault } from './tile/tile-default-example/tile-default-example';
 import { DtExampleTileDisabled } from './tile/tile-disabled-example/tile-disabled-example';
 import { DtExampleTileError } from './tile/tile-error-example/tile-error-example';
+import { DtExampleTileCritical } from './tile/tile-critical-example/tile-critical-example';
 import { DtExampleTileMain } from './tile/tile-main-example/tile-main-example';
 import { DtExampleTileWarning } from './tile/tile-warning-example/tile-warning-example';
 import { DtExampleTileRecovered } from './tile/tile-recovered-example/tile-recovered-example';
@@ -343,7 +347,8 @@ import { DtExampleTreeTableAsyncShowMore } from './tree-table/tree-table-async-s
 import { DtExampleTreeTableDefault } from './tree-table/tree-table-default-example/tree-table-default-example';
 import { DtExampleTreeTableProblemIndicator } from './tree-table/tree-table-problem-indicator-example/tree-table-problem-indicator-example';
 import { DtExampleTreeTableSimple } from './tree-table/tree-table-simple-example/tree-table-simple-example';
-
+import { DtExampleCustomAddFormTag } from '././tag/tag-custom-add-form-example/tag-custom-add-form-example';
+import { DtExampleStackedSeriesChartHeatField } from '././stacked-series-chart/stacked-series-chart-heat-field-example/stacked-series-chart-heat-field-example';
 export { DtAlertExamplesModule } from './alert/alert-examples.module';
 export { DtAutocompleteExamplesModule } from './autocomplete/autocomplete-examples.module';
 export { DtBarIndicatorExamplesModule } from './bar-indicator/bar-indicator-examples.module';
@@ -472,8 +477,8 @@ export {
   DtExampleCheckboxIndeterminate,
   DtExampleCheckboxResponsive,
   DtExampleComboboxSimple,
-  DtExampleComboboxFormControl,
   DtExampleComboboxCustomOptionHeight,
+  DtExampleComboboxFormField,
   DtExampleConfirmationDialogDefault,
   DtExampleConfirmationDialogShowBackdrop,
   DtExampleConsumptionDefault,
@@ -531,7 +536,6 @@ export {
   DtExampleFilterFieldClearall,
   DtExampleFilterFieldCustomParser,
   DtExampleFilterFieldCustomPlaceholder,
-  DtExampleFilterFieldDefault,
   DtExampleFilterFieldDefaultSearch,
   DtExampleFilterFieldDisabled,
   DtExampleFilterFieldDistinct,
@@ -659,6 +663,9 @@ export {
   DtExampleStackedSeriesChartFilled,
   DtExampleStackedSeriesChartGeneric,
   DtExampleStackedSeriesChartSingle,
+  DtExampleStackedSeriesChartLinear,
+  DtExampleStackedSeriesChartHeatField,
+  DtExampleStackedSeriesChartDate,
   DtExampleStepperDefault,
   DtExampleStepperEditable,
   DtExampleStepperLinear,
@@ -677,6 +684,8 @@ export {
   DtExampleTableDynamicColumns,
   DtExampleTableEmptyState,
   DtExampleTableExpandableRows,
+  DtExampleTableExport,
+  DtExampleTableExportSelection,
   DtExampleTableFavoriteColumn,
   DtExampleTableFavoriteColumnNoHeader,
   DtExampleTableInteractiveRows,
@@ -706,6 +715,7 @@ export {
   DtExampleTileDefault,
   DtExampleTileDisabled,
   DtExampleTileError,
+  DtExampleTileCritical,
   DtExampleTileMain,
   DtExampleTileWarning,
   DtExampleTileRecovered,
@@ -728,6 +738,7 @@ export {
   DtExampleTimepickerMinMax,
   DtExampleDatepickerDark,
   DtExampleDatepickerDefault,
+  DtExampleCustomAddFormTag,
 };
 
 export const EXAMPLES_MAP = new Map<string, Type<unknown>>([
@@ -800,8 +811,8 @@ export const EXAMPLES_MAP = new Map<string, Type<unknown>>([
   ['DtExampleCheckboxIndeterminate', DtExampleCheckboxIndeterminate],
   ['DtExampleCheckboxResponsive', DtExampleCheckboxResponsive],
   ['DtExampleComboboxSimple', DtExampleComboboxSimple],
-  ['DtExampleComboboxFormControl', DtExampleComboboxFormControl],
   ['DtExampleComboboxCustomOptionHeight', DtExampleComboboxCustomOptionHeight],
+  ['DtExampleComboboxFormField', DtExampleComboboxFormField],
   ['DtExampleConfirmationDialogDefault', DtExampleConfirmationDialogDefault],
   [
     'DtExampleConfirmationDialogShowBackdrop',
@@ -893,7 +904,6 @@ export const EXAMPLES_MAP = new Map<string, Type<unknown>>([
     'DtExampleFilterFieldCustomPlaceholder',
     DtExampleFilterFieldCustomPlaceholder,
   ],
-  ['DtExampleFilterFieldDefault', DtExampleFilterFieldDefault],
   ['DtExampleFilterFieldDefaultSearch', DtExampleFilterFieldDefaultSearch],
   ['DtExampleFilterFieldDisabled', DtExampleFilterFieldDisabled],
   ['DtExampleFilterFieldDistinct', DtExampleFilterFieldDistinct],
@@ -1046,6 +1056,12 @@ export const EXAMPLES_MAP = new Map<string, Type<unknown>>([
   ['DtExampleStackedSeriesChartFilled', DtExampleStackedSeriesChartFilled],
   ['DtExampleStackedSeriesChartGeneric', DtExampleStackedSeriesChartGeneric],
   ['DtExampleStackedSeriesChartSingle', DtExampleStackedSeriesChartSingle],
+  ['DtExampleStackedSeriesChartLinear', DtExampleStackedSeriesChartLinear],
+  ['DtExampleStackedSeriesChartDate', DtExampleStackedSeriesChartDate],
+  [
+    'DtExampleStackedSeriesChartHeatField',
+    DtExampleStackedSeriesChartHeatField,
+  ],
   ['DtExampleStepperDefault', DtExampleStepperDefault],
   ['DtExampleStepperEditable', DtExampleStepperEditable],
   ['DtExampleStepperLinear', DtExampleStepperLinear],
@@ -1067,6 +1083,7 @@ export const EXAMPLES_MAP = new Map<string, Type<unknown>>([
   ['DtExampleTableDynamicColumns', DtExampleTableDynamicColumns],
   ['DtExampleTableEmptyState', DtExampleTableEmptyState],
   ['DtExampleTableExpandableRows', DtExampleTableExpandableRows],
+  ['DtExampleTableExport', DtExampleTableExport],
   ['DtExampleTableFavoriteColumn', DtExampleTableFavoriteColumn],
   [
     'DtExampleTableFavoriteColumnNoHeader',
@@ -1099,6 +1116,7 @@ export const EXAMPLES_MAP = new Map<string, Type<unknown>>([
   ['DtExampleTileDefault', DtExampleTileDefault],
   ['DtExampleTileDisabled', DtExampleTileDisabled],
   ['DtExampleTileError', DtExampleTileError],
+  ['DtExampleTileCritical', DtExampleTileCritical],
   ['DtExampleTileMain', DtExampleTileMain],
   ['DtExampleTileWarning', DtExampleTileWarning],
   ['DtExampleTileRecovered', DtExampleTileRecovered],
@@ -1119,4 +1137,5 @@ export const EXAMPLES_MAP = new Map<string, Type<unknown>>([
   ['DtExampleTreeTableDefault', DtExampleTreeTableDefault],
   ['DtExampleTreeTableProblemIndicator', DtExampleTreeTableProblemIndicator],
   ['DtExampleTreeTableSimple', DtExampleTreeTableSimple],
+  ['DtExampleCustomAddFormTag', DtExampleCustomAddFormTag],
 ]);

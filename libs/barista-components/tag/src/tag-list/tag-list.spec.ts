@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-// tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers
-// tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
+// eslint-disable  @angular-eslint/no-lifecycle-call, no-use-before-define, @typescript-eslint/no-use-before-define, no-magic-numbers
+// eslint-disable  @typescript-eslint/no-explicit-any, max-lines, @typescript-eslint/unbound-method, @angular-eslint/use-component-selector
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import {
@@ -30,10 +30,15 @@ import {
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DtIconModule } from '@dynatrace/barista-components/icon';
-import { DtTagList, DtTagModule } from '@dynatrace/barista-components/tag';
+import { DtTagModule } from '../tag-module';
+import {
+  DtTagList,
+  getIndexForFirstHiddenTag,
+  getWrapperWidth,
+} from './tag-list';
+import { DtTagAddSubmittedDefaultEvent } from '../tag-add/tag-add';
 import { createComponent, MockNgZone } from '@dynatrace/testing/browser';
 import { DtTag } from '../tag';
-import { getIndexForFirstHiddenTag, getWrapperWidth } from './tag-list';
 
 describe('DtTagList', () => {
   let fixture: ComponentFixture<DtTagListComponent>;
@@ -90,7 +95,7 @@ describe('DtTagList', () => {
     });
 
     it('should show 1 more button when a tag does not fit into viewport', () => {
-      fixture.componentInstance.addTag('Test');
+      fixture.componentInstance.tags.add('Test');
       fixture.detectChanges();
       mockBoundingClientRectOnTagList();
       zone.simulateZoneExit();
@@ -109,13 +114,14 @@ describe('DtTagList', () => {
     });
 
     it('should show an "add tag" button at the correct position if tags are added dynamically', () => {
-      let tagElements: HTMLCollection = fixture.debugElement.nativeElement.querySelectorAll(
-        '.dt-tag, .dt-tag-add',
-      );
+      let tagElements: HTMLCollection =
+        fixture.debugElement.nativeElement.querySelectorAll(
+          '.dt-tag, .dt-tag-add',
+        );
       expect(tagElements.item(3)!.innerHTML).toContain('Add Tag');
-      fixture.componentInstance.addTag('Health');
-      fixture.componentInstance.addTag('Juice');
-      fixture.componentInstance.addTag('Tick');
+      fixture.componentInstance.tags.add('Health');
+      fixture.componentInstance.tags.add('Juice');
+      fixture.componentInstance.tags.add('Tick');
       fixture.detectChanges();
       tagElements = fixture.debugElement.nativeElement.querySelectorAll(
         '.dt-tag, .dt-tag-add',
@@ -155,7 +161,7 @@ describe('DtTagList', () => {
     const elements: HTMLElement[] = [];
     for (let i = 0; i < tagCount; i++) {
       const mockedTop = i < 3 ? 0 : 40;
-      // tslint:disable-next-line: no-object-literal-type-assertion
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       const mockedElement = {
         getBoundingClientRect: () => ({
           top: mockedTop,
@@ -192,7 +198,7 @@ describe('DtTagList', () => {
   template: `
     <dt-tag-list>
       <dt-tag *ngFor="let tag of tags">{{ tag }}</dt-tag>
-      <dt-tag-add (tagAdded)="addTag($event)"></dt-tag-add>
+      <dt-tag-add (submitted)="addTag($event)"></dt-tag-add>
     </dt-tag-list>
   `,
 })
@@ -206,7 +212,7 @@ class DtTagListComponent implements OnInit {
     this.tags.add('Window').add('Managed').add('Errors');
   }
 
-  addTag(tag: string): void {
-    this.tags.add(tag);
+  addTag(event: DtTagAddSubmittedDefaultEvent): void {
+    this.tags.add(event.tag);
   }
 }

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,7 +18,7 @@
 // file to change something in the module definition file or generate by running
 // npm run examples-tools
 
-// tslint:disable: max-file-line-count
+/* eslint-disable max-lines */
 
 import { NgModule } from '@angular/core';
 import { DtAlertExamplesModule } from './alert/alert-examples.module';

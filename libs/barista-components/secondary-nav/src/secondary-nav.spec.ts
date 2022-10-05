@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -29,13 +29,13 @@ import {
   QueryList,
   DebugElement,
 } from '@angular/core';
-import { DtSecondaryNavModule } from '@dynatrace/barista-components/secondary-nav';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { createComponent } from '@dynatrace/testing/browser';
 import { DtIconModule } from '@dynatrace/barista-components/icon';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { By } from '@angular/platform-browser';
+import { DtSecondaryNavModule } from './secondary-nav-module';
 import { DtSecondaryNavSection } from './section/secondary-nav-section';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { createComponent } from '@dynatrace/testing/browser';
 
 describe('DtSecondaryNav', () => {
   beforeEach(

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -28,7 +28,7 @@ const DEFAULT_BYTES_OPTIONS: DtNumberFormatOptions = {
   inputUnit: DtUnit.BYTES,
 };
 
-// tslint:disable:no-magic-numbers
+/* eslint-disable no-magic-numbers */
 const KILO_CONVERSIONS = [
   { multiplier: Math.pow(KILO_MULTIPLIER, 5), unit: DtUnit.PETA_BYTES },
   { multiplier: Math.pow(KILO_MULTIPLIER, 4), unit: DtUnit.TERA_BYTES },
@@ -38,24 +38,29 @@ const KILO_CONVERSIONS = [
 ];
 
 const KIBI_CONVERSIONS = [
-  { multiplier: Math.pow(KIBI_MULTIPLIER, 5), unit: DtUnit.PETA_BYTES },
-  { multiplier: Math.pow(KIBI_MULTIPLIER, 4), unit: DtUnit.TERA_BYTES },
-  { multiplier: Math.pow(KIBI_MULTIPLIER, 3), unit: DtUnit.GIGA_BYTES },
-  { multiplier: Math.pow(KIBI_MULTIPLIER, 2), unit: DtUnit.MEGA_BYTES },
-  { multiplier: KIBI_MULTIPLIER, unit: DtUnit.KILO_BYTES },
+  { multiplier: Math.pow(KIBI_MULTIPLIER, 5), unit: DtUnit.PEBI_BYTES },
+  { multiplier: Math.pow(KIBI_MULTIPLIER, 4), unit: DtUnit.TEBI_BYTES },
+  { multiplier: Math.pow(KIBI_MULTIPLIER, 3), unit: DtUnit.GIBI_BYTES },
+  { multiplier: Math.pow(KIBI_MULTIPLIER, 2), unit: DtUnit.MEBI_BYTES },
+  { multiplier: KIBI_MULTIPLIER, unit: DtUnit.KIBI_BYTES },
 ];
-// tslint:enable:no-magic-numbers
+/* eslint-enable no-magic-numbers */
 
 /**
  * Util function that formats given number as bytes
+ *
  * @param input - value that gets formatted
  * @param [options] - includes factor for conversion, inputUnit and outputUnit
  * these options are merged with default options (factor: 1000, inputUnit: bytes)
  * if no outputUnit is specified, the outputUnit is adjusted dynamically
  * if you specify an outputUnit like kilobytes - the input will be presented in kilobytes regardless how big the input is
+ *
+ * If you specify inputUnit other than byte it should match conversion factor, as at this moment it is not possible
+ * to convert between decimal and binary formatters using this method. For example if you
+ * specify inputUnit=MiB, the factor should be KIBI_MULTIPLIER.
  */
 export function formatBytes(
-  input: any, // tslint:disable-line:no-any
+  input: any, // eslint-disable-line @typescript-eslint/no-explicit-any
   options?: DtNumberFormatOptions,
 ): DtFormattedValue {
   const mergedOptions: DtNumberFormatOptions = {

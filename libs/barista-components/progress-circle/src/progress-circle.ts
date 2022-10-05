@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -73,7 +73,8 @@ export const _DtProgressCircle = mixinHasProgress(
 })
 export class DtProgressCircle
   extends _DtProgressCircle
-  implements CanColor<DtProgressCircleThemePalette>, HasProgressValues {
+  implements CanColor<DtProgressCircleThemePalette>, HasProgressValues
+{
   /** @internal Dash offset base on the values percentage */
   _dashOffset: number = CIRCLE_CIRCUMFERENCE;
 
@@ -96,7 +97,7 @@ export class DtProgressCircle
 
   /** Calculates the dash offset of the progress circle based on the calculated percent */
   private _calculateDashOffset(percent: number): number {
-    // tslint:disable-next-line: no-magic-numbers
+    // eslint-disable-next-line no-magic-numbers
     return CIRCLE_CIRCUMFERENCE - (CIRCLE_CIRCUMFERENCE / 100) * percent;
   }
 }

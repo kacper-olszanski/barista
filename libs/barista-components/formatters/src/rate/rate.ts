@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -33,7 +33,7 @@ export class DtRate implements PipeTransform {
    * @param rateUnit - The unit for the rate of the input
    */
   transform(
-    input: any, // tslint:disable-line:no-any
+    input: any, // eslint-disable-line @typescript-eslint/no-explicit-any
     rateUnit: DtRateUnit | string,
   ): DtFormattedValue | string {
     if (isEmpty(input)) {

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-// tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers
-// tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
+// eslint-disable  @angular-eslint/no-lifecycle-call, no-use-before-define, @typescript-eslint/no-use-before-define, no-magic-numbers
+// eslint-disable  @typescript-eslint/no-explicit-any, max-lines, @typescript-eslint/unbound-method, @angular-eslint/use-component-selector
 
 import { Location, LocationStrategy } from '@angular/common';
 import { Component, DebugElement } from '@angular/core';
@@ -131,29 +131,28 @@ describe('DtTabRouterFragmentAdapter', () => {
   });
 
   describe('with initial fragment', () => {
-    beforeEach(fakeAsync(() => {
+    it('should set the selected tab to the tab that matches the fragment', fakeAsync(() => {
       location.go('/#packets');
       router.initialNavigation();
       tick();
       fixture.detectChanges();
-      tabGroupDebug = fixture.debugElement.query(By.directive(DtTabGroup));
-      tabsDebug = tabGroupDebug.queryAll(By.css('.dt-tab-label'));
-    }));
-
-    it('should set the selected tab to the tab that matches the fragment', fakeAsync(() => {
       checkSelected(1, fixture);
     }));
 
     it('should set the selected tab to the tab that matches the fragment with multiple ids', fakeAsync(() => {
       location.go('/#packets,cpu-ready-time');
+      router.initialNavigation();
       tick();
+      fixture.detectChanges();
       checkSelected(1, fixture);
       checkSelected(5, fixture);
     }));
 
     it('should set the first found id within a tabgroup and ingore the second', fakeAsync(() => {
       location.go('/#packets,traffic');
+      router.initialNavigation();
       tick();
+      fixture.detectChanges();
       checkSelected(1, fixture);
       checkSelected(0, fixture, false);
     }));

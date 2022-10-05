@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,6 +18,7 @@ import { PackageJson } from '@dynatrace/shared/node';
 
 /**
  * Syncs versions from the source to the target package.json
+ *
  * @param sourcePackageJson - Package.json that contains all currently used
  * dependencies, devDependecies and peerDependencies that are used in the
  * project.

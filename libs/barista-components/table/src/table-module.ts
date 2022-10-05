@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,6 +16,7 @@
 
 import { PortalModule } from '@angular/cdk/portal';
 import { CdkTableModule } from '@angular/cdk/table';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
@@ -29,6 +30,7 @@ import { DtFormattersModule } from '@dynatrace/barista-components/formatters';
 import { DtIconModule } from '@dynatrace/barista-components/icon';
 import { DtInputModule } from '@dynatrace/barista-components/input';
 import { DtCheckboxModule } from '@dynatrace/barista-components/checkbox';
+import { DtContextDialogModule } from '@dynatrace/barista-components/context-dialog';
 
 import { DtCell, DtCellDef, DtColumnDef } from './cell';
 import {
@@ -93,6 +95,7 @@ const EXPORTED_DECLARATIONS = [
   imports: [
     CommonModule,
     PortalModule,
+    ScrollingModule,
     CdkTableModule,
     DragDropModule,
     DtIconModule,
@@ -104,6 +107,7 @@ const EXPORTED_DECLARATIONS = [
     DtEmptyStateModule,
     ReactiveFormsModule,
     DtCheckboxModule,
+    DtContextDialogModule,
   ],
   exports: [...EXPORTED_DECLARATIONS, DtIndicatorModule],
   declarations: [...EXPORTED_DECLARATIONS],

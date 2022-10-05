@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -79,7 +79,7 @@ function getAutoUnitConversion(
   conversions: DtUnitConversion[],
   valueInUnit: number,
 ): DtUnitConversion | undefined {
-  return conversions.find((m) => valueInUnit >= m.multiplier);
+  return conversions.find((m) => Math.abs(valueInUnit) >= m.multiplier);
 }
 
 function getFixedUnitConversion(

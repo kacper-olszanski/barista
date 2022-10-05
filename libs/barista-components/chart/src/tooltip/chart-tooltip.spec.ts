@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-// tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers
-// tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
+// eslint-disable  @angular-eslint/no-lifecycle-call, no-use-before-define, @typescript-eslint/no-use-before-define, no-magic-numbers
+// eslint-disable  @typescript-eslint/no-explicit-any, max-lines, @typescript-eslint/unbound-method, @angular-eslint/use-component-selector
 
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { Component } from '@angular/core';
@@ -31,12 +31,6 @@ import {
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import {
-  DtChart,
-  DtChartModule,
-  DtChartOptions,
-  DtChartTooltipData,
-} from '@dynatrace/barista-components/chart';
-import {
   DtUiTestConfiguration,
   DT_UI_TEST_CONFIG,
 } from '@dynatrace/barista-components/core';
@@ -48,6 +42,10 @@ import {
   MockIntersectionObserver,
 } from '@dynatrace/testing/browser';
 import { Axis, Point, Series, SeriesLineOptions } from 'highcharts';
+import { DtChart } from '../chart';
+import { DtChartModule } from '../chart-module';
+import { DtChartOptions } from '../chart.interface';
+import { DtChartTooltipData } from '../highcharts/highcharts-tooltip-types';
 
 describe('DtChartTooltip', () => {
   let overlayContainer: OverlayContainer;
@@ -191,6 +189,21 @@ describe('DtChartTooltip', () => {
       );
     }));
   });
+  describe('heatmap content', () => {
+    beforeEach(() => {
+      mockIntersectionObserver.mockAllIsIntersecting(true);
+      chartComponent._highChartsTooltipOpened$.next({
+        data: DUMMY_TOOLTIP_HEATMAP,
+      });
+      fixture.detectChanges();
+    });
+
+    it('should be a key value list with the data', () => {
+      expect(overlayContainerElement.textContent).toContain('9');
+      expect(overlayContainerElement.textContent).toContain('1632300180000');
+      expect(overlayContainerElement.innerHTML).toContain('dt-key-value-list');
+    });
+  });
 });
 
 @Component({
@@ -199,16 +212,37 @@ describe('DtChartTooltip', () => {
     <dt-chart [series]="series" [options]="options">
       <dt-chart-tooltip dt-ui-test-id="tooltip">
         <ng-template let-series>
-          <dt-key-value-list style="min-width: 100px">
-            <dt-key-value-list-item *ngFor="let data of series.points">
-              <dt-key-value-list-key>
-                {{ data.series.name }}
-              </dt-key-value-list-key>
-              <dt-key-value-list-value>
-                {{ data.point.y }}
-              </dt-key-value-list-value>
-            </dt-key-value-list-item>
-          </dt-key-value-list>
+          <div *ngIf="!!series?.point; else chart">
+            <dt-key-value-list *ngIf="series?.point?.point?.options as data">
+              <dt-key-value-list-item>
+                <dt-key-value-list-key>Y Bucket:</dt-key-value-list-key>
+                <dt-key-value-list-value>{{ data.y }}</dt-key-value-list-value>
+              </dt-key-value-list-item>
+              <dt-key-value-list-item>
+                <dt-key-value-list-key>X Bucket:</dt-key-value-list-key>
+                <dt-key-value-list-value>{{ data.x }}</dt-key-value-list-value>
+              </dt-key-value-list-item>
+              <dt-key-value-list-item>
+                <dt-key-value-list-key>Value:</dt-key-value-list-key>
+                <dt-key-value-list-value>{{
+                  data.value
+                }}</dt-key-value-list-value>
+              </dt-key-value-list-item>
+            </dt-key-value-list>
+          </div>
+
+          <ng-template #chart>
+            <dt-key-value-list style="min-width: 100px">
+              <dt-key-value-list-item *ngFor="let data of series.points">
+                <dt-key-value-list-key>
+                  {{ data.series.name }}
+                </dt-key-value-list-key>
+                <dt-key-value-list-value>
+                  {{ data.point.y }}
+                </dt-key-value-list-value>
+              </dt-key-value-list-item>
+            </dt-key-value-list>
+          </ng-template>
         </ng-template>
       </dt-chart-tooltip>
     </dt-chart>
@@ -240,9 +274,9 @@ class ChartTest {
   ];
 }
 
-const FAKE_AXIS: Axis = ({
+const FAKE_AXIS: Axis = {
   toPixels: (x) => x * 2,
-} as unknown) as Axis;
+} as unknown as Axis;
 
 const FAKE_SERIES: Series = {
   name: 'Actions/min',
@@ -250,11 +284,11 @@ const FAKE_SERIES: Series = {
   yAxis: FAKE_AXIS,
 } as Series;
 
-const FAKE_POINT: Point = ({
+const FAKE_POINT: Point = {
   x: 1,
   y: 1000,
   tooltipPos: [1, 2, 3],
-} as unknown) as Point;
+} as unknown as Point;
 
 const DUMMY_TOOLTIP_DATA_LINE_SERIES: DtChartTooltipData = {
   x: 0,
@@ -272,3 +306,21 @@ const DUMMY_TOOLTIP_DATA_LINE_SERIES: DtChartTooltipData = {
     },
   ],
 };
+
+const DUMMY_TOOLTIP_HEATMAP: DtChartTooltipData = {
+  x: undefined,
+  y: 152.5,
+  point: {
+    point: {
+      plotX: 605.5,
+      plotY: 11.5,
+      x: 1632300180000,
+      y: 9,
+      options: {
+        x: 1632300180000,
+        y: 9,
+        value: 1,
+      },
+    },
+  },
+} as unknown as DtChartTooltipData;

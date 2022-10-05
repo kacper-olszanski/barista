@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -61,7 +61,7 @@ export function mixinErrorState<T extends Constructor<HasErrorState>>(
       const matcher = this.errorStateMatcher || this._defaultErrorStateMatcher;
       // Disable 'no-unnecessary-type-assertion' rule here as it is a bug in tslint and TS:
       // https://github.com/palantir/tslint/issues/3540
-      // tslint:disable-next-line:no-unnecessary-type-assertion
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
       const control = this.ngControl
         ? (this.ngControl.control as FormControl)
         : null;
@@ -73,7 +73,7 @@ export function mixinErrorState<T extends Constructor<HasErrorState>>(
       }
     }
 
-    // tslint:disable-next-line:no-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     constructor(...args: any[]) {
       super(...args);
     }

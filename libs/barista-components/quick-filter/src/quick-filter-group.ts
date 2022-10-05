@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -52,6 +52,7 @@ import {
   NumberInput,
   coerceBooleanProperty,
 } from '@angular/cdk/coercion';
+import { Platform } from '@angular/cdk/platform';
 
 /** @internal The DtQuickFilterGroup is an internal component */
 @Component({
@@ -65,6 +66,7 @@ import {
     class: 'dt-quick-filter-group',
   },
 })
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class DtQuickFilterGroup<T = any> implements AfterViewInit {
   /** @internal Emits a new action that changes the filter  */
   @Output() readonly filterChange = new EventEmitter<Action>();
@@ -184,7 +186,7 @@ export class DtQuickFilterGroup<T = any> implements AfterViewInit {
    * The item size of one item for the virtual scroll container
    * Default 22 as it is a standard height of a checkbox
    */
-  _itemSize: number = 22;
+  _itemSize = 22;
 
   /** A list of active filter ids */
   private _activeFilterPaths: string[] = [];
@@ -193,6 +195,7 @@ export class DtQuickFilterGroup<T = any> implements AfterViewInit {
     private _changeDetectorRef: ChangeDetectorRef,
     private _elementRef: ElementRef<HTMLElement>,
     private _zone: NgZone,
+    private _platform: Platform,
   ) {}
 
   ngAfterViewInit(): void {
@@ -200,7 +203,11 @@ export class DtQuickFilterGroup<T = any> implements AfterViewInit {
       const item = this._elementRef.nativeElement.querySelector(
         '.dt-radio-button,.dt-checkbox',
       ) as HTMLElement;
-      this._itemSize = item?.getBoundingClientRect().height || 22;
+      if (this._platform.isBrowser) {
+        this._itemSize = item?.getBoundingClientRect().height || 22;
+      } else {
+        this._itemSize = 22;
+      }
     });
   }
 
@@ -227,7 +234,8 @@ export class DtQuickFilterGroup<T = any> implements AfterViewInit {
   _selectCheckBox(change: DtCheckboxChange<DtNodeDef>): void {
     const action = change.checked
       ? addFilter([this._nodeDef, change.source.value])
-      : removeFilter(change.source.value.option!.uid!);
+      : // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        removeFilter(change.source.value.option!.uid!);
     this.filterChange.emit(action);
   }
 
@@ -235,6 +243,7 @@ export class DtQuickFilterGroup<T = any> implements AfterViewInit {
   _isNothingSelected(): boolean {
     if (this._nodeDef.option && this._nodeDef.option.uid) {
       const index = this._activeFilterPaths.findIndex((path) =>
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         path.startsWith(this._nodeDef.option!.uid!),
       );
       return index === -1;

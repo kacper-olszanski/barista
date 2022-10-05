@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,6 +18,7 @@ import { executeCommand } from '@dynatrace/shared/node';
 
 /**
  * Unpacks a tar file
+ *
  * @param tarFile Path to the tar file
  * @param destination Location where the tar file should be unpacked in
  *

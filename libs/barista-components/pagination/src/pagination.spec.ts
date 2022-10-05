@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-// tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers
-// tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
+// eslint-disable  @angular-eslint/no-lifecycle-call, no-use-before-define, @typescript-eslint/no-use-before-define, no-magic-numbers
+// eslint-disable  @typescript-eslint/no-explicit-any, max-lines, @typescript-eslint/unbound-method, @angular-eslint/use-component-selector
 
 import { Component, ViewChild } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
 import { DtIconModule } from '@dynatrace/barista-components/icon';
-import {
-  DtPagination,
-  DtPaginationModule,
-} from '@dynatrace/barista-components/pagination';
+import { DtPaginationModule } from './pagination-module';
+import { DtPagination } from './pagination';
 
 import { createComponent, dispatchFakeEvent } from '@dynatrace/testing/browser';
 import {
@@ -116,8 +114,9 @@ describe('DtPagination', () => {
 
       instance.length = 100;
       fixture.detectChanges();
-      containerEl = fixture.debugElement.query(By.css('.dt-pagination-list'))
-        .nativeElement;
+      containerEl = fixture.debugElement.query(
+        By.css('.dt-pagination-list'),
+      ).nativeElement;
       items = containerEl.querySelectorAll('.dt-pagination-item > *');
 
       expect(items.length).toBe(2);
@@ -214,9 +213,8 @@ describe('DtPagination', () => {
       instance.pageSize = 10;
       fixture.detectChanges();
 
-      const buttons = fixture.debugElement.nativeElement.querySelectorAll(
-        '[dt-icon-button]',
-      );
+      const buttons =
+        fixture.debugElement.nativeElement.querySelectorAll('[dt-icon-button]');
       expect(buttons[0].getAttribute('aria-disabled')).toBeTruthy();
       expect(buttons[1].getAttribute('aria-disabled')).toBe('false');
 

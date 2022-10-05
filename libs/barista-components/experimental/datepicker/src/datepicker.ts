@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -170,7 +170,8 @@ export const _DtDatepickerBase = mixinTabIndex(mixinDisabled(DtDatepickerBase));
 })
 export class DtDatePicker<T>
   extends _DtDatepickerBase
-  implements ControlValueAccessor, CanDisable, HasTabIndex, OnDestroy {
+  implements ControlValueAccessor, CanDisable, HasTabIndex, OnDestroy
+{
   /** Unique id of the element. */
   @Input()
   get id(): string {
@@ -206,7 +207,7 @@ export class DtDatePicker<T>
   private _startAt: T | null;
 
   /** Classes to be passed to the datepicker panel. Supports the same syntax as `ngClass`. */
-  // tslint:disable-next-line:no-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   @Input() panelClass: string | string[] | Set<string> | { [key: string]: any };
 
   /** Property that enables the timepicker, so that a time can be entered as well. */
@@ -318,7 +319,18 @@ export class DtDatePicker<T>
     this.tabIndex = parseInt(tabIndex, 10) || 0;
 
     // Force setter to be called in case id was not specified.
+    // eslint-disable-next-line no-self-assign
     this.id = this.id;
+  }
+
+  ngOnInit(): void {
+    this._valueLabel = this.value
+      ? this._dateAdapter.format(this.value, {
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+        })
+      : 'Select date';
   }
 
   ngOnDestroy(): void {
@@ -369,6 +381,7 @@ export class DtDatePicker<T>
    * Saves a callback function to be invoked when the datepicker is blurred
    * by the user. Part of the ControlValueAccessor.
    */
+  // eslint-disable-next-line @typescript-eslint/ban-types
   registerOnTouched(fn: () => {}): void {
     this._onTouched = fn;
   }
@@ -450,7 +463,7 @@ export class DtDatePicker<T>
           month: 'numeric',
           day: 'numeric',
         })
-      : '';
+      : 'Select date';
     this._changeDetectorRef.markForCheck();
   }
 

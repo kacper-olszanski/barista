@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -44,9 +44,10 @@ interface DtE2EExtendedOptions {
   name: string;
 }
 
-function generateE2EComponentOptions(
-  name: string,
-): { component: string; module: string } {
+function generateE2EComponentOptions(name: string): {
+  component: string;
+  module: string;
+} {
   return {
     component: `DtE2E${strings.classify(name)}`,
     module: `DtE2E${strings.classify(name)}Module`,
@@ -76,8 +77,9 @@ export function addRoute(options: DtE2EExtendedOptions): Rule {
     ).find(
       (node: ts.VariableDeclaration) => node.name.getText() === 'routes',
     ) as ts.VariableDeclaration;
-    const routesElements = (routesDeclaration.initializer as ts.ArrayLiteralExpression)
-      .elements;
+    const routesElements = (
+      routesDeclaration.initializer as ts.ArrayLiteralExpression
+    ).elements;
     const lastElement = routesElements[routesElements.length - 1];
     const end = routesElements.hasTrailingComma
       ? lastElement.getEnd() + 1

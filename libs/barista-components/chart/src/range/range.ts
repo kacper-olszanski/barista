@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { CdkTrapFocus } from '@angular/cdk/a11y';
 import {
   coerceBooleanProperty,
   coerceNumberProperty,
@@ -192,14 +191,8 @@ export class DtChartRange implements AfterViewInit, OnDestroy {
    * Used by the selection area as content to project into the overlay with a portal.
    */
   @ViewChild(TemplateRef, { static: true })
-  _overlayTemplate: TemplateRef<{}>;
-
-  /**
-   * @internal The focus trap for the selected area,
-   * used by the selection area to chain the focus group of the area and the overlay.
-   */
-  @ViewChild(CdkTrapFocus)
-  _selectedAreaFocusTrap: CdkTrapFocus;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  _overlayTemplate: TemplateRef<any>;
 
   /**
    * @internal

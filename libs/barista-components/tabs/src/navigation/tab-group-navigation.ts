@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -33,7 +33,8 @@ import {
   exportAs: 'dtTabGroupNavigation',
 })
 export class DtTabGroupNavigation
-  implements DtTabGroupNavigationControl, OnDestroy, AfterContentInit {
+  implements DtTabGroupNavigationControl, OnDestroy, AfterContentInit
+{
   private _destroyed = new Subject<void>();
 
   constructor(
@@ -70,8 +71,11 @@ export class DtTabGroupNavigation
       const matchingTab = tabs.find((tab) => !!ids.find((id) => tab.id === id));
       if (matchingTab && !matchingTab.disabled) {
         tabs.forEach((tab) => {
-          // tslint:disable-next-line no-void-expression
-          ids.includes(tab.id) ? tab._select(false) : tab._deselect();
+          if (ids.includes(tab.id)) {
+            tab._select(false);
+          } else {
+            tab._deselect();
+          }
         });
       } else {
         this._tabGroup._selectTab();

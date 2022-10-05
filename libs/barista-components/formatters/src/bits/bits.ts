@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -35,7 +35,7 @@ export class DtBits implements PipeTransform {
    * @param inputUnit - The unit for the input number. Default is DtUnit.BITS
    */
   transform(
-    // tslint:disable-next-line:no-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     input: any,
     factor: number = KILO_MULTIPLIER,
     inputUnit: DtUnit = DtUnit.BITS,

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -64,7 +64,8 @@ export const _DtBarIndicator = mixinHasProgress(
 })
 export class DtBarIndicator
   extends _DtBarIndicator
-  implements CanColor<DtBarIndicatorThemePalette>, HasProgressValues {
+  implements CanColor<DtBarIndicatorThemePalette>, HasProgressValues
+{
   /** Whether the indicator is aligned to the start or end. */
   @Input() align: 'start' | 'end' = 'start';
 
@@ -77,6 +78,7 @@ export class DtBarIndicator
 
   /**
    * Updates all view parameters
+   *
    * @internal
    */
   _updateValues(): void {

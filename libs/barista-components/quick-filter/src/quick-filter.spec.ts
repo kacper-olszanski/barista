@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-// tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers
-// tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
+// eslint-disable  @angular-eslint/no-lifecycle-call, no-use-before-define, @typescript-eslint/no-use-before-define, no-magic-numbers
+// eslint-disable  @typescript-eslint/no-explicit-any, max-lines, @typescript-eslint/unbound-method, @angular-eslint/use-component-selector
 
 import { HttpClient } from '@angular/common/http';
 import { Component, DebugElement, NgZone, ViewChild } from '@angular/core';
@@ -28,6 +28,10 @@ import {
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { DtCheckbox } from '@dynatrace/barista-components/checkbox';
+import {
+  DtTriggerableViewportResizer,
+  DtViewportResizer,
+} from '@dynatrace/barista-components/core';
 import { DtDrawer } from '@dynatrace/barista-components/drawer';
 import { DtFilterField } from '@dynatrace/barista-components/filter-field';
 import { DtIconModule } from '@dynatrace/barista-components/icon';
@@ -50,6 +54,7 @@ describe('dt-quick-filter', () => {
   let instanceDebugElement: DebugElement;
   let quickFilterInstance: DtQuickFilter;
   let zone: MockNgZone;
+  let viewportResizer: DtTriggerableViewportResizer;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -73,6 +78,13 @@ describe('dt-quick-filter', () => {
           },
         },
         { provide: NgZone, useFactory: () => (zone = new MockNgZone()) },
+        {
+          provide: DtViewportResizer,
+          useFactory: () =>
+            (viewportResizer = new DtTriggerableViewportResizer(
+              <DtViewportResizer>(<unknown>undefined),
+            )),
+        },
       ],
     });
     TestBed.compileComponents();
@@ -85,9 +97,8 @@ describe('dt-quick-filter', () => {
       instanceDebugElement = fixture.debugElement.query(
         By.directive(DtQuickFilter),
       );
-      quickFilterInstance = instanceDebugElement.injector.get<DtQuickFilter>(
-        DtQuickFilter,
-      );
+      quickFilterInstance =
+        instanceDebugElement.injector.get<DtQuickFilter>(DtQuickFilter);
     });
 
     it('should have an empty filters array if no dataSource is set', () => {
@@ -107,16 +118,14 @@ describe('dt-quick-filter', () => {
       instanceDebugElement = fixture.debugElement.query(
         By.directive(DtQuickFilter),
       );
-      quickFilterInstance = instanceDebugElement.injector.get<DtQuickFilter>(
-        DtQuickFilter,
-      );
+      quickFilterInstance =
+        instanceDebugElement.injector.get<DtQuickFilter>(DtQuickFilter);
 
       filterFieldDebugElement = fixture.debugElement.query(
         By.directive(DtFilterField),
       );
-      filterFieldInstance = filterFieldDebugElement.injector.get<DtFilterField>(
-        DtFilterField,
-      );
+      filterFieldInstance =
+        filterFieldDebugElement.injector.get<DtFilterField>(DtFilterField);
       drawerDebugElement = fixture.debugElement.query(By.directive(DtDrawer));
       drawerInstance = drawerDebugElement.injector.get<DtDrawer>(DtDrawer);
     });
@@ -143,12 +152,10 @@ describe('dt-quick-filter', () => {
 
       fixture.detectChanges();
 
-      fixture.componentInstance._dataSource = new DtQuickFilterDefaultDataSource(
-        FILTER_FIELD_TEST_DATA,
-        {
+      fixture.componentInstance._dataSource =
+        new DtQuickFilterDefaultDataSource(FILTER_FIELD_TEST_DATA, {
           showInSidebar: (node) => node.name !== 'Not in Quickfilter',
-        },
-      );
+        });
       fixture.detectChanges();
       groups = getGroupHeadlines(fixture.debugElement);
 
@@ -181,9 +188,8 @@ describe('dt-quick-filter', () => {
 
     it('should propagate currentFilterChanges event when emitted on the filter field', fakeAsync(() => {
       const spy = jest.fn();
-      const subscription = quickFilterInstance.currentFilterChanges.subscribe(
-        spy,
-      );
+      const subscription =
+        quickFilterInstance.currentFilterChanges.subscribe(spy);
       zone.simulateZoneExit();
 
       filterFieldInstance.currentFilterChanges.emit();
@@ -202,6 +208,20 @@ describe('dt-quick-filter', () => {
 
       expect(spy).toHaveBeenCalledTimes(1);
       subscription.unsubscribe();
+    }));
+
+    it('should trigger resizer when openChange event occurs', fakeAsync(() => {
+      const resizerSpy = jest.fn();
+      const resizerSubscription = viewportResizer
+        .change()
+        .subscribe(resizerSpy);
+      zone.simulateZoneExit();
+
+      drawerInstance.openChange.emit(true);
+      flush();
+
+      expect(resizerSpy).toHaveBeenCalledTimes(1);
+      resizerSubscription.unsubscribe();
     }));
 
     it('should propagate inputChange event when emitted on the filter field', fakeAsync(() => {
@@ -300,13 +320,17 @@ describe('dt-quick-filter', () => {
 
     it('should have the appropriate texts', () => {
       expect(
-        (groupDebugElement.query(By.css('.dt-quick-filter-show-more-text'))
-          .nativeElement as HTMLParagraphElement).textContent,
+        (
+          groupDebugElement.query(By.css('.dt-quick-filter-show-more-text'))
+            .nativeElement as HTMLParagraphElement
+        ).textContent,
       ).toEqual(' There are 2 States available ');
 
       expect(
-        (groupDebugElement.query(By.css('.dt-show-more'))
-          .nativeElement as HTMLButtonElement).textContent,
+        (
+          groupDebugElement.query(By.css('.dt-show-more'))
+            .nativeElement as HTMLButtonElement
+        ).textContent,
       ).toEqual('View more');
     });
   });

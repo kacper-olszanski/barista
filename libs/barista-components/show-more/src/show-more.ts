@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -32,6 +32,7 @@ export class DtShowMoreBase {}
 const _DtShowMoreMixinBase = mixinDisabled(DtShowMoreBase);
 
 @Component({
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'button[dt-show-more]',
   exportAs: 'dtShowMore',
   templateUrl: 'show-more.html',
@@ -51,7 +52,8 @@ const _DtShowMoreMixinBase = mixinDisabled(DtShowMoreBase);
 })
 export class DtShowMore
   extends _DtShowMoreMixinBase
-  implements CanDisable, OnDestroy {
+  implements CanDisable, OnDestroy
+{
   /** Sets the component's show less state when used as an expandable panel trigger. */
   @Input()
   get showLess(): boolean {

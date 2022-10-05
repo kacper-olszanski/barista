@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -29,11 +29,8 @@ import {
   dispatchKeyboardEvent,
 } from '@dynatrace/testing/browser';
 import { DtFilterField } from '../filter-field';
+import { getDtFilterFieldRangeNoOperatorsError } from '../filter-field-errors';
 import { TEST_DATA_RANGE } from '../testing/filter-field-test-data';
-import {
-  dtRangeDef,
-  getDtFilterFieldRangeNoOperatorsError,
-} from '@dynatrace/barista-components/filter-field';
 import {
   TestApp,
   setupFilterFieldTest,
@@ -44,6 +41,7 @@ import {
   getFilterTags,
   getOptions,
 } from '../testing/filter-field-test-helpers';
+import { dtRangeDef } from '../types';
 
 describe('DtFilterField', () => {
   let fixture: ComponentFixture<TestApp>;

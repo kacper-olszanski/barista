@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -31,7 +31,7 @@ import { Observable } from 'rxjs';
 
 @Directive({
   exportAs: 'dtExpandableSectionHeader',
-  selector: 'dt-expandable-section-header',
+  selector: 'dt-expandable-section-header, [dtExpandableSectionHeader]',
 })
 export class DtExpandableSectionHeader {}
 
@@ -65,7 +65,8 @@ export const _ExpandableSectionBase = mixinId(
 })
 export class DtExpandableSection
   extends _ExpandableSectionBase
-  implements CanDisable, HasId {
+  implements CanDisable, HasId
+{
   /** Whether the expandable section is expanded. */
   @Input()
   get expanded(): boolean {

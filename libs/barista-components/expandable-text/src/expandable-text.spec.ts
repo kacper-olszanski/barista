@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-// tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers
-// tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
+// eslint-disable  @angular-eslint/no-lifecycle-call, no-use-before-define, @typescript-eslint/no-use-before-define, no-magic-numbers
+// eslint-disable  @typescript-eslint/no-explicit-any, max-lines, @typescript-eslint/unbound-method, @angular-eslint/use-component-selector
 
 import { Component, DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
-import {
-  DtExpandableText,
-  DtExpandableTextModule,
-} from '@dynatrace/barista-components/expandable-text';
+import { DtExpandableTextModule } from './expandable-text-module';
+import { DtExpandableText } from './expandable-text';
 
 import { createComponent, dispatchFakeEvent } from '@dynatrace/testing/browser';
 
@@ -47,9 +45,8 @@ describe('dt-expandable-text', () => {
     instanceDebugElement = fixture.debugElement.query(
       By.directive(DtExpandableText),
     );
-    expandableTextInstance = instanceDebugElement.injector.get<DtExpandableText>(
-      DtExpandableText,
-    );
+    expandableTextInstance =
+      instanceDebugElement.injector.get<DtExpandableText>(DtExpandableText);
   });
 
   it('should be closed initially', () => {
@@ -143,9 +140,8 @@ describe('dt-expandable-text', () => {
     const collapsedSpy = jest.fn();
     const changedSpy = jest.fn();
     const instance: DtExpandableText = instanceDebugElement.componentInstance;
-    const collapsedSubscription = instance._textCollapsed.subscribe(
-      collapsedSpy,
-    );
+    const collapsedSubscription =
+      instance._textCollapsed.subscribe(collapsedSpy);
     const changedSubscription = instance.expandChanged.subscribe(changedSpy);
 
     expandableTextInstance.close();

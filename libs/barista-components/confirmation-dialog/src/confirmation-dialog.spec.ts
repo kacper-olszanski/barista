@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -167,7 +167,7 @@ describe('ConfirmationDialogComponent', () => {
     }));
 
     it('should wiggle', fakeAsync(() => {
-      let componentInstance: TestComponent = fixture.componentInstance;
+      const componentInstance: TestComponent = fixture.componentInstance;
       expect(componentInstance.dialog._wiggleState).toEqual(false);
       componentInstance.dialog.focusAttention();
       expect(componentInstance.dialog._wiggleState).toEqual(true);
@@ -186,7 +186,7 @@ describe('ConfirmationDialogComponent', () => {
 
     it('should react to viewport changes', fakeAsync(() => {
       const leftOffset = 321;
-      spyOn(resizer, 'getOffset').and.returnValue({
+      jest.spyOn(resizer, 'getOffset').mockReturnValue({
         left: leftOffset,
         top: 987,
       });
@@ -194,7 +194,7 @@ describe('ConfirmationDialogComponent', () => {
       window.dispatchEvent(new Event('resize'));
       tick(DT_CONFIRMATION_POP_DURATION);
       fixture.detectChanges();
-      let overlayPane = overlayContainerElement.querySelector(
+      const overlayPane = overlayContainerElement.querySelector(
         '.cdk-overlay-pane',
       ) as HTMLElement;
       expect(overlayPane.style.marginLeft).toBe(`${leftOffset}px`);

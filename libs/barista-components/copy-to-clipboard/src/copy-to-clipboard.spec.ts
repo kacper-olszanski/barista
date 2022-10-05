@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-// tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers
-// tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
+// eslint-disable  @angular-eslint/no-lifecycle-call, no-use-before-define, @typescript-eslint/no-use-before-define, no-magic-numbers
+// eslint-disable  @typescript-eslint/no-explicit-any, max-lines, @typescript-eslint/unbound-method, @angular-eslint/use-component-selector
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component } from '@angular/core';
@@ -23,13 +23,15 @@ import { TestBed, waitForAsync, fakeAsync, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
 import { DtButtonModule } from '@dynatrace/barista-components/button';
-import { DtCopyToClipboardModule } from '@dynatrace/barista-components/copy-to-clipboard';
+import { DtCopyToClipboardModule } from './copy-to-clipboard-module';
 import { DtIconModule } from '@dynatrace/barista-components/icon';
 import { DtInputModule } from '@dynatrace/barista-components/input';
 
 import { createComponent } from '@dynatrace/testing/browser';
 
 describe('DtCopyToClipboard', () => {
+  const execCommandMock = jest.fn().mockReturnValue(true);
+
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
@@ -43,10 +45,15 @@ describe('DtCopyToClipboard', () => {
         declarations: [CallbackBehaviorTestApp, DelayedCallbackBehaviorTestApp],
       });
       TestBed.compileComponents();
-      // tslint:disable-next-line:no-any
-      document.execCommand = (): boolean => true;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      document.execCommand = execCommandMock;
     }),
   );
+
+  it('should not trigger a copy action on render', (): void => {
+    createComponent(CallbackBehaviorTestApp);
+    expect(execCommandMock).not.toHaveBeenCalled();
+  });
 
   it('should trigger callback - at least 1 copy must be called', (): void => {
     const fixture = createComponent(CallbackBehaviorTestApp);

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -52,11 +52,8 @@ export class DtFormattedValue {
 
   /** Formatted display unit composed by unit and rate unit */
   get formattedDisplayUnit(): string {
-    const {
-      displayUnit,
-      displayWhiteSpace,
-      displayRateUnit,
-    } = this._formattedData;
+    const { displayUnit, displayWhiteSpace, displayRateUnit } =
+      this._formattedData;
 
     if (displayUnit !== undefined && displayRateUnit !== undefined) {
       return `${displayUnit}${displayWhiteSpace ? ' ' : ''}/${displayRateUnit}`;

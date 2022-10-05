@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { load as loadWithCheerio } from 'cheerio';
+import { CheerioAPI, load as loadWithCheerio } from 'cheerio';
 
 /**
  * Runs a given function on a content while loading it into cheerio and giving the
@@ -22,7 +22,7 @@ import { load as loadWithCheerio } from 'cheerio';
  */
 export function runWithCheerio(
   content: string,
-  transformFunction: ($: cheerio.Root) => void,
+  transformFunction: ($: CheerioAPI) => void,
 ): string {
   const $ = loadWithCheerio(content);
   transformFunction($);

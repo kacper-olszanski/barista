@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,6 +17,7 @@ import * as ts from 'typescript';
 
 /**
  * Find all nodes from the AST in the subtree of node of SyntaxKind kind.
+ *
  * @param node
  * @param kind
  * @param maxItems The maximum number of items to return.
@@ -25,7 +26,7 @@ import * as ts from 'typescript';
 export function findNodes(
   node: ts.Node,
   kind: ts.SyntaxKind,
-  maxItems: number = Infinity,
+  maxItems = Infinity,
 ): ts.Node[] {
   let max = maxItems;
 

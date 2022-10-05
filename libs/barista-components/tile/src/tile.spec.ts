@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-// tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers
-// tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
+// eslint-disable  @angular-eslint/no-lifecycle-call, no-use-before-define, @typescript-eslint/no-use-before-define, no-magic-numbers
+// eslint-disable  @typescript-eslint/no-explicit-any, max-lines, @typescript-eslint/unbound-method, @angular-eslint/use-component-selector
 
 import { Component } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
-import { DtTileModule } from '@dynatrace/barista-components/tile';
+import { DtTileModule } from './tile-module';
 
 import { createComponent } from '@dynatrace/testing/browser';
 
@@ -61,9 +61,8 @@ describe('DtTile', () => {
 
   it('should add a disabled class to the tile element', () => {
     const fixture = createComponent(TestApp);
-    const tileNativeElement = fixture.debugElement.nativeElement.querySelector(
-      'dt-tile',
-    );
+    const tileNativeElement =
+      fixture.debugElement.nativeElement.querySelector('dt-tile');
     expect(
       tileNativeElement.classList.contains('dt-tile-disabled'),
     ).toBeFalsy();

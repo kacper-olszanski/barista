@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -26,12 +26,13 @@ const JSON_NOT_EXISTING_ERROR = (filePath: string) =>
   `The specified JSON file ${filePath} is not existing!`;
 
 /** Serializes a JSON */
-function serializeJson(json: any, indents: number = 2): string {
+function serializeJson(json: any, indents = 2): string {
   return JSON.stringify(json, null, indents);
 }
 
 /**
  * This method is specifically for updating JSON in a Tree
+ *
  * @param path Path of JSON file in the Tree
  * @param callback Manipulation of the JSON data
  * @returns A rule which updates a JSON file file in a Tree

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,7 +15,8 @@
  */
 
 /**
- * MOch the getComputedStyle property on an object, preferrably an jsDOM Node element.
+ * Mock the getComputedStyle property on an object, preferrably an jsDOM Node element.
+ *
  * @param value - Value that should be used as a return value for the mocked function.
  */
 export function mockGetComputedStyle(value: string | undefined): void {

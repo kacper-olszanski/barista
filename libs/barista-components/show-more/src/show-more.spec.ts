@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-// tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers
-// tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
+// eslint-disable  @angular-eslint/no-lifecycle-call, no-use-before-define, @typescript-eslint/no-use-before-define, no-magic-numbers
+// eslint-disable  @typescript-eslint/no-explicit-any, max-lines, @typescript-eslint/unbound-method, @angular-eslint/use-component-selector
 
 import { HttpXhrBackend } from '@angular/common/http';
 import { Component, DebugElement } from '@angular/core';
@@ -23,10 +23,8 @@ import { TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
 import { DtIconModule } from '@dynatrace/barista-components/icon';
-import {
-  DtShowMore,
-  DtShowMoreModule,
-} from '@dynatrace/barista-components/show-more';
+import { DtShowMoreModule } from './show-more-module';
+import { DtShowMore } from './show-more';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { createComponent } from '@dynatrace/testing/browser';

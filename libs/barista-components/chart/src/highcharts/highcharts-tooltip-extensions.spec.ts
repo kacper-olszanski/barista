@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-// tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers
-// tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
+// eslint-disable  @angular-eslint/no-lifecycle-call, no-use-before-define, @typescript-eslint/no-use-before-define, no-magic-numbers
+// eslint-disable  @typescript-eslint/no-explicit-any, max-lines, @typescript-eslint/unbound-method, @angular-eslint/use-component-selector
 
 import { prepareTooltipData } from './highcharts-tooltip-extensions';
 import { Point } from 'highcharts';
@@ -50,10 +50,10 @@ describe('highcharts-tooltip-extensions', () => {
     key: 0,
   };
 
-  const dummyArr = ([
+  const dummyArr = [
     { category: 0, y: 0, getLabelConfig: () => dummyConfig },
     { category: 1, y: 1, getLabelConfig: () => dummyConfig1 },
-  ] as unknown) as Point[];
+  ] as unknown as Point[];
 
   it('should return the correct data for multiple metrics', () => {
     const tooltipData = prepareTooltipData(dummyArr);
@@ -64,7 +64,7 @@ describe('highcharts-tooltip-extensions', () => {
   });
 
   it('should return the correct data for single metrics or pie charts', () => {
-    const dummyConfigSingle = ({
+    const dummyConfigSingle = {
       x: 0,
       y: 0,
       getLabelConfig: () => ({
@@ -78,7 +78,7 @@ describe('highcharts-tooltip-extensions', () => {
         series: {},
         key: 0,
       }),
-    } as unknown) as Point;
+    } as unknown as Point;
 
     const tooltipData = prepareTooltipData(dummyConfigSingle);
     expect(tooltipData.x).toBe(0);

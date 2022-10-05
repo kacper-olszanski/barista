@@ -39,6 +39,14 @@ $dt-select-panel-min-width: 112px !default;
   .dt-form-field-infix > & {
     border: none;
     min-height: 30px;
+
+    &.cdk-focused.cdk-keyboard-focused,
+    &.cdk-focused.cdk-mouse-focused,
+    &.cdk-focused.cdk-program-focused {
+      /** Since the select is in a form field and the form field has an
+     outline already, set the select to have no outline */
+      outline: none;
+    }
   }
 
   @include dt-cdkmonitor-focus-style();
@@ -91,6 +99,7 @@ $dt-select-panel-min-width: 112px !default;
     fill: $turquoise-600;
   }
 }
+
 :host.dt-select-disabled .dt-select-arrow ::ng-deep svg {
   fill: $disabledcolor;
 }

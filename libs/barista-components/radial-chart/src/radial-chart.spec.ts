@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-// tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers
-// tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
+// eslint-disable  @angular-eslint/no-lifecycle-call, no-use-before-define, @typescript-eslint/no-use-before-define, no-magic-numbers
+// eslint-disable  @typescript-eslint/no-explicit-any, max-lines, @typescript-eslint/unbound-method, @angular-eslint/use-component-selector
 
 import { Component, QueryList, ViewChildren } from '@angular/core';
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DT_CHART_COLOR_PALETTE_ORDERED } from '@dynatrace/barista-components/theming';
-import {
-  DtRadialChartHoverData,
-  DtRadialChartModule,
-  DtRadialChartSeries,
-} from '@dynatrace/barista-components/radial-chart';
+import { DtRadialChartModule } from './radial-chart-module';
+import { DtRadialChartSeries } from './radial-chart-series';
+import { DtRadialChartHoverData } from './radial-chart';
 import { createComponent, dispatchFakeEvent } from '@dynatrace/testing/browser';
 
 interface DemoChartData {
@@ -383,7 +381,7 @@ class PieChart {
 
   _maxValue: number | null = null;
 
-  _selectable: boolean = true;
+  _selectable = true;
 
   hoverStart: DtRadialChartHoverData;
 

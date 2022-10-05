@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,19 +14,16 @@
  * limitations under the License.
  */
 
-// tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers
-// tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
+// eslint-disable  @angular-eslint/no-lifecycle-call, no-use-before-define, @typescript-eslint/no-use-before-define, no-magic-numbers
+// eslint-disable  @typescript-eslint/no-explicit-any, max-lines, @typescript-eslint/unbound-method, @angular-eslint/use-component-selector
 
 import { Component } from '@angular/core';
 import { fakeAsync, flush, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import {
-  DtChart,
-  DtChartModule,
-  DtChartOptions,
-  DtChartSeries,
-  getDtHeatfieldUnsupportedChartError,
-} from '@dynatrace/barista-components/chart';
+import { DtChartModule } from './chart-module';
+import { DtChart } from './chart';
+import { DtChartOptions, DtChartSeries } from './chart.interface';
+import { getDtHeatfieldUnsupportedChartError } from './heatfield';
 import {
   DtThemingModule,
   DT_CHART_COLOR_PALETTES,
@@ -129,7 +126,7 @@ describe('DtChart', () => {
       fixture.detectChanges();
       const tooltip = chartComponent.highchartsOptions.tooltip;
       expect(tooltip).toBeDefined();
-      // tslint:disable-next-line: no-unbound-method
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(tooltip!.formatter).toBeDefined();
       // bind dummy seriespoint to be able to call the formatter function
       expect(
@@ -190,7 +187,7 @@ describe('DtChart', () => {
       fixture.detectChanges();
       const tooltip = chartComponent.highchartsOptions.tooltip;
       expect(tooltip).toBeDefined();
-      // tslint:disable-next-line: no-unbound-method
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(tooltip!.formatter).toBeDefined();
       // bind dummy seriespoint to be able to call the formatter function
       expect(
@@ -413,7 +410,7 @@ describe('DtChart', () => {
       const chartDebugElement = fixture.debugElement.query(By.css('dt-chart'));
       const chartComponent = chartDebugElement.componentInstance as DtChart;
       chartComponent._plotBackground$ = new BehaviorSubject(
-        (rect as unknown) as SVGRectElement,
+        rect as unknown as SVGRectElement,
       );
       try {
         fixture.detectChanges();
@@ -427,9 +424,8 @@ describe('DtChart', () => {
       // This was the only solution to clear the pending timers in the queue.
       // If I would do a tick or flush it would trigger the error again and then it fails with the
       // getDtHeatfieldUnsupportedChartError twice.
-      (global as any).Zone.current.get(
-        'FakeAsyncTestZoneSpec',
-      ).pendingTimers = [];
+      (global as any).Zone.current.get('FakeAsyncTestZoneSpec').pendingTimers =
+        [];
     }));
   });
 
@@ -974,7 +970,7 @@ class EmptySeries {
   template: ` <dt-chart [series]="series" [options]="options"></dt-chart> `,
 })
 class Loading {
-  // tslint:disable-next-line:no-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   series?: any[];
   options: DtChartOptions = {};
 }

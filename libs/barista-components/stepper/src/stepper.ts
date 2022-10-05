@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -61,7 +61,7 @@ export class DtStepper extends CdkStepper implements AfterContentInit {
   @ViewChildren(DtStepHeader) _stepHeader: QueryList<DtStepHeader>;
 
   /** @internal Steps that the stepper holds. */
-  // tslint:disable-next-line: no-forward-ref
+  // eslint-disable-next-line @angular-eslint/no-forward-ref
   @ContentChildren(forwardRef(() => DtStep)) _steps: QueryList<DtStep>;
 
   ngAfterContentInit(): void {

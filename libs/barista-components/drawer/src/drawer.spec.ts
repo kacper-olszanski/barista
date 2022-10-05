@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-// tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers
-// tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
+// eslint-disable  @angular-eslint/no-lifecycle-call, no-use-before-define, @typescript-eslint/no-use-before-define, no-magic-numbers
+// eslint-disable  @typescript-eslint/no-explicit-any, max-lines, @typescript-eslint/unbound-method, @angular-eslint/use-component-selector
 
 import { ESCAPE } from '@angular/cdk/keycodes';
 import {
@@ -42,13 +42,13 @@ import {
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
+import { DtDrawerModule } from './drawer-module';
 import {
-  DT_DRAWER_OPEN_CLASS,
-  DtDrawer,
   DtDrawerContainer,
-  DtDrawerModule,
+  DT_DRAWER_OPEN_CLASS,
   getDtDuplicateDrawerError,
-} from '@dynatrace/barista-components/drawer';
+} from './drawer-container';
+import { DtDrawer } from './drawer';
 
 import { dispatchKeyboardEvent } from '@dynatrace/testing/browser';
 
@@ -99,9 +99,8 @@ describe('DtDrawer', () => {
 
   describe('validate drawers', () => {
     it('should throw if there are two drawers with the same mode in the container', () => {
-      const { instance, fixture } = createFixture<FailingTestApp>(
-        FailingTestApp,
-      );
+      const { instance, fixture } =
+        createFixture<FailingTestApp>(FailingTestApp);
 
       expect(
         fakeAsync(() => {
@@ -132,9 +131,8 @@ describe('DtDrawer', () => {
 
   describe('drawer methods', () => {
     it('should fire the open event when open on init', fakeAsync(() => {
-      const { fixture, instance } = createFixture<TestAppDrawerOpened>(
-        TestAppDrawerOpened,
-      );
+      const { fixture, instance } =
+        createFixture<TestAppDrawerOpened>(TestAppDrawerOpened);
       fixture.detectChanges();
       flush();
 
@@ -173,14 +171,11 @@ describe('DtDrawer', () => {
     }));
 
     it('should close the drawer by calling its close function programmatically', fakeAsync(() => {
-      const {
-        instance,
-        containerEl,
-        fixture,
-      } = createFixture<TestAppDrawerOpened>(
-        TestAppDrawerOpened,
-        'dt-drawer-container',
-      );
+      const { instance, containerEl, fixture } =
+        createFixture<TestAppDrawerOpened>(
+          TestAppDrawerOpened,
+          'dt-drawer-container',
+        );
       fixture.detectChanges();
       flush();
 
@@ -257,14 +252,11 @@ describe('DtDrawer', () => {
     }));
 
     it('should close all drawers when the close function is called on the container', fakeAsync(() => {
-      const {
-        instance,
-        fixture,
-        containerEl,
-      } = createFixture<TestAppWithOverAndSideMode>(
-        TestAppWithOverAndSideMode,
-        'dt-drawer-container',
-      );
+      const { instance, fixture, containerEl } =
+        createFixture<TestAppWithOverAndSideMode>(
+          TestAppWithOverAndSideMode,
+          'dt-drawer-container',
+        );
       fixture.detectChanges();
       flush();
 
@@ -329,8 +321,9 @@ describe('DtDrawer', () => {
 
       expect(containerEl.classList.contains(DT_DRAWER_OPEN_CLASS)).toBeTruthy();
 
-      const backdrop = fixture.debugElement.query(By.css('.dt-drawer-backdrop'))
-        .nativeElement;
+      const backdrop = fixture.debugElement.query(
+        By.css('.dt-drawer-backdrop'),
+      ).nativeElement;
       // click on backdrop to close drawer
       backdrop.click();
       fixture.detectChanges();
@@ -607,7 +600,7 @@ export class FakeMediaQueryList {
   /** Toggles the matches state and "emits" a change event. */
   setMatches(matches: boolean): void {
     this.matches = matches;
-    // tslint:disable-next-line: no-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     this.addListenerCallback!(this as any);
   }
 
@@ -631,7 +624,7 @@ export class FakeMediaMatcher extends MediaMatcher {
   }
 
   /** Fakes the match media response to be controlled in tests. */
-  // tslint:disable-next-line: no-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   matchMedia(query: string): any {
     const mql = new FakeMediaQueryList(true, query);
     this.queries.set(query, mql);

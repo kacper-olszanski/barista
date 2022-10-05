@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,11 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 
 import { isDefined } from '@dynatrace/barista-components/core';
 import { RenderEvent } from '../render-event.interface';
 
-export function dtCreateEventPath<T>(renderEvents: RenderEvent<T>[]): string {
+export function dtCreateEventPath<T>(
+  renderEvents: RenderEvent<T>[],
+): string | null {
+  if (renderEvents.length === 0) {
+    return null;
+  }
+
   const svgPath: string[] = [];
 
   // Move to the start point
@@ -50,9 +57,10 @@ export function dtCreateEventPath<T>(renderEvents: RenderEvent<T>[]): string {
       // By getting the distance between the originalIndex and the
       // last index in the mergedWith array, we can determine if there are
       // events between the merged events that we need to draw lines to.
-      const indexOfLastMergedEvent = currentRenderEvent.mergedWith![
-        currentRenderEvent.mergedWith!.length - 1
-      ];
+      const indexOfLastMergedEvent =
+        currentRenderEvent.mergedWith![
+          currentRenderEvent.mergedWith!.length - 1
+        ];
       const mergedIndicesDistance =
         indexOfLastMergedEvent - currentRenderEvent.originalIndex!;
       const hasForkedEvents =

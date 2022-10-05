@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,6 +18,7 @@ import { DtAutocompleteValue } from '@dynatrace/barista-components/filter-field'
 
 /** @internal Build an array of uids from the options without the groups */
 export function buildIdPathsFromFilters(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   filters: DtAutocompleteValue<any>[][],
 ): string[] {
   return filters.map((group) => group[group.length - 1].option?.uid || '');

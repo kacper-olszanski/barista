@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -26,6 +26,7 @@ export interface DtRadialChartOverlayData {
 }
 
 @Component({
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'svg:g[dt-radial-chart-path]',
   templateUrl: 'radial-chart-path.html',
   styleUrls: ['radial-chart-path.scss'],
@@ -37,7 +38,8 @@ export interface DtRadialChartOverlayData {
 })
 export class DtRadialChartPath
   extends DtOverlayTrigger<{ $implicit: DtRadialChartOverlayData }>
-  implements AfterContentInit {
+  implements AfterContentInit
+{
   /**
    * @internal
    * All data needed to render the path that visualizes

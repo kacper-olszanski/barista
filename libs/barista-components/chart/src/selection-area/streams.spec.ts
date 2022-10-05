@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-// tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers
-// tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
+// eslint-disable  @angular-eslint/no-lifecycle-call, no-use-before-define, @typescript-eslint/no-use-before-define, no-magic-numbers
+// eslint-disable  @typescript-eslint/no-explicit-any, max-lines, @typescript-eslint/unbound-method, @angular-eslint/use-component-selector
 
 import { ElementRef, NgZone, QueryList } from '@angular/core';
 import { Subject, interval, of, timer } from 'rxjs';
@@ -25,7 +25,7 @@ import { TestScheduler } from 'rxjs/testing';
 // We have to import from the file directly as barrel files only expose getters no setters.
 // To mock the specific function of the file we have to import the file and disable the
 // module boundaries linting rule.
-// tslint:disable-next-line: nx-enforce-module-boundaries
+// eslint-disable-next-line
 import * as platformUtil from '../../../core/src/util/platform-util';
 
 import { createMouseEvent, MockNgZone } from '@dynatrace/testing/browser';
@@ -44,13 +44,16 @@ import {
   getRangeResizeStream,
 } from './streams';
 
-const MOCK_BOUNDING_CLIENT_RECT: ClientRect = {
+const MOCK_BOUNDING_CLIENT_RECT: DOMRect = {
   top: 50,
   left: 50,
   height: 200,
   width: 400,
   bottom: 250,
   right: 450,
+  x: 50,
+  y: 50,
+  toJSON: () => '',
 };
 
 const MOVE_VALUES = {
@@ -66,7 +69,7 @@ describe('Selection Area Streams', () => {
   let relativeMousePositionSpy: any; // jest.SpyInstance;
 
   beforeEach(() => {
-    // tslint:disable ban
+    // eslint-disable
     selectionArea = document.createElement('div');
 
     relativeMousePositionSpy = jest
@@ -138,9 +141,10 @@ describe('Selection Area Streams', () => {
     const coreSpy = jest.spyOn(platformUtil, '_removeCssClass');
 
     testScheduler.run(({ expectObservable, flush }) => {
-      expectObservable(
-        getMouseDownStream(selectionArea, [selectionArea]),
-      ).toBe('(a|)', { a: fakeMouseDown });
+      expectObservable(getMouseDownStream(selectionArea, [selectionArea])).toBe(
+        '(a|)',
+        { a: fakeMouseDown },
+      );
       // need to execute all side effects before expecting
       flush();
 
@@ -164,9 +168,10 @@ describe('Selection Area Streams', () => {
     const coreSpy = jest.spyOn(platformUtil, '_addCssClass');
 
     testScheduler.run(({ expectObservable, flush }) => {
-      expectObservable(
-        getMouseUpStream(selectionArea, of(fakeMouseUp)),
-      ).toBe('(a|)', { a: fakeMouseUp });
+      expectObservable(getMouseUpStream(selectionArea, of(fakeMouseUp))).toBe(
+        '(a|)',
+        { a: fakeMouseUp },
+      );
       // need to execute all side effects before expecting
       flush();
 
@@ -387,7 +392,7 @@ describe('Selection Area Streams', () => {
           changes$,
           destroy$,
           fakeList,
-          (fakeZone as unknown) as NgZone,
+          fakeZone as unknown as NgZone,
         ),
       ).toBe('-- (a|)', { a: 'FakeElementRef' });
 

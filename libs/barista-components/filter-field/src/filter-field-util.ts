@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,17 +14,23 @@
  * limitations under the License.
  */
 
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+
 import { isDefined } from '@dynatrace/barista-components/core';
 import { DtFilterFieldDataSource } from './filter-field-data-source';
 import {
   dtAutocompleteDef,
+  DtAutocompleteDef,
   DtAutocompleteValue,
   DtFilterFieldTagData,
   DtFilterValue,
   dtFreeTextDef,
+  DtFreeTextDef,
   DtFreeTextValue,
   dtGroupDef,
+  DtGroupDef,
   dtMultiSelectDef,
+  DtMultiSelectDef,
   DtNodeDef,
   DtOptionDef,
   DtRangeValue,
@@ -35,13 +41,11 @@ import {
   isDtFreeTextValue,
   isDtGroupDef,
   isDtMultiSelectDef,
+  isDtMultiSelectValue,
   isDtOptionDef,
   isDtRangeDef,
   isDtRangeValue,
   isDtRenderType,
-  isDtMultiSelectValue,
-  DtAutocompleteDef,
-  DtFreeTextDef,
   isPartialDtOptionDef,
 } from './types';
 
@@ -295,9 +299,10 @@ function isOptionSelected(def: DtNodeDef, selectedIds: Set<string>): boolean {
 }
 
 /** Transforms a RangeSource to the Tag data values. */
-function transformRangeSourceToTagData(
-  result: DtRangeValue,
-): { separator: string; value: string } {
+function transformRangeSourceToTagData(result: DtRangeValue): {
+  separator: string;
+  value: string;
+} {
   if (result.operator === 'range') {
     return {
       separator: ':',
@@ -330,21 +335,31 @@ export function defaultTagDataForFilterValuesParser(
 ): DtFilterFieldTagData | null {
   const valueSeparator = ', ';
   let key: string | null = null;
-  let value: string = '';
-  let multiValues: string[] = [];
+  let value = '';
+  const multiValues: string[] = [];
   let separator: string | null = null;
   let isFreeText = false;
   let isFirstValue = true;
+  let isMultiSelectValue = false;
 
   for (const filterValue of filterValues) {
     // For multiselect, first value is of multiselect type, subsequent are options
-    if (isDtMultiSelectValue(filterValues[0])) {
+    if (filterValues.some((filterV) => isDtMultiSelectValue(filterV))) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const currentValue = (filterValue as DtAutocompleteValue<any>).option
+        ?.viewValue;
       if (isFirstValue && filterValues.length > 1) {
-        key = (filterValue as DtAutocompleteValue<any>).option?.viewValue ?? '';
+        key = currentValue ?? '';
       }
-      multiValues.push(
-        (filterValue as DtAutocompleteValue<any>).option?.viewValue ?? '',
-      );
+
+      const mustPushValue =
+        currentValue && currentValue !== key && isMultiSelectValue;
+
+      multiValues.push(mustPushValue ? currentValue : '');
+
+      if (isDtMultiSelectValue(filterValue)) {
+        isMultiSelectValue = true;
+      }
     } else if (isDtAutocompleteValue(filterValue)) {
       if (isFirstValue && filterValues.length > 1) {
         key = filterValue.option.viewValue;
@@ -366,7 +381,7 @@ export function defaultTagDataForFilterValuesParser(
   }
 
   if (multiValues.length) {
-    value = multiValues.slice(1).join(valueSeparator);
+    value = multiValues.filter(Boolean).join(valueSeparator);
   }
 
   return filterValues.length && value !== null
@@ -424,6 +439,9 @@ export function findFilterValuesForSources<T>(
         if (isLastSource) {
           return null;
         }
+        if (isDtMultiSelectDef(def)) {
+          applyDtOptionIds(def);
+        }
         if (isAsyncDtOptionDef(def) || isPartialDtOptionDef(def)) {
           const asyncDef = asyncDefs.get(def);
           if (asyncDef) {
@@ -440,7 +458,16 @@ export function findFilterValuesForSources<T>(
           return null;
         }
       } else {
-        foundValues.push(def);
+        if (isDtGroupDef(def) && isDtMultiSelectDef(parentDef)) {
+          const groupOptions = getGroupOptionsFromMultiSelect(def, parentDef);
+
+          groupOptions?.forEach((option) => {
+            foundValues.push(option as DtFilterValue);
+          });
+        } else {
+          foundValues.push(def);
+        }
+
         if (isLastSource) {
           return foundValues;
         }
@@ -472,6 +499,23 @@ export function findDefForSource<D>(
     }
   }
   return null;
+}
+
+/** Given a group definition, gets a list of all group options from the parent definition */
+export function getGroupOptionsFromMultiSelect<D>(
+  groupDef: DtNodeDef<D> & { group: DtGroupDef },
+  parentDef: DtNodeDef<D> & DtMultiSelectDef,
+): DtNodeDef[] | undefined {
+  const multiOption = parentDef.multiSelect?.multiOptions.find(
+    (option) => option.group?.label === groupDef.group.label,
+  );
+
+  return multiOption?.group?.options?.filter((parentDefOption) =>
+    groupDef.group.options.some(
+      (groupDefOption) =>
+        groupDefOption.option?.viewValue === parentDefOption.option?.viewValue,
+    ),
+  );
 }
 
 /**
@@ -520,7 +564,7 @@ export function applyDtOptionIds(
 ): void {
   if (isDtOptionDef(def)) {
     // Reassigning is ok here as the prefix param is of type string
-    // tslint:disable-next-line: no-parameter-reassignment
+    // eslint-disable-next-line no-param-reassign
     prefix = peekOptionId(def, prefix, skipRootDef);
   }
   if (isDtMultiSelectDef(def)) {

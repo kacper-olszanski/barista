@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -24,9 +24,9 @@ export function createInViewportStream(
   element: ElementRef | Element,
   threshold: number | number[] = 1,
 ): Observable<boolean> {
-  // tslint:disable-next-line: strict-type-predicates
+  // eslint-disable-next-line
   return typeof window !== 'undefined' &&
-    // tslint:disable-next-line: no-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (window as Window & { IntersectionObserver: any }).IntersectionObserver
     ? new Observable<IntersectionObserverEntry[]>((observer) => {
         const intersectionObserver = new IntersectionObserver(

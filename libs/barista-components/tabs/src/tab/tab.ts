@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -74,7 +74,8 @@ export const _DtTabMixinBase = mixinTabIndex(mixinDisabled(DtTabBase));
 })
 export class DtTab
   extends _DtTabMixinBase
-  implements OnInit, CanDisable, HasTabIndex {
+  implements OnInit, CanDisable, HasTabIndex
+{
   /** Content for the tab label */
   @ContentChild(DtTabLabel, { static: true }) label: DtTabLabel;
 
@@ -84,7 +85,7 @@ export class DtTab
    * with a dtTabContent directive for lazy loading
    */
   @ContentChild(DtTabContent, { read: TemplateRef, static: true })
-  _lazyContentRef: TemplateRef<any>; // tslint:disable-line:no-any
+  _lazyContentRef: TemplateRef<any>; // eslint-disable-line @typescript-eslint/no-explicit-any
 
   /** Unique id of the element. */
   @Input()
@@ -172,6 +173,7 @@ export class DtTab
   ) {
     super(elementRef);
     // Force setter to be called in case id was not specified.
+    // eslint-disable-next-line no-self-assign
     this.id = this.id;
   }
 

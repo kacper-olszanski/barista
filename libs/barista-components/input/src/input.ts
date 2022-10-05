@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -96,7 +96,8 @@ export class DtInput
     OnChanges,
     OnDestroy,
     CanUpdateErrorState,
-    DtFormFieldControl<string> {
+    DtFormFieldControl<string>
+{
   /** Implemented as part of DtFormFieldControl. */
   focused = false;
 
@@ -233,6 +234,7 @@ export class DtInput
     super(_defaultErrorStateMatcher, _parentForm, _parentFormGroup, ngControl);
 
     // Force setter to be called in case id was not specified.
+    // eslint-disable-next-line no-self-assign
     this.id = this.id;
 
     this._previousNativeValue = this.value;

@@ -29,6 +29,7 @@ yarn.lock
 !/.vscode/extensions.json
 
 # misc
+/.angular/cache
 /.sass-cache
 /connect.lock
 /coverage
@@ -63,10 +64,6 @@ Thumbs.db
 
 .now
 
-# bazel
-bazel-*
-.bazelrc.user
-repocache
 
 /build_event_file.json
 

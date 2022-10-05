@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-// tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers
-// tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
+// eslint-disable  @angular-eslint/no-lifecycle-call, no-use-before-define, @typescript-eslint/no-use-before-define, no-magic-numbers
+// eslint-disable  @typescript-eslint/no-explicit-any, max-lines, @typescript-eslint/unbound-method, @angular-eslint/use-component-selector
 
 import { ENTER } from '@angular/cdk/keycodes';
 import { OverlayContainer } from '@angular/cdk/overlay';
@@ -30,11 +30,11 @@ import {
 } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { DtChartModule } from '@dynatrace/barista-components/chart';
+import { DtChartModule } from '../chart-module';
 // We have to import from the file directly as barrel files only expose getters no setters.
 // To mock the specific function of the file we have to import the file and disable the
 // module boundaries linting rule.
-// tslint:disable-next-line: nx-enforce-module-boundaries
+// eslint-disable-next-line
 import * as formatters from '../../../formatters/src/date/date-range';
 import { DtIconModule } from '@dynatrace/barista-components/icon';
 import { DtThemingModule } from '@dynatrace/barista-components/theming';
@@ -158,7 +158,7 @@ describe('DtChart Selection Area', () => {
       );
     });
 
-    // tslint:disable-next-line: dt-no-focused-tests
+    // eslint-disable-next-line
     it.skip('should have a hairline that should be visible on mousemove', () => {
       expect(hairline.nativeElement).toBeDefined();
       // initial display none is from styles
@@ -172,7 +172,7 @@ describe('DtChart Selection Area', () => {
       expect(hairline.styles.transform).toMatch(/translateX\(.+px\)/);
     });
 
-    // tslint:disable-next-line: dt-no-focused-tests
+    // eslint-disable-next-line
     it.skip('should hide the hairline on mouseout', () => {
       // TODO: [e2e] getCpmputedStyle is not available in jsdom
       expect(getComputedStyle(hairline.nativeElement).display).toBe('none');
@@ -196,8 +196,9 @@ describe('DtChart Selection Area', () => {
 
       fixture.componentInstance.hasRange = true;
       fixture.detectChanges();
-      range = fixture.debugElement.query(By.css('.dt-chart-range'))
-        .componentInstance;
+      range = fixture.debugElement.query(
+        By.css('.dt-chart-range'),
+      ).componentInstance;
       const start = new Date('2019/06/01 20:40:00').getTime();
       const end = new Date('2019/06/01 20:55:00').getTime();
       range.value = [start, end];
@@ -234,22 +235,6 @@ describe('DtChart Selection Area', () => {
           By.css('.dt-chart-range-container'),
         );
         expect(document.activeElement).toEqual(rangeContainer.nativeElement);
-      });
-
-      it('should be in a focus trap after the chart range container was focused', () => {
-        range.focus();
-        const rangeContainer = fixture.debugElement.query(
-          By.css('.dt-chart-range-container'),
-        );
-
-        const next = rangeContainer.nativeElement.nextSibling;
-        const prev = rangeContainer.nativeElement.previousSibling;
-
-        expect(prev.classList.contains('cdk-focus-trap-anchor')).toBe(true);
-        expect(prev.getAttribute('tabindex')).toBe('0');
-
-        expect(next.classList.contains('cdk-focus-trap-anchor')).toBe(true);
-        expect(next.getAttribute('tabindex')).toBe('0');
       });
     });
   });

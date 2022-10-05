@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -19,7 +19,7 @@ export interface EventChartDemoEvent {
   value: number;
   duration: number;
   color?: 'default' | 'error' | 'filtered';
-  // tslint:disable-next-line: no-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data?: any;
 }
 
@@ -27,7 +27,7 @@ export interface EventChartDemoHeatfield {
   start?: number;
   end?: number;
   color?: 'default' | 'error' | 'filtered';
-  // tslint:disable-next-line: no-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data?: any;
 }
 

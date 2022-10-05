@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-// tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers
-// tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
+// eslint-disable  @angular-eslint/no-lifecycle-call, no-use-before-define, @typescript-eslint/no-use-before-define, no-magic-numbers
+// eslint-disable  @typescript-eslint/no-explicit-any, max-lines, @typescript-eslint/unbound-method, @angular-eslint/use-component-selector
 
 import {
   HttpClientTestingModule,
@@ -41,8 +41,7 @@ import {
  */
 export const FAKE_SVGS = {
   cat: '<svg><path id="meow" name="meow"></path></svg>',
-  xss:
-    '<svg><script>alert("123")</script><path id="xss" name="xss"></path></svg>',
+  xss: '<svg><script>alert("123")</script><path id="xss" name="xss"></path></svg>',
   xssType:
     '<svg><script type="text/javascript">alert("123")</script><path id="xss" name="xss"></path></svg>',
   xssMulti: `<svg><script>alert("123")</script><path id="xss" name="xss"></path><script>alert("123")</script></svg>`,
@@ -85,9 +84,8 @@ describe('DtIcon', () => {
     const fixture = createComponent(IconWithColor);
 
     const testComponent = fixture.componentInstance;
-    const iconElement = fixture.debugElement.nativeElement.querySelector(
-      'dt-icon',
-    );
+    const iconElement =
+      fixture.debugElement.nativeElement.querySelector('dt-icon');
     testComponent.iconName = 'home';
     testComponent.iconColor = 'main';
     fixture.detectChanges();
@@ -98,22 +96,23 @@ describe('DtIcon', () => {
     const fixture = createComponent(IconWithColor);
 
     const testComponent = fixture.componentInstance;
-    const iconElement = fixture.debugElement.nativeElement.querySelector(
-      'dt-icon',
-    );
+    const iconElement =
+      fixture.debugElement.nativeElement.querySelector('dt-icon');
     testComponent.iconName = 'home';
     testComponent.iconColor = 'cta';
     fixture.detectChanges();
     expect(iconElement.classList).toContain('dt-color-cta');
+    testComponent.iconColor = 'critical';
+    fixture.detectChanges();
+    expect(iconElement.classList).toContain('dt-color-critical');
   });
 
   it('colors from the extended color palette', () => {
     const fixture = createComponent(IconWithColor);
 
     const testComponent = fixture.componentInstance;
-    const iconElement = fixture.debugElement.nativeElement.querySelector(
-      'dt-icon',
-    );
+    const iconElement =
+      fixture.debugElement.nativeElement.querySelector('dt-icon');
     testComponent.iconName = 'home';
     testComponent.iconColor = 'light';
     fixture.detectChanges();
@@ -125,17 +124,15 @@ describe('DtIcon', () => {
 
   it('should mark dt-icon as aria-hidden by default', () => {
     const fixture = createComponent(IconWithName);
-    const iconElement = fixture.debugElement.nativeElement.querySelector(
-      'dt-icon',
-    );
+    const iconElement =
+      fixture.debugElement.nativeElement.querySelector('dt-icon');
     expect(iconElement.getAttribute('aria-hidden')).toBe('true');
   });
 
   it('should not override a user-provided aria-hidden attribute', () => {
     const fixture = createComponent(IconWithAriaHiddenFalse);
-    const iconElement = fixture.debugElement.nativeElement.querySelector(
-      'dt-icon',
-    );
+    const iconElement =
+      fixture.debugElement.nativeElement.querySelector('dt-icon');
     expect(iconElement.getAttribute('aria-hidden')).toBe('false');
   });
 
@@ -146,9 +143,8 @@ describe('DtIcon', () => {
     fixture.detectChanges();
     http.expectOne('cat.svg').flush(FAKE_SVGS.cat);
 
-    const iconElement = fixture.debugElement.nativeElement.querySelector(
-      'dt-icon',
-    );
+    const iconElement =
+      fixture.debugElement.nativeElement.querySelector('dt-icon');
     const svgElement = verifyAndGetSingleSvgChild(iconElement);
 
     expect(svgElement.hasAttribute('id')).toBe(false);
@@ -162,9 +158,8 @@ describe('DtIcon', () => {
     http.expectOne('cat.svg').flush(FAKE_SVGS.cat);
 
     const testComponent = fixture.componentInstance;
-    const iconElement = fixture.debugElement.nativeElement.querySelector(
-      'dt-icon',
-    );
+    const iconElement =
+      fixture.debugElement.nativeElement.querySelector('dt-icon');
 
     expect(iconElement.querySelector('svg')).toBeTruthy();
 
@@ -181,9 +176,8 @@ describe('DtIcon', () => {
     fixture.detectChanges();
     http.expectOne('xss.svg').flush(FAKE_SVGS.xss);
 
-    const iconElement = fixture.debugElement.nativeElement.querySelector(
-      'dt-icon',
-    );
+    const iconElement =
+      fixture.debugElement.nativeElement.querySelector('dt-icon');
     const svgElement = verifyAndGetSingleSvgChild(iconElement);
 
     expect(svgElement.querySelector('script')).toBeNull();
@@ -196,9 +190,8 @@ describe('DtIcon', () => {
     fixture.detectChanges();
     http.expectOne('xssType.svg').flush(FAKE_SVGS.xssType);
 
-    const iconElement = fixture.debugElement.nativeElement.querySelector(
-      'dt-icon',
-    );
+    const iconElement =
+      fixture.debugElement.nativeElement.querySelector('dt-icon');
     const svgElement = verifyAndGetSingleSvgChild(iconElement);
 
     expect(svgElement.querySelector('script')).toBeNull();
@@ -211,9 +204,8 @@ describe('DtIcon', () => {
     fixture.detectChanges();
     http.expectOne('xssMulti.svg').flush(FAKE_SVGS.xssMulti);
 
-    const iconElement = fixture.debugElement.nativeElement.querySelector(
-      'dt-icon',
-    );
+    const iconElement =
+      fixture.debugElement.nativeElement.querySelector('dt-icon');
     const svgElement = verifyAndGetSingleSvgChild(iconElement);
 
     expect(svgElement.querySelector('script')).toBeNull();
@@ -226,12 +218,51 @@ describe('DtIcon', () => {
     fixture.detectChanges();
     http.expectOne('xssInter.svg').flush(FAKE_SVGS.xssMulti);
 
-    const iconElement = fixture.debugElement.nativeElement.querySelector(
-      'dt-icon',
-    );
+    const iconElement =
+      fixture.debugElement.nativeElement.querySelector('dt-icon');
     const svgElement = verifyAndGetSingleSvgChild(iconElement);
 
     expect(svgElement.querySelector('script')).toBeNull();
+  });
+
+  it('should retry when resources arent available', () => {
+    const fixture = createComponent(IconWithName);
+
+    fixture.componentInstance.iconName = 'xssInter';
+    fixture.detectChanges();
+    http.expectOne('xssInter.svg').error(new ErrorEvent('network error'), {});
+    // 1st retry
+    fixture.detectChanges();
+    http.expectOne('xssInter.svg').flush(FAKE_SVGS.xssMulti);
+
+    const iconElement =
+      fixture.debugElement.nativeElement.querySelector('dt-icon');
+    const svgElement = verifyAndGetSingleSvgChild(iconElement);
+
+    expect(svgElement.querySelector('script')).toBeNull();
+  });
+
+  it('should not show anything after 3 failed retries', () => {
+    const fixture = createComponent(IconWithName);
+
+    fixture.componentInstance.iconName = 'xssInter';
+    fixture.detectChanges();
+    http.expectOne('xssInter.svg').error(new ErrorEvent('network error'), {});
+    // 1st retry
+    fixture.detectChanges();
+    http.expectOne('xssInter.svg').error(new ErrorEvent('network error'), {});
+    // 2st retry
+    fixture.detectChanges();
+    http.expectOne('xssInter.svg').error(new ErrorEvent('network error'), {});
+    // 3st retry
+    fixture.detectChanges();
+    http.expectOne('xssInter.svg').error(new ErrorEvent('network error'), {});
+    fixture.detectChanges();
+
+    const iconElement =
+      fixture.debugElement.nativeElement.querySelector('dt-icon');
+
+    expect(iconElement.childNodes.length).toBe(0);
   });
 });
 

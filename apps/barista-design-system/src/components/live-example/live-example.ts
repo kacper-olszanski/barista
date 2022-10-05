@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -289,8 +289,11 @@ export class BaLiveExample implements OnInit, OnDestroy {
     // highlight-ts needs 'xml' as type instead of 'html'
     const highlightType = type === 'html' ? 'xml' : type;
     // Add syntax highlighting using highlight-ts
-    transformedCode = process(this._highlighter, transformedCode, highlightType)
-      .value;
+    transformedCode = process(
+      this._highlighter,
+      transformedCode,
+      highlightType,
+    ).value;
 
     return wrapCodeLines(transformedCode, 'ba-live-example-code-line');
   }

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,7 +21,7 @@ export class MockIntersectionObserver {
 
   constructor() {
     // Needs to be any since we cannot access the global jest namespace otherwise
-    // tslint:disable-next-line: no-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (global as any).IntersectionObserver = jest.fn((cb, options) => {
       const instance = {
         thresholds: Array.isArray(options.threshold)
@@ -71,7 +71,7 @@ export class MockIntersectionObserver {
 
   /** Clears the mock */
   clearMock(): void {
-    // tslint:disable-next-line: no-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (global as any).IntersectionObserver.mockClear();
     this._instanceMap.clear();
     this._observerMap.clear();

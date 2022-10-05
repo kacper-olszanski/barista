@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-// tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers
-// tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
+// eslint-disable  @angular-eslint/no-lifecycle-call, no-use-before-define, @typescript-eslint/no-use-before-define, no-magic-numbers
+// eslint-disable  @typescript-eslint/no-explicit-any, max-lines, @typescript-eslint/unbound-method, @angular-eslint/use-component-selector
 
 import { Component, Type, ViewChild } from '@angular/core';
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DtChartModule } from '@dynatrace/barista-components/chart';
-import { DtMicroChartModule } from '@dynatrace/barista-components/micro-chart';
+import { DtMicroChartModule } from './micro-chart-module';
 import {
   DtColors,
   DtTheme,
@@ -40,8 +40,6 @@ import {
   DtMicroChartSeries,
 } from './micro-chart';
 import { getDtMicroChartUnsupportedChartTypeError } from './micro-chart-errors';
-
-import objectContaining = jasmine.objectContaining;
 
 describe('DtMicroChart', () => {
   beforeEach(
@@ -74,7 +72,8 @@ describe('DtMicroChart', () => {
     const microChartDebugElement = fixture.debugElement.query(
       By.directive(DtMicroChart),
     );
-    const microChartComponent = microChartDebugElement.componentInstance as DtMicroChart;
+    const microChartComponent =
+      microChartDebugElement.componentInstance as DtMicroChart;
 
     return {
       fixture,
@@ -154,20 +153,18 @@ describe('DtMicroChart', () => {
       const { fixture, microChartComponent } = setupTestCase(ThemeDynamic);
       fixture.detectChanges();
 
-      let data = (microChartComponent.highchartsOptions
-        .series![0] as SeriesLineOptions).data as SeriesLineDataOptions[];
-      expect(data[0].marker).toEqual(
-        objectContaining({ lineColor: DtColors.BLUE_600 }),
-      );
+      let data = (
+        microChartComponent.highchartsOptions.series![0] as SeriesLineOptions
+      ).data as SeriesLineDataOptions[];
+      expect(data[0].marker).toMatchObject({ lineColor: DtColors.BLUE_600 });
 
       fixture.componentInstance.theme = 'purple';
       fixture.detectChanges();
 
-      data = (microChartComponent.highchartsOptions
-        .series![0] as SeriesLineOptions).data as SeriesLineDataOptions[];
-      expect(data[0].marker).toEqual(
-        objectContaining({ lineColor: DtColors.PURPLE_600 }),
-      );
+      data = (
+        microChartComponent.highchartsOptions.series![0] as SeriesLineOptions
+      ).data as SeriesLineDataOptions[];
+      expect(data[0].marker).toMatchObject({ lineColor: DtColors.PURPLE_600 });
     });
   });
 
@@ -208,31 +205,35 @@ describe('DtMicroChart', () => {
       expect(series.length).toEqual(1);
       expect(series[0].data).toBeDefined();
       expect(series[0].data!.length).toBe(2);
-      expect(series[0].data![0]).toEqual(objectContaining({ x: 1, y: 140 }));
-      expect(series[0].data![1]).toEqual(objectContaining({ x: 2, y: 120 }));
+      expect(series[0].data![0]).toMatchObject({ x: 1, y: 140 });
+      expect(series[0].data![1]).toMatchObject({ x: 2, y: 120 });
     });
 
     it('should mark highest and lowest point', () => {
       const { fixture, microChartComponent } = setupTestCase(Series);
       fixture.detectChanges();
 
-      const data = (microChartComponent.highchartsOptions
-        .series![0] as SeriesLineOptions).data as SeriesLineDataOptions[];
+      const data = (
+        microChartComponent.highchartsOptions.series![0] as SeriesLineOptions
+      ).data as SeriesLineDataOptions[];
 
-      expect(data[0].dataLabels).toEqual(
-        objectContaining({ verticalAlign: 'bottom', enabled: true }),
-      );
-      expect(data[1].dataLabels).toEqual(
-        objectContaining({ verticalAlign: 'top', enabled: true }),
-      );
+      expect(data[0].dataLabels).toMatchObject({
+        verticalAlign: 'bottom',
+        enabled: true,
+      });
+      expect(data[1].dataLabels).toMatchObject({
+        verticalAlign: 'top',
+        enabled: true,
+      });
     });
 
     it('should apply a formatter function for formatting minmax datapoint labels', () => {
       const { fixture, microChartComponent } = setupTestCase(Formatter);
       fixture.detectChanges();
 
-      const seriesData = (microChartComponent.highchartsOptions
-        .series![0] as SeriesLineOptions).data!;
+      const seriesData = (
+        microChartComponent.highchartsOptions.series![0] as SeriesLineOptions
+      ).data!;
       expect(seriesData[0]).not.toHaveProperty('dataLabels');
       expect((seriesData[1] as any).dataLabels.formatter).toBeDefined();
       expect(seriesData[2]).not.toHaveProperty('dataLabels');
@@ -251,17 +252,19 @@ describe('DtMicroChart', () => {
 
       fixture.detectChanges();
       expect(microChartComponent.seriesId).toEqual('someId');
-      let data = (microChartComponent.highchartsOptions
-        .series![0] as SeriesLineOptions).data as SeriesLineDataOptions[];
-      expect(data[0]).toEqual(objectContaining({ x: 1, y: 0 }));
-      expect(data[1]).toEqual(objectContaining({ x: 2, y: 10 }));
+      let data = (
+        microChartComponent.highchartsOptions.series![0] as SeriesLineOptions
+      ).data as SeriesLineDataOptions[];
+      expect(data[0]).toMatchObject({ x: 1, y: 0 });
+      expect(data[1]).toMatchObject({ x: 2, y: 10 });
 
       fixture.componentInstance.emitTestData();
       expect(microChartComponent.seriesId).toEqual('someOtherId');
-      data = (microChartComponent.highchartsOptions
-        .series![0] as SeriesLineOptions).data as SeriesLineDataOptions[];
-      expect(data[0]).toEqual(objectContaining({ x: 1, y: 20 }));
-      expect(data[1]).toEqual(objectContaining({ x: 2, y: 30 }));
+      data = (
+        microChartComponent.highchartsOptions.series![0] as SeriesLineOptions
+      ).data as SeriesLineDataOptions[];
+      expect(data[0]).toMatchObject({ x: 1, y: 20 });
+      expect(data[1]).toMatchObject({ x: 2, y: 30 });
     });
   });
 

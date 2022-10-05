@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,7 +16,7 @@
 
 export class DtOverlayConfig {
   /** enables pinning the overlay */
-  // tslint:disable-next-line:no-inferrable-types
+  // eslint-disable-next-line @typescript-eslint/no-inferrable-types
   pinnable?: boolean = false;
 
   /** Constrains movement along an axis */
@@ -30,6 +30,6 @@ export class DtOverlayConfig {
   originY?: 'edge' | 'center' = 'center';
 
   /** Data passed to the overlay as the $implicit context object */
-  // tslint:disable-next-line:no-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data?: any;
 }

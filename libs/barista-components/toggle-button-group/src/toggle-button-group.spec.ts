@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-// tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers
-// tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
+// eslint-disable  @angular-eslint/no-lifecycle-call, no-use-before-define, @typescript-eslint/no-use-before-define, no-magic-numbers
+// eslint-disable  @typescript-eslint/no-explicit-any, max-lines, @typescript-eslint/unbound-method, @angular-eslint/use-component-selector
 
 import { Component, DebugElement } from '@angular/core';
 import {
@@ -26,13 +26,11 @@ import {
 } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
-import {
-  DtToggleButtonGroup,
-  DtToggleButtonGroupModule,
-  DtToggleButtonItem,
-} from '@dynatrace/barista-components/toggle-button-group';
+import { DtToggleButtonGroupModule } from './toggle-button-group-module';
 
 import { createComponent } from '@dynatrace/testing/browser';
+import { DtToggleButtonGroup } from './toggle-button-group';
+import { DtToggleButtonItem } from './toggle-button-item';
 
 describe('DtToggleButtonGroup', () => {
   beforeEach(
@@ -64,8 +62,9 @@ describe('DtToggleButtonGroup', () => {
       fixture = createComponent(SimpleToggleButtonGroupTestApp);
       fixture.detectChanges();
       element = fixture.nativeElement;
-      component = fixture.debugElement.query(By.css('.dt-toggle-button-group'))
-        .componentInstance;
+      component = fixture.debugElement.query(
+        By.css('.dt-toggle-button-group'),
+      ).componentInstance;
       itemElements = fixture.debugElement.queryAll(
         By.css('.dt-toggle-button-item'),
       );
@@ -219,8 +218,9 @@ describe('DtToggleButtonGroup', () => {
     beforeEach(() => {
       fixture = createComponent(OneSelectedToggleButtonGroupTestApp);
       fixture.detectChanges();
-      component = fixture.debugElement.query(By.css('.dt-toggle-button-group'))
-        .componentInstance;
+      component = fixture.debugElement.query(
+        By.css('.dt-toggle-button-group'),
+      ).componentInstance;
     });
 
     it('should have a value on the group already', () => {
@@ -239,8 +239,9 @@ describe('DtToggleButtonGroup', () => {
     beforeEach(() => {
       fixture = createComponent(DynamicButtonsToggleButtonGroupTestApp);
       fixture.detectChanges();
-      component = fixture.debugElement.query(By.css('.dt-toggle-button-group'))
-        .componentInstance;
+      component = fixture.debugElement.query(
+        By.css('.dt-toggle-button-group'),
+      ).componentInstance;
     });
 
     it('should have a value on the group already', () => {
@@ -281,8 +282,9 @@ describe('DtToggleButtonGroup', () => {
     beforeEach(() => {
       fixture = createComponent(OneDisabledToggleButtonGroupTestApp);
       fixture.detectChanges();
-      component = fixture.debugElement.query(By.css('.dt-toggle-button-group'))
-        .componentInstance;
+      component = fixture.debugElement.query(
+        By.css('.dt-toggle-button-group'),
+      ).componentInstance;
     });
 
     it('should disable the first item', () => {
@@ -353,8 +355,9 @@ describe('DtToggleButtonGroup', () => {
     beforeEach(() => {
       fixture = createComponent(PropertybindingToggleButtonGroupTestApp);
       fixture.detectChanges();
-      component = fixture.debugElement.query(By.css('.dt-toggle-button-group'))
-        .componentInstance;
+      component = fixture.debugElement.query(
+        By.css('.dt-toggle-button-group'),
+      ).componentInstance;
     });
 
     it('should have the second item disabled on bound property initially', () => {

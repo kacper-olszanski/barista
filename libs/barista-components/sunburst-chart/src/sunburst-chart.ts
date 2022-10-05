@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -47,6 +47,7 @@ import { takeUntil } from 'rxjs/operators';
 import { DtSunburstChartSegment } from './sunburst-chart-segment';
 import { DtSunburstChartOverlay } from './sunburst-chart.directive';
 import {
+  DtSunburstChartHoverData,
   DtSunburstChartNode,
   DtSunburstChartNodeSlice,
   DtSunburstChartTooltipData,
@@ -105,10 +106,10 @@ export class DtSunburstChart implements AfterContentInit, OnDestroy {
    * Defines the maxlength for the nodes labels.
    * If it's set to 0, no truncation is applied.
    */
-  @Input() truncateLabelBy: number = 10;
+  @Input() truncateLabelBy = 10;
 
   /** Defines the default label displayed in the center of the sunburst-chart, if no nodes are selected. */
-  @Input() noSelectionLabel: string = 'All';
+  @Input() noSelectionLabel = 'All';
   /** Sets the display mode for the sunburst-chart values to either 'percent' or 'absolute'.  */
   @Input()
   set valueDisplayMode(value: 'absolute' | 'percent') {
@@ -116,9 +117,14 @@ export class DtSunburstChart implements AfterContentInit, OnDestroy {
   }
 
   /** Event that fires when a node is clicked with an array of selected nodes (i.e [A, A.1, A.1.a])  */
-  @Output() selectedChange: EventEmitter<
-    DtSunburstChartNode[]
-  > = new EventEmitter();
+  @Output() selectedChange: EventEmitter<DtSunburstChartNode[]> =
+    new EventEmitter();
+
+  /* Notifies the component container of the start of hover events per series, both in the pie and on the legend  */
+  @Output() hoverStart = new EventEmitter<DtSunburstChartHoverData>();
+
+  /* Notifies the component container of the end of hover events per series, both in the pie and on the legend */
+  @Output() hoverEnd = new EventEmitter<DtSunburstChartHoverData>();
 
   /** @internal Overlay template */
   @ContentChild(DtSunburstChartOverlay, { static: false, read: TemplateRef })
@@ -161,7 +167,7 @@ export class DtSunburstChart implements AfterContentInit, OnDestroy {
   /** @internal Relative value of selected element to be displayed */
   _selectedRelativeValue: number;
   /** @internal Marks if absolute value should be shown or percent instead */
-  _valueAsAbsolute: boolean = true;
+  _valueAsAbsolute = true;
 
   private _filledSeries: DtSunburstChartTooltipData[];
 
@@ -257,10 +263,6 @@ export class DtSunburstChart implements AfterContentInit, OnDestroy {
     event?.stopPropagation();
 
     if (slice) {
-      //  TODO: lukas.holzer
-      // Bazel cannot resolve the extends of the interface properly and
-      // throws error: Property 'data' does not exist on type 'DtSunburstChartSlice'.
-      // @ts-ignore
       this._selected = getSelectedNodes(this._filledSeries, slice.data);
 
       this.selectedChange.emit(this._selected.map((node) => node.origin));
@@ -281,10 +283,42 @@ export class DtSunburstChart implements AfterContentInit, OnDestroy {
     return this._sanitizer.bypassSecurityTrustStyle(`${prop}: ${value}`);
   }
 
+  /**
+   * @internal
+   * Handles the mouseEnter on a series slice.
+   */
+  onMouseEnter(slice: { data: DtSunburstChartTooltipData }): void {
+    this.hoverStart.emit(this._trackSunburstChartHoverEvents(slice.data));
+  }
+
+  /**
+   * @internal
+   * Handles the mouseLeave on a series slice.
+   */
+  onMouseLeave(slice: { data: DtSunburstChartTooltipData }): void {
+    this.hoverEnd.emit(this._trackSunburstChartHoverEvents(slice.data));
+  }
+
+  /** Returns an object with output data type for hover events on the legend */
+  private _trackSunburstChartHoverEvents(
+    slice: DtSunburstChartTooltipData,
+  ): DtSunburstChartHoverData {
+    return {
+      color: slice.color,
+      active: slice.active,
+      name: slice.label,
+      value: slice.valueRelative,
+      isCurrent: slice.isCurrent,
+    };
+  }
+
   /** Calculates visible slices based on their state */
   private _render(): void {
-    const containerWidth = this._elementRef.nativeElement.getBoundingClientRect()
-      .width;
+    if (!this._platform.isBrowser) {
+      return;
+    }
+    const containerWidth =
+      this._elementRef.nativeElement.getBoundingClientRect().width;
     const nodesWithState = getNodesWithState(
       this._filledSeries,
       getSelectedId(this._filledSeries, this._selected),

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -35,6 +35,7 @@ export function generateFileName(route: string): string {
  *
  * This function will be executed via the self executed function in the bottom of this file
  * and this file will be spawned via a fork!
+ *
  * @param outputPath The path where the rendered files should be written to
  * @param baseUrl The base url where the routes should be appended
  * @param routes The list of routes that should be rendered
@@ -51,6 +52,7 @@ export async function render(
     try {
       const { data } = await axios.get<string>(route, {
         baseURL: baseUrl,
+        timeout: 4_000,
       });
 
       mkdirSync(dirname(filePath), { recursive: true });
@@ -76,7 +78,15 @@ export async function render(
 }
 
 /** Renders each route that is provided via the process args */
-(async () => {
+async function main() {
   const [outputPath, baseUrl, ...routes] = process.argv.slice(2);
   await render(outputPath, baseUrl, routes);
-})().catch();
+}
+
+main()
+  .then(() => {
+    console.log('Done rendering routes');
+  })
+  .catch(() => {
+    process.exit(1);
+  });

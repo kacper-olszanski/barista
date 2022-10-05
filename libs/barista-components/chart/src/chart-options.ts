@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -24,7 +24,7 @@ import { DtColors } from '@dynatrace/barista-components/theming';
 
 import { DtChartOptions } from './chart.interface';
 
-// tslint:disable:no-magic-numbers
+/* eslint-disable no-magic-numbers */
 /** Custom highcharts easing function */
 const DT_CHART_EASEINOUT = (pos: number): number => {
   if (pos === 0) {
@@ -38,7 +38,7 @@ const DT_CHART_EASEINOUT = (pos: number): number => {
   }
   return (-Math.pow(2, (pos * 2 - 1) * -10) + 2) * 0.5;
 };
-// tslint:enable:no-magic-numbers
+/* eslint-enable no-magic-numbers */
 
 export const DT_CHART_DEFAULT_OPTIONS: DtChartOptions = {
   chart: {

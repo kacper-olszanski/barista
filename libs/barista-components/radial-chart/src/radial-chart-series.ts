@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -34,7 +34,7 @@ import {
 } from '@angular/cdk/coercion';
 
 @Directive({
-  selector: 'dt-radial-chart-series',
+  selector: 'dt-radial-chart-series, [dtRadialChartSeries]',
   exportAs: 'dtRadialChartSeries',
 })
 export class DtRadialChartSeries implements OnChanges, OnDestroy {

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -48,6 +48,7 @@ export interface DtSortEvent {
 
 /**
  * Boilerplate for applying mixins to DtSort.
+ *
  * @internal
  */
 export class DtSortBase {}
@@ -61,9 +62,11 @@ export const _DtSortMixinBase = mixinDisabled(DtSortBase);
 })
 export class DtSort
   extends _DtSortMixinBase
-  implements CanDisable, OnChanges, OnInit, OnDestroy {
+  implements CanDisable, OnChanges, OnInit, OnDestroy
+{
   /**
    * Used to notify any child components listening to state changes.
+   *
    * @internal
    */
   readonly _stateChanges = new Subject<void>();
@@ -113,6 +116,7 @@ export class DtSort
   ): void {
     if (typeof sortableOrActive === 'string') {
       this.active = sortableOrActive;
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this.direction = direction!;
     } else {
       const sortable = sortableOrActive;
@@ -158,10 +162,12 @@ export class DtSort
     }
 
     // If active is bound and being changed after initialization
-    // we need to update the sorter.
-    if (isDefined(changes.active) && !changes.active.firstChange) {
+    // we need to update the sorter. We also need to initially sort
+    // the active column if a direction has been provided.
+    if (isDefined(changes.active) && this.active && this.direction) {
       this.sort(this.active, this.direction);
     }
+
     this._stateChanges.next();
   }
 

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -34,7 +34,7 @@ export class DtHeaderCellDef extends CdkHeaderCellDef {}
 
 /** Header cell template container that adds the right classes and role. */
 @Directive({
-  selector: 'dt-header-cell',
+  selector: 'dt-header-cell, [dtHeaderCell]',
   exportAs: 'dtHeaderCell',
   host: {
     class: 'dt-header-cell',
@@ -45,12 +45,19 @@ export class DtHeaderCell implements OnDestroy {
   /** Destroy subject which will fire when the component gets destroyed. */
   private _destroy = new Subject<void>();
 
+  /** @internal Keep reference to element so it can be accessed as needed. */
+  _elemRef: ElementRef;
+  /** @internal Keep reference to columnDef so it can be accessed as needed. */
+  _colDef: DtColumnDef;
+
   constructor(columnDef: DtColumnDef, elem: ElementRef) {
     columnDef._stateChanges
       .pipe(startWith(null), takeUntil(this._destroy))
       .subscribe(() => {
         _updateDtColumnStyles(columnDef, elem);
       });
+    this._elemRef = elem;
+    this._colDef = columnDef;
   }
 
   ngOnDestroy(): void {

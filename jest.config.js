@@ -1,4 +1,4 @@
-const { join } = require('path');
+const { getJestProjects } = require('@nrwl/jest');
 
 module.exports = {
   testMatch: ['**/*.spec.ts'],
@@ -28,4 +28,5 @@ module.exports = {
     // map lodash-es to lodash bundle since jest needs commonjs
     '^lodash-es$': 'node_modules/lodash/index.js',
   },
+  projects: getJestProjects(),
 };

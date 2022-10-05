@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -32,20 +32,20 @@ import { stackedSeriesChartDemoData } from './stacked-series-chart-demo-data';
 })
 export class StackedSeriesChartDemo {
   selectionMode: DtStackedSeriesChartSelectionMode = 'node';
-  selectable: boolean = true;
+  selectable = true;
   selected: [DtStackedSeriesChartSeries?, DtStackedSeriesChartNode?] = [
     stackedSeriesChartDemoData[3],
     stackedSeriesChartDemoData[3].nodes[1],
   ];
   valueDisplayMode: DtStackedSeriesChartValueDisplayMode = 'absolute';
-  visibleLabel: boolean = true;
-  visibleLegend: boolean = true;
+  visibleLabel = true;
+  visibleLegend = true;
   fillMode: DtStackedSeriesChartFillMode = 'relative';
   multiSeries = true;
   mode: DtStackedSeriesChartMode = 'column';
-  maxTrackSize: number = 16;
-  visibleTrackBackground: boolean = true;
-  visibleValueAxis: boolean = true;
+  maxTrackSize = 16;
+  visibleTrackBackground = true;
+  visibleValueAxis = true;
   labelAxisMode = 'auto';
 
   series = stackedSeriesChartDemoData;

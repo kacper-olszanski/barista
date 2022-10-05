@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,11 +15,23 @@
  */
 
 import { coerceBooleanProperty, BooleanInput } from '@angular/cdk/coercion';
+import {
+  _DisposeViewRepeaterStrategy,
+  _ViewRepeater,
+  _VIEW_REPEATER_STRATEGY,
+} from '@angular/cdk/collections';
 import { Platform } from '@angular/cdk/platform';
+import { ViewportRuler } from '@angular/cdk/scrolling';
 import {
   CDK_TABLE_TEMPLATE,
   CdkTable,
   CdkTableModule,
+  RowContext,
+  RenderRow,
+  _CoalescedStyleScheduler,
+  StickyPositioningListener,
+  _COALESCED_STYLE_SCHEDULER,
+  STICKY_POSITIONING_LISTENER,
 } from '@angular/cdk/table';
 import { DOCUMENT } from '@angular/common';
 import {
@@ -31,13 +43,23 @@ import {
   Input,
   IterableDiffers,
   NgModule,
+  NgZone,
+  Optional,
+  SkipSelf,
 } from '@angular/core';
 
 @Component({
   selector: 'dt-table-base',
   template: CDK_TABLE_TEMPLATE,
+  providers: [
+    { provide: _COALESCED_STYLE_SCHEDULER, useClass: _CoalescedStyleScheduler },
+    {
+      provide: _VIEW_REPEATER_STRATEGY,
+      useClass: _DisposeViewRepeaterStrategy,
+    },
+  ],
 })
-// tslint:disable-next-line: class-name
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export class _DtTableBase<T> extends CdkTable<T> {
   private _interactiveRows = false;
 
@@ -55,22 +77,38 @@ export class _DtTableBase<T> extends CdkTable<T> {
     differs: IterableDiffers,
     changeDetectorRef: ChangeDetectorRef,
     elementRef: ElementRef,
-    // tslint:disable-next-line: no-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     @Inject(DOCUMENT) document: any,
     platform: Platform,
+    @Inject(_VIEW_REPEATER_STRATEGY)
+    _viewRepeater: _ViewRepeater<T, RenderRow<T>, RowContext<T>>,
+    @Inject(_COALESCED_STYLE_SCHEDULER)
+    _coalescedStyleScheduler: _CoalescedStyleScheduler,
+    _viewportRuler: ViewportRuler,
     @Attribute('role') protected _role: string,
+    @Optional()
+    @SkipSelf()
+    @Inject(STICKY_POSITIONING_LISTENER)
+    _stickyPositioningListener: StickyPositioningListener,
+    @Optional() protected readonly _ngZone: NgZone,
     @Attribute('interactiveRows') interactiveRows?: boolean,
   ) {
-    // tslint:disable-next-line: no-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     super(
       differs,
       changeDetectorRef,
       elementRef,
       _role,
-      (null as unknown) as any, // tslint:disable-line:no-any
+      null as unknown as any, // eslint-disable-line @typescript-eslint/no-explicit-any
       document,
       platform,
+      _viewRepeater,
+      _coalescedStyleScheduler,
+      _viewportRuler,
+      _stickyPositioningListener,
+      _ngZone,
     );
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     this.interactiveRows = interactiveRows!;
   }
 }
@@ -80,5 +118,5 @@ export class _DtTableBase<T> extends CdkTable<T> {
   exports: [_DtTableBase],
   declarations: [_DtTableBase],
 })
-// tslint:disable-next-line: class-name
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export class _DtTableBaseModule {}

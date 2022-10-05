@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -64,6 +64,7 @@ import {
 import { DtError } from '@dynatrace/barista-components/form-field';
 import { DtInput } from '@dynatrace/barista-components/input';
 
+// eslint-disable-next-line no-shadow
 const enum MODES {
   IDLE,
   EDITING,
@@ -83,6 +84,7 @@ export const _DtInlineEditorMixinBase = mixinErrorState(DtInlineEditorBase);
 
 @Component({
   preserveWhitespaces: false,
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: '[dt-inline-editor]',
   exportAs: 'dt-inline-editor',
   encapsulation: ViewEncapsulation.Emulated,
@@ -112,7 +114,8 @@ export class DtInlineEditor
     DoCheck,
     AfterContentInit,
     AfterViewInit,
-    CanUpdateErrorState {
+    CanUpdateErrorState
+{
   /** Wether the inline editor is required */
   @Input()
   get required(): boolean {
@@ -182,6 +185,9 @@ export class DtInlineEditor
     return this._mode === MODES.SAVING;
   }
 
+  /** @internal Measured input width to match it for the error overlay width */
+  _inputWidth = 0;
+
   /** @internal Wether the input is focused or not */
   _inputFocused = false;
 
@@ -192,6 +198,8 @@ export class DtInlineEditor
   @ViewChildren(DtInput) _input: QueryList<DtInput>;
   /** @internal the edit button */
   @ViewChild('edit') _editButtonReference: ElementRef;
+  /** @internal Root of the error overlay */
+  @ViewChild('origin', { read: ElementRef }) origin: ElementRef;
   /** @internal list of all errors passed as content children */
   @ContentChildren(DtError) _errorChildren: QueryList<DtError>;
 
@@ -214,7 +222,7 @@ export class DtInlineEditor
   ) {
     super(defaultErrorStateMatcher, parentForm, parentFormGroup, ngControl);
     // Replace the provider from above with this.
-    // tslint:disable-next-line: strict-type-predicates
+    // eslint-disable-next-line
     if (this.ngControl !== null) {
       // Setting the value accessor directly (instead of using
       // the providers) to avoid running into a circular import.
@@ -286,8 +294,14 @@ export class DtInlineEditor
     this._mode = MODES.EDITING;
     this._onTouched();
     this._focusWhenStable();
-
     this._changeDetectorRef.markForCheck();
+    this._executeOnStable(() => {
+      if (this.origin) {
+        this._inputWidth =
+          this.origin.nativeElement.getBoundingClientRect().width;
+        this._changeDetectorRef.markForCheck();
+      }
+    });
   }
 
   /** Saves and quits the edit mode */
@@ -353,8 +367,10 @@ export class DtInlineEditor
     switch (_readKeyCode(event)) {
       case ESCAPE:
         this.cancelAndQuitEditing();
+      // eslint-disable-next-line no-fallthrough
       case ENTER:
         this.saveAndQuitEditing();
+        break;
       default:
     }
   }
@@ -378,7 +394,7 @@ export class DtInlineEditor
     this._changeDetectorRef.markForCheck();
   }
 
-  // tslint:disable-next-line:no-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private _emitError(error: any): void {
     this._mode = MODES.EDITING;
     this.saved.error(error);

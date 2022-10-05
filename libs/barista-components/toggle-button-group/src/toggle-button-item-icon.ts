@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,7 +18,7 @@ import { Directive } from '@angular/core';
 
 /** Icon wrapper for the DtToggleButtonItemIcon */
 @Directive({
-  selector: `dt-toggle-button-item-icon`,
+  selector: 'dt-toggle-button-item-icon, [dtToggleButtonItemIcon]',
   exportAs: 'dtToggleButtonItemIcon',
   host: {
     class: 'dt-toggle-button-item-icon',

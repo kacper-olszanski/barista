@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -110,6 +110,18 @@ export interface DtSunburstChartNodeSlice {
   showLabel: boolean;
 }
 
+/**
+ * Output type for hoverStart and hoverEnd attributes.
+ * Contains the main data of the hovered series.
+ */
+export type DtSunburstChartHoverData = {
+  name: string;
+  value: number;
+  color: string;
+  active: boolean;
+  isCurrent: boolean;
+};
+
 const SVG_SETTINGS = {
   ringWidthRadius: 32,
   borderWidthRadius: 16,
@@ -175,7 +187,8 @@ const fillUpAndSortNodes = (node: DtSunburstChartNode) => {
     children,
     value: children ? getValue(children) : node.value ?? 0,
     depth: children
-      ? 1 + Math.max(...children?.map((child) => child.depth ?? 0))
+      ? // eslint-disable-next-line no-unsafe-optional-chaining
+        1 + Math.max(...children?.map((child) => child.depth ?? 0))
       : 1,
   };
 };

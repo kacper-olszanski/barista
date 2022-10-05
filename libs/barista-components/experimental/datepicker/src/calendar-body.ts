@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -204,7 +204,7 @@ export class DtCalendarBody<T> {
    */
   _onHostKeydown(event: KeyboardEvent): void {
     const keyCode = _readKeyCode(event);
-    let keysToPrevent = [
+    const keysToPrevent = [
       UP_ARROW,
       DOWN_ARROW,
       LEFT_ARROW,
@@ -320,7 +320,7 @@ export class DtCalendarBody<T> {
         this._dateAdapter.getFirstDayOfWeek()) %
       DAYS_PER_WEEK;
 
-    let weeks: DtCalendarCell<T>[][] = [[]];
+    const weeks: DtCalendarCell<T>[][] = [[]];
     for (let i = 0, cell = firstWeekOffset; i < daysInMonth; i++, cell++) {
       if (cell == DAYS_PER_WEEK) {
         weeks.push([]);

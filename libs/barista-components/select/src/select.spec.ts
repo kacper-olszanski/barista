@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-// tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers
-// tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
+// eslint-disable  @angular-eslint/no-lifecycle-call, no-use-before-define, @typescript-eslint/no-use-before-define, no-magic-numbers
+// eslint-disable  @typescript-eslint/no-explicit-any, max-lines, @typescript-eslint/unbound-method, @angular-eslint/use-component-selector
 
 import {
   DOWN_ARROW,
@@ -67,7 +67,7 @@ import {
 } from '@dynatrace/barista-components/core';
 import { DtFormFieldModule } from '@dynatrace/barista-components/form-field';
 import { DtIconModule } from '@dynatrace/barista-components/icon';
-import { DtSelect, DtSelectModule } from '@dynatrace/barista-components/select';
+import { DtSelectModule } from './select-module';
 import {
   dispatchEvent,
   dispatchFakeEvent,
@@ -76,6 +76,7 @@ import {
   createKeyboardEvent,
 } from '@dynatrace/testing/browser';
 import { DtSelectValueTemplate } from './select-value-template';
+import { DtSelect } from './select';
 
 describe('DtSelect', () => {
   let overlayContainer: OverlayContainer;
@@ -133,8 +134,9 @@ describe('DtSelect', () => {
 
         beforeEach(fakeAsync(() => {
           fixture = createComponent(BasicSelect);
-          select = fixture.debugElement.query(By.css('dt-select'))
-            .nativeElement;
+          select = fixture.debugElement.query(
+            By.css('dt-select'),
+          ).nativeElement;
         }));
 
         it('should set the role of the select to listbox', fakeAsync(() => {
@@ -230,8 +232,9 @@ describe('DtSelect', () => {
             SelectWithFormFieldLabel,
           );
           labelFixture.detectChanges();
-          select = labelFixture.debugElement.query(By.css('dt-select'))
-            .nativeElement;
+          select = labelFixture.debugElement.query(
+            By.css('dt-select'),
+          ).nativeElement;
 
           expect(select.getAttribute('aria-labelledby')).toBeTruthy();
           expect(select.getAttribute('aria-labelledby')).toBe(
@@ -249,8 +252,9 @@ describe('DtSelect', () => {
           );
           labelFixture.componentInstance.placeholder = 'Thing selector';
           labelFixture.detectChanges();
-          select = labelFixture.debugElement.query(By.css('dt-select'))
-            .nativeElement;
+          select = labelFixture.debugElement.query(
+            By.css('dt-select'),
+          ).nativeElement;
 
           expect(select.getAttribute('aria-labelledby')).toBeFalsy();
         });
@@ -289,9 +293,11 @@ describe('DtSelect', () => {
           fixture.detectChanges();
           flush();
 
-          (overlayContainerElement.querySelectorAll(
-            'dt-option',
-          )[3] as HTMLElement).click();
+          (
+            overlayContainerElement.querySelectorAll(
+              'dt-option',
+            )[3] as HTMLElement
+          ).click();
           fixture.detectChanges();
           flush();
 
@@ -329,10 +335,8 @@ describe('DtSelect', () => {
         });
 
         it('should open a single-selection select using ALT + DOWN_ARROW', () => {
-          const {
-            control: formControl,
-            select: selectInstance,
-          } = fixture.componentInstance;
+          const { control: formControl, select: selectInstance } =
+            fixture.componentInstance;
 
           expect(selectInstance.panelOpen).toBe(false);
           expect(formControl.value).toBeFalsy();
@@ -347,10 +351,8 @@ describe('DtSelect', () => {
         });
 
         it('should open a single-selection select using ALT + UP_ARROW', () => {
-          const {
-            control: formControl,
-            select: selectInstance,
-          } = fixture.componentInstance;
+          const { control: formControl, select: selectInstance } =
+            fixture.componentInstance;
 
           expect(selectInstance.panelOpen).toBe(false);
           expect(formControl.value).toBeFalsy();
@@ -515,8 +517,9 @@ describe('DtSelect', () => {
           fixture.componentInstance.control.setValue('chips-4');
           fixture.detectChanges();
 
-          const host = fixture.debugElement.query(By.css('dt-select'))
-            .nativeElement;
+          const host = fixture.debugElement.query(
+            By.css('dt-select'),
+          ).nativeElement;
 
           expect(host.hasAttribute('aria-activedescendant')).toBe(false);
 
@@ -538,8 +541,9 @@ describe('DtSelect', () => {
         }));
 
         it('should set aria-activedescendant based on the focused option', fakeAsync(() => {
-          const host = fixture.debugElement.query(By.css('dt-select'))
-            .nativeElement;
+          const host = fixture.debugElement.query(
+            By.css('dt-select'),
+          ).nativeElement;
 
           fixture.componentInstance.select.open();
           fixture.detectChanges();
@@ -570,8 +574,9 @@ describe('DtSelect', () => {
         }));
 
         it('should not change the aria-activedescendant using the horizontal arrow keys', fakeAsync(() => {
-          const host = fixture.debugElement.query(By.css('dt-select'))
-            .nativeElement;
+          const host = fixture.debugElement.query(
+            By.css('dt-select'),
+          ).nativeElement;
 
           fixture.componentInstance.select.open();
           fixture.detectChanges();
@@ -602,8 +607,9 @@ describe('DtSelect', () => {
 
         beforeEach(fakeAsync(() => {
           fixture = createComponent(BasicSelect);
-          trigger = fixture.debugElement.query(By.css('.dt-select-trigger'))
-            .nativeElement;
+          trigger = fixture.debugElement.query(
+            By.css('.dt-select-trigger'),
+          ).nativeElement;
           trigger.click();
           fixture.detectChanges();
 
@@ -644,7 +650,7 @@ describe('DtSelect', () => {
           expect(options[1].getAttribute('aria-disabled')).toEqual('false');
           expect(options[2].getAttribute('aria-disabled')).toEqual('true');
 
-          // tslint:disable-next-line:no-string-literal
+          // eslint-disable-next-line dot-notation, @typescript-eslint/dot-notation
           fixture.componentInstance.foods[2]['disabled'] = false;
           fixture.detectChanges();
 
@@ -661,8 +667,9 @@ describe('DtSelect', () => {
 
         beforeEach(fakeAsync(() => {
           fixture = createComponent(SelectWithGroups);
-          trigger = fixture.debugElement.query(By.css('.dt-select-trigger'))
-            .nativeElement;
+          trigger = fixture.debugElement.query(
+            By.css('.dt-select-trigger'),
+          ).nativeElement;
           trigger.click();
           fixture.detectChanges();
           groups = overlayContainerElement.querySelectorAll('dt-optgroup');
@@ -694,8 +701,9 @@ describe('DtSelect', () => {
 
       beforeEach(fakeAsync(() => {
         fixture = createComponent(SelectWithCustomTrigger);
-        trigger = fixture.debugElement.query(By.css('.dt-select-trigger'))
-          .nativeElement;
+        trigger = fixture.debugElement.query(
+          By.css('.dt-select-trigger'),
+        ).nativeElement;
       }));
 
       it('should be undefined', fakeAsync(() => {
@@ -745,8 +753,9 @@ describe('DtSelect', () => {
 
       beforeEach(fakeAsync(() => {
         fixture = createComponent(BasicSelect);
-        trigger = fixture.debugElement.query(By.css('.dt-select-trigger'))
-          .nativeElement;
+        trigger = fixture.debugElement.query(
+          By.css('.dt-select-trigger'),
+        ).nativeElement;
       }));
 
       it('should not throw when attempting to open too early', fakeAsync(() => {
@@ -952,8 +961,9 @@ describe('DtSelect', () => {
           SelectWithGroupsAndNgContainer,
         );
         groupFixture.detectChanges();
-        trigger = groupFixture.debugElement.query(By.css('.dt-select-trigger'))
-          .nativeElement;
+        trigger = groupFixture.debugElement.query(
+          By.css('.dt-select-trigger'),
+        ).nativeElement;
         trigger.click();
         groupFixture.detectChanges();
 
@@ -987,8 +997,9 @@ describe('DtSelect', () => {
 
       beforeEach(fakeAsync(() => {
         fixture = createComponent(BasicSelect);
-        trigger = fixture.debugElement.query(By.css('.dt-select-trigger'))
-          .nativeElement;
+        trigger = fixture.debugElement.query(
+          By.css('.dt-select-trigger'),
+        ).nativeElement;
       }));
 
       it('should focus the first option if no option is selected', fakeAsync(() => {
@@ -1034,9 +1045,8 @@ describe('DtSelect', () => {
         flush();
 
         const optionInstances = fixture.componentInstance.options.toArray();
-        const optionNodes: NodeListOf<HTMLElement> = overlayContainerElement.querySelectorAll(
-          'dt-option',
-        );
+        const optionNodes: NodeListOf<HTMLElement> =
+          overlayContainerElement.querySelectorAll('dt-option');
 
         optionInstances[1].select();
         fixture.detectChanges();
@@ -1139,8 +1149,9 @@ describe('DtSelect', () => {
         fixture.detectChanges();
         flush();
 
-        const value = fixture.debugElement.query(By.css('.dt-select-value'))
-          .nativeElement;
+        const value = fixture.debugElement.query(
+          By.css('.dt-select-value'),
+        ).nativeElement;
 
         expect(value.textContent).toContain('Steak');
       }));
@@ -1218,9 +1229,8 @@ describe('DtSelect', () => {
           .nativeElement.click();
         groupFixture.detectChanges();
 
-        const disabledGroup = overlayContainerElement.querySelectorAll(
-          'dt-optgroup',
-        )[1];
+        const disabledGroup =
+          overlayContainerElement.querySelectorAll('dt-optgroup')[1];
         const options = disabledGroup.querySelectorAll('dt-option');
 
         (options[0] as HTMLElement).click();
@@ -1243,9 +1253,10 @@ describe('DtSelect', () => {
         flush();
 
         const spy = jest.fn();
-        const subscription = fixture.componentInstance.select.optionSelectionChanges.subscribe(
-          spy,
-        );
+        const subscription =
+          fixture.componentInstance.select.optionSelectionChanges.subscribe(
+            spy,
+          );
         const option = overlayContainerElement.querySelector(
           'dt-option',
         ) as HTMLElement;
@@ -1285,7 +1296,7 @@ describe('DtSelect', () => {
 
       //   expect(spy).toHaveBeenCalledWith(jasmine.any(DtOptionSelectionChange));
 
-      //   // tslint:disable-next-line:no-unnecessary-type-assertion
+      // eslint-disable-next-line
       //   subscription!.unsubscribe();
       // }));
     });
@@ -1293,17 +1304,17 @@ describe('DtSelect', () => {
     describe('valueChange events', () => {
       it('should emit `valueChange` when an option was selected', fakeAsync(() => {
         const fixture = createComponent(BasicSelect);
-        const trigger = fixture.debugElement.query(By.css('.dt-select-trigger'))
-          .nativeElement;
+        const trigger = fixture.debugElement.query(
+          By.css('.dt-select-trigger'),
+        ).nativeElement;
 
         trigger.click();
         fixture.detectChanges();
         flush();
 
         const spy = jest.fn();
-        const subscription = fixture.componentInstance.select.valueChange.subscribe(
-          spy,
-        );
+        const subscription =
+          fixture.componentInstance.select.valueChange.subscribe(spy);
 
         const option = overlayContainerElement.querySelector(
           'dt-option',
@@ -1319,17 +1330,17 @@ describe('DtSelect', () => {
 
       it('should emit `valueChange` when an option was selected', fakeAsync(() => {
         const fixture = createComponent(SelectWithOptionValueZero);
-        const trigger = fixture.debugElement.query(By.css('.dt-select-trigger'))
-          .nativeElement;
+        const trigger = fixture.debugElement.query(
+          By.css('.dt-select-trigger'),
+        ).nativeElement;
 
         trigger.click();
         fixture.detectChanges();
         flush();
 
         const spy = jest.fn();
-        const subscription = fixture.componentInstance.select.valueChange.subscribe(
-          spy,
-        );
+        const subscription =
+          fixture.componentInstance.select.valueChange.subscribe(spy);
 
         const option = overlayContainerElement.querySelector(
           'dt-option',
@@ -1350,8 +1361,9 @@ describe('DtSelect', () => {
 
       beforeEach(fakeAsync(() => {
         fixture = createComponent(BasicSelect);
-        trigger = fixture.debugElement.query(By.css('.dt-select-trigger'))
-          .nativeElement;
+        trigger = fixture.debugElement.query(
+          By.css('.dt-select-trigger'),
+        ).nativeElement;
       }));
 
       it('should take an initial view value with reactive forms', fakeAsync(() => {
@@ -1361,8 +1373,9 @@ describe('DtSelect', () => {
         const value = fixture.debugElement.query(By.css('.dt-select-value'));
         expect(value.nativeElement.textContent).toContain('Pizza');
 
-        trigger = fixture.debugElement.query(By.css('.dt-select-trigger'))
-          .nativeElement;
+        trigger = fixture.debugElement.query(
+          By.css('.dt-select-trigger'),
+        ).nativeElement;
         trigger.click();
         fixture.detectChanges();
         flush();
@@ -1522,8 +1535,9 @@ describe('DtSelect', () => {
         const fixture = createComponent(BasicSelect);
 
         fixture.componentInstance.control.disable();
-        const trigger = fixture.debugElement.query(By.css('.dt-select-trigger'))
-          .nativeElement;
+        const trigger = fixture.debugElement.query(
+          By.css('.dt-select-trigger'),
+        ).nativeElement;
         trigger.click();
         fixture.detectChanges();
 
@@ -1576,18 +1590,19 @@ describe('DtSelect', () => {
     beforeEach(fakeAsync(() => {
       fixture = createComponent(SelectWithChangeEvent);
 
-      trigger = fixture.debugElement.query(By.css('.dt-select-trigger'))
-        .nativeElement;
+      trigger = fixture.debugElement.query(
+        By.css('.dt-select-trigger'),
+      ).nativeElement;
     }));
 
     it('should emit an event when the selected option has changed', fakeAsync(() => {
       trigger.click();
       fixture.detectChanges();
 
-      // tslint:disable-next-line: no-unnecessary-type-assertion
-      (overlayContainerElement.querySelector(
-        'dt-option',
-      ) as HTMLElement).click();
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+      (
+        overlayContainerElement.querySelector('dt-option') as HTMLElement
+      ).click();
 
       expect(fixture.componentInstance.changeListener).toHaveBeenCalled();
     }));
@@ -1607,8 +1622,9 @@ describe('DtSelect', () => {
     }));
 
     it('should only emit one event when pressing arrow keys on closed select', fakeAsync(() => {
-      const select = fixture.debugElement.query(By.css('dt-select'))
-        .nativeElement;
+      const select = fixture.debugElement.query(
+        By.css('dt-select'),
+      ).nativeElement;
       dispatchKeyboardEvent(select, 'keydown', DOWN_ARROW);
 
       expect(fixture.componentInstance.changeListener).toHaveBeenCalledTimes(1);
@@ -1630,8 +1646,9 @@ describe('DtSelect', () => {
       fixture.detectChanges();
       flush();
 
-      const trigger = fixture.debugElement.query(By.css('.dt-select-trigger'))
-        .nativeElement;
+      const trigger = fixture.debugElement.query(
+        By.css('.dt-select-trigger'),
+      ).nativeElement;
 
       trigger.click();
       fixture.detectChanges();
@@ -1661,8 +1678,9 @@ describe('DtSelect', () => {
     it('should be able to set the tabindex via the native attribute', fakeAsync(() => {
       const fixture = createComponent(SelectWithPlainTabindex);
 
-      const select = fixture.debugElement.query(By.css('dt-select'))
-        .nativeElement;
+      const select = fixture.debugElement.query(
+        By.css('dt-select'),
+      ).nativeElement;
       expect(select.getAttribute('tabindex')).toBe('5');
     }));
   });
@@ -1700,12 +1718,13 @@ describe('DtSelect', () => {
       }),
     );
 
-    // tslint:disable-next-line: dt-no-focused-tests
+    // eslint-disable-next-line
     it.skip('should set the width of the overlay if there is no placeholder', fakeAsync(() => {
       const fixture = createComponent(BasicSelectNoPlaceholder);
 
-      const trigger = fixture.debugElement.query(By.css('.dt-select-trigger'))
-        .nativeElement;
+      const trigger = fixture.debugElement.query(
+        By.css('.dt-select-trigger'),
+      ).nativeElement;
 
       trigger.click();
       fixture.detectChanges();
@@ -1782,7 +1801,7 @@ describe('DtSelect', () => {
       }));
 
       it('should use the comparator', fakeAsync(() => {
-        // tslint:disable-next-line:no-unbound-method
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         expect(instance.compareByReference).toHaveBeenCalled();
       }));
 
@@ -1962,8 +1981,9 @@ describe('DtSelect', () => {
       flush();
       fixture.detectChanges();
 
-      const trigger = fixture.debugElement.query(By.css('.dt-select-trigger'))
-        .nativeElement;
+      const trigger = fixture.debugElement.query(
+        By.css('.dt-select-trigger'),
+      ).nativeElement;
 
       expect(trigger.textContent).toContain('Pizza');
       expect(fixture.componentInstance.options.toArray()[1].selected).toBe(
@@ -1987,8 +2007,9 @@ describe('DtSelect', () => {
 
       flush();
 
-      const trigger = fixture.debugElement.query(By.css('.dt-select-trigger'))
-        .nativeElement;
+      const trigger = fixture.debugElement.query(
+        By.css('.dt-select-trigger'),
+      ).nativeElement;
 
       fixture.detectChanges();
 
@@ -1997,8 +2018,9 @@ describe('DtSelect', () => {
 
     it('should update the trigger based on the value', fakeAsync(() => {
       const fixture = createComponent(BasicSelectOnPush);
-      const trigger = fixture.debugElement.query(By.css('.dt-select-trigger'))
-        .nativeElement;
+      const trigger = fixture.debugElement.query(
+        By.css('.dt-select-trigger'),
+      ).nativeElement;
 
       fixture.componentInstance.control.setValue('pizza-1');
       fixture.detectChanges();
@@ -2025,8 +2047,9 @@ describe('DtSelect', () => {
 
     beforeEach(fakeAsync(() => {
       fixture = createComponent(ResetValuesSelect);
-      trigger = fixture.debugElement.query(By.css('.dt-select-trigger'))
-        .nativeElement;
+      trigger = fixture.debugElement.query(
+        By.css('.dt-select-trigger'),
+      ).nativeElement;
 
       trigger.click();
       fixture.detectChanges();
@@ -2384,7 +2407,7 @@ class NgModelCompareWithSelect {
     { value: 'tacos-2', viewValue: 'Tacos' },
   ];
   selectedFood = { value: 'pizza-1', viewValue: 'Pizza' };
-  // tslint:disable-next-line:no-unbound-method
+  // eslint-disable-next-line @typescript-eslint/unbound-method
   comparator: ((f1: any, f2: any) => boolean) | null = this.compareByValue;
 
   @ViewChild(DtSelect) select: DtSelect<any>;
@@ -2443,7 +2466,7 @@ class SelectInsideFormGroup {
   @ViewChild(FormGroupDirective)
   formGroupDirective: FormGroupDirective;
   @ViewChild(DtSelect) select: DtSelect<any>;
-  // tslint:disable-next-line:no-unbound-method
+  // eslint-disable-next-line @typescript-eslint/unbound-method
   formControl = new FormControl('', Validators.required);
   formGroup = new FormGroup({
     food: this.formControl,
@@ -2601,7 +2624,7 @@ class SelectWithCustomTrigger {
     { value: 'cloud-storage', viewValue: 'Cloud Storage' },
   ];
   control = new FormControl();
-  _customTemplate: boolean = false;
+  _customTemplate = false;
 
   @ViewChild(DtSelect) select: DtSelect<any>;
 }

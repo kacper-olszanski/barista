@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -42,7 +42,6 @@ const BLOCKLIST: string[] = [
   // https://github.com/dynatrace-oss/barista/issues/567
   'filter-field-async-example',
   'filter-field-clearall-example',
-  'filter-field-default-example',
   'filter-field-default-search-example',
   'filter-field-disabled-example',
   'filter-field-distinct-example',

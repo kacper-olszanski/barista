@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,32 +17,44 @@
 import { CdkTrapFocus } from '@angular/cdk/a11y';
 import { CdkConnectedOverlay } from '@angular/cdk/overlay';
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
   Input,
-  NgZone,
   OnDestroy,
   Output,
   QueryList,
   ViewChild,
-  ViewChildren,
   ViewEncapsulation,
   Optional,
   Inject,
+  AfterContentInit,
+  NgZone,
+  ContentChildren,
 } from '@angular/core';
-import { Subject } from 'rxjs';
-import { switchMap, take, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, defer, Observable, Subject } from 'rxjs';
+import { map, startWith, switchMap, take, takeUntil } from 'rxjs/operators';
 
-import { DtInput } from '@dynatrace/barista-components/input';
 import {
   DtUiTestConfiguration,
   DT_UI_TEST_CONFIG,
   dtSetUiTestAttribute,
 } from '@dynatrace/barista-components/core';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  FormGroupDirective,
+  Validators,
+} from '@angular/forms';
+
+/** Type for the default event emitted whenever there is NO custom form passed tot the tag-add component */
+export type DtTagAddSubmittedDefaultEvent = { tag: string };
+/** Type for the event emitted whenever there is a custom form passed to the tag-add component */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type DtTagAddSubmittedCustomFormEvent = Record<string, any>;
 
 @Component({
   selector: 'dt-tag-add',
@@ -56,7 +68,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.Emulated,
 })
-export class DtTagAdd implements AfterViewInit, OnDestroy {
+export class DtTagAdd implements OnDestroy, AfterContentInit {
   private readonly _destroy$ = new Subject<void>();
 
   /** @internal Status whether the Overlay is visible */
@@ -65,23 +77,23 @@ export class DtTagAdd implements AfterViewInit, OnDestroy {
   /** Placeholder for the input of the add-tag overlay input. */
   @Input() placeholder: string;
 
+  /** Title of the button and the add-tag overlay input. */
+  @Input() title = 'Add Tag';
+
   /** Used to set the 'aria-label' attribute on the underlying input element. */
   @Input('aria-label') ariaLabel: string;
 
-  /** Event emitted when tag is added */
-  @Output() readonly tagAdded = new EventEmitter<string>();
+  /**
+   * Event emitted when form is submitted. Without a custom form passed as a child
+   * the tags value will be returned in the event with the key 'tag'.
+   */
+  @Output() readonly submitted = new EventEmitter<
+    DtTagAddSubmittedDefaultEvent | DtTagAddSubmittedCustomFormEvent
+  >();
 
-  /** @internal Panel containing the select options. */
-  @ViewChild('panel') _panel: ElementRef;
-
-  /** @internal ElementRef of Add Tag Input */
-  @ViewChildren(DtInput, { read: ElementRef }) _inputs: QueryList<
-    ElementRef<HTMLInputElement>
-  >;
-
-  /** @internal */
-  @ViewChild('tagAddButton', { static: true })
-  _tagAddButton: ElementRef<HTMLElement>;
+  /** @internal Custom form for adding tags. */
+  @ContentChildren(FormGroupDirective, { descendants: true })
+  _customFormQueryList: QueryList<FormGroupDirective>;
 
   /** @internal Overlay pane containing the fields. */
   @ViewChild(CdkConnectedOverlay, { static: true })
@@ -130,27 +142,71 @@ export class DtTagAdd implements AfterViewInit, OnDestroy {
     },
   ];
 
+  /** @internal the formGroup for the default form */
+  _defaultFormControl = new FormGroup({
+    tag: new FormControl('', [Validators.required]),
+  });
+
+  /** @internal Holds the current formGroup - either the default one or the custom form  */
+  readonly _currentFormSubject$ = new BehaviorSubject<AbstractControl | null>(
+    null,
+  );
+
+  /** @internal Emits whenever the current formGroup changes - can happen if a formGroup is passed in as a content child */
+  readonly _currentFormGroupChanges$: Observable<AbstractControl> = defer(
+    () => {
+      if (this._customFormQueryList) {
+        return this._customFormQueryList.changes.pipe(
+          startWith(this._customFormQueryList.first),
+          map(() => {
+            return (
+              this._customFormQueryList.first?.control ??
+              this._defaultFormControl
+            );
+          }),
+        );
+      }
+      return this._ngZone.onStable.asObservable().pipe(
+        take(1),
+        switchMap(() => this._currentFormGroupChanges$),
+      );
+    },
+  );
+
+  /** @internal Emits whether the current formGroup (default or custom) is valid */
+  readonly _currentFormValid$ = this._currentFormGroupChanges$.pipe(
+    switchMap((form) => form.statusChanges),
+    map((status) => status === 'VALID'),
+  );
+
+  /** @internal Emits whether the component currently has a custom formGroup */
+  readonly _hasCustomForm$: Observable<boolean> = defer(() => {
+    if (this._customFormQueryList) {
+      return this._customFormQueryList.changes.pipe(
+        startWith(null),
+        map(() => this._customFormQueryList.length > 0),
+      );
+    }
+
+    return this._ngZone.onStable.asObservable().pipe(
+      take(1),
+      switchMap(() => this._hasCustomForm$),
+    );
+  });
+
   constructor(
     private _changeDetectorRef: ChangeDetectorRef,
-    private _zone: NgZone,
     private _elementRef: ElementRef<HTMLElement>,
+    private _ngZone: NgZone,
     @Optional()
     @Inject(DT_UI_TEST_CONFIG)
     private _config?: DtUiTestConfiguration,
   ) {}
 
-  ngAfterViewInit(): void {
-    this._inputs.changes
-      .pipe(
-        switchMap(() => this._zone.onMicrotaskEmpty.pipe(take(1))),
-        takeUntil(this._destroy$),
-      )
-      .subscribe(() => {
-        const inputEl = this._inputs.first;
-        if (inputEl) {
-          inputEl.nativeElement.focus();
-        }
-      });
+  ngAfterContentInit(): void {
+    this._currentFormGroupChanges$
+      .pipe(takeUntil(this._destroy$))
+      .subscribe(this._currentFormSubject$);
   }
 
   ngOnDestroy(): void {
@@ -160,9 +216,6 @@ export class DtTagAdd implements AfterViewInit, OnDestroy {
 
   /** @internal Callback that is invoked when the overlay panel has been attached. */
   _onAttached(): void {
-    this._overlayDir.positionChange.pipe(take(1)).subscribe(() => {
-      this._panel.nativeElement.scrollTop = 0;
-    });
     dtSetUiTestAttribute(
       this._overlayDir.overlayRef.overlayElement,
       this._overlayDir.overlayRef.overlayElement.id,
@@ -185,17 +238,16 @@ export class DtTagAdd implements AfterViewInit, OnDestroy {
     }
   }
 
-  /** @internal Checks whether user tag is empty or not and then calls 'addTag()' when not empty. */
-  _addTagFromOverlayInput(event: KeyboardEvent): void {
-    const target = event.target as HTMLInputElement;
-    if (target.value.length > 0) {
-      this._addTag(target.value);
+  /**
+   * Submits the current value of the form if it is valid,
+   * by emitting the value default form or the custom form if one is provided.
+   */
+  submit(): void {
+    const currentForm = this._currentFormSubject$.value;
+    if (currentForm?.valid) {
+      this.close();
+      this.submitted.emit(currentForm.value);
+      this._currentFormSubject$?.value?.reset();
     }
-  }
-
-  /** @internal Emits the parameter which is the tag label, then closes the overlay. */
-  _addTag(tag: string): void {
-    this.tagAdded.emit(tag);
-    this.close();
   }
 }

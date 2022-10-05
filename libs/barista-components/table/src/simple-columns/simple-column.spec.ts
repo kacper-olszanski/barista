@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-// tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers
-// tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
+// eslint-disable  @angular-eslint/no-lifecycle-call, no-use-before-define, @typescript-eslint/no-use-before-define, no-magic-numbers
+// eslint-disable  @typescript-eslint/no-explicit-any, max-lines, @typescript-eslint/unbound-method, @angular-eslint/use-component-selector
 
 import { CommonModule } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -34,14 +34,12 @@ import {
 import { DtIconModule } from '@dynatrace/barista-components/icon';
 import { DtLoadingDistractorModule } from '@dynatrace/barista-components/loading-distractor';
 import {
-  DtSort,
-  DtTableDataSource,
-  DtTableModule,
-} from '@dynatrace/barista-components/table';
-import {
   createComponent,
   dispatchMouseEvent,
 } from '@dynatrace/testing/browser';
+import { DtTableModule } from '../table-module';
+import { DtTableDataSource } from '../table-data-source';
+import { DtSort } from '../sort/sort';
 
 describe('DtTable SimpleColumns', () => {
   beforeEach(
@@ -164,9 +162,8 @@ describe('DtTable SimpleColumns', () => {
       const cells = fixture.debugElement.queryAll(
         By.css('.dt-cell.dt-table-column-memoryConsumption'),
       );
-      const transformFunction = fixture.componentInstance.combineMemory.bind(
-        this,
-      );
+      const transformFunction =
+        fixture.componentInstance.combineMemory.bind(this);
       expect(cells[0].nativeElement.textContent).toBe(
         transformFunction(fixture.componentInstance.data[0]),
       );
@@ -221,7 +218,7 @@ describe('DtTable SimpleColumns', () => {
       expect(newlyAddedCells[2].nativeElement.textContent).toBe('24');
       expect(newlyAddedCells[3].nativeElement.textContent).toBe('23 %');
       expect(newlyAddedCells[4].nativeElement.textContent).toBe(
-        '23 % of 5.42 GB',
+        '23 % of 5.42 GiB',
       );
     });
 
@@ -735,7 +732,7 @@ describe('DtTable SimpleColumns', () => {
 
 @Component({
   selector: 'dt-test-table-simple-columns',
-  // tslint:disable
+  /* eslint-disable */
   template: `
     <dt-table [dataSource]="dataSource" dtSort #sortable>
       <dt-favorite-column
@@ -789,7 +786,7 @@ describe('DtTable SimpleColumns', () => {
       ></dt-row>
     </dt-table>
   `,
-  // tslint:enable
+  /* eslint-enable */
 })
 class TestSimpleColumnsApp implements AfterViewInit {
   data: Array<{
@@ -838,9 +835,23 @@ class TestSimpleColumnsApp implements AfterViewInit {
 
   // Get the viewChild to pass the sorter reference to the datasource.
   @ViewChild('sortable', { read: DtSort, static: true }) sortable: DtSort;
-  dataSource: DtTableDataSource<object>;
+  dataSource: DtTableDataSource<{
+    favorite: boolean;
+    host?: string;
+    cpu?: number;
+    memoryPerc: number;
+    memoryTotal: number;
+    traffic: number;
+  }>;
   constructor() {
-    this.dataSource = new DtTableDataSource(this.data);
+    this.dataSource = new DtTableDataSource<{
+      favorite: boolean;
+      host?: string;
+      cpu?: number;
+      memoryPerc: number;
+      memoryTotal: number;
+      traffic: number;
+    }>(this.data);
   }
 
   ngAfterViewInit(): void {
@@ -852,7 +863,7 @@ class TestSimpleColumnsApp implements AfterViewInit {
     const memoryPercentage = formatPercent(row.memoryPerc);
     const memoryTotal = formatBytes(row.memoryTotal, {
       inputUnit: 'byte',
-      outputUnit: 'GB',
+      outputUnit: 'GiB',
       factor: 1024,
     });
     return `${memoryPercentage} of ${memoryTotal}`;
@@ -864,7 +875,7 @@ class TestSimpleColumnsApp implements AfterViewInit {
   trafficFormatter = (value) =>
     formatBytes(formatRate(value, 's'), {
       inputUnit: 'byte',
-      outputUnit: 'MB',
+      outputUnit: 'MiB',
       factor: 1024,
     });
 
@@ -891,7 +902,7 @@ class TestSimpleColumnsApp implements AfterViewInit {
 
 @Component({
   selector: 'dt-test-table-simple-columns',
-  // tslint:disable
+  /* eslint-disable */
   template: `
     <dt-table [dataSource]="dataSource">
       <dt-favorite-column
@@ -941,7 +952,7 @@ class TestSimpleColumnsApp implements AfterViewInit {
       ></dt-row>
     </dt-table>
   `,
-  // tslint:enable
+  /* eslint-enable */
 })
 class TestSimpleColumnsErrorApp implements AfterViewInit {
   data: Array<{
@@ -988,9 +999,23 @@ class TestSimpleColumnsErrorApp implements AfterViewInit {
 
   // Get the viewChild to pass the sorter reference to the datasource.
   @ViewChild('sortable', { read: DtSort, static: true }) sortable: DtSort;
-  dataSource: DtTableDataSource<object>;
+  dataSource: DtTableDataSource<{
+    favorite: boolean;
+    host?: string;
+    cpu?: number;
+    memoryPerc: number;
+    memoryTotal: number;
+    traffic: number;
+  }>;
   constructor() {
-    this.dataSource = new DtTableDataSource(this.data);
+    this.dataSource = new DtTableDataSource<{
+      favorite: boolean;
+      host?: string;
+      cpu?: number;
+      memoryPerc: number;
+      memoryTotal: number;
+      traffic: number;
+    }>(this.data);
   }
 
   ngAfterViewInit(): void {
@@ -998,12 +1023,12 @@ class TestSimpleColumnsErrorApp implements AfterViewInit {
     this.dataSource.sort = this.sortable;
   }
 
-  // tslint:disable-next-line: no-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   combineMemory(row: any): string {
     const memoryPercentage = formatPercent(row.memoryPerc);
     const memoryTotal = formatBytes(row.memoryTotal, {
       inputUnit: 'byte',
-      outputUnit: 'GB',
+      outputUnit: 'GiB',
       factor: 1024,
     });
     return `${memoryPercentage} of ${memoryTotal}`;
@@ -1015,7 +1040,7 @@ class TestSimpleColumnsErrorApp implements AfterViewInit {
   trafficFormatter = (value) =>
     formatBytes(formatRate(value, 's'), {
       inputUnit: 'byte',
-      outputUnit: 'MB',
+      outputUnit: 'MiB',
       factor: 1024,
     });
 }

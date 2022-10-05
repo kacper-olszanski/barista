@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -34,8 +34,7 @@ const TESTDATA: ThreadNode[] = [
     blocked: 0,
     children: [
       {
-        name:
-          'hz.hzInstance_1_cluster.thread_1_hz.hzInstance_1_cluster.thread-1',
+        name: 'hz.hzInstance_1_cluster.thread_1_hz.hzInstance_1_cluster.thread-1',
         icon: 'process',
         threadlevel: 'S1',
         totalTimeConsumption: 150,
@@ -53,6 +52,15 @@ const TESTDATA: ThreadNode[] = [
         blocked: 0,
       },
     ],
+  },
+  {
+    name: 'hz.hzInstance_2_cluster.thread',
+    icon: 'process',
+    threadlevel: 'S0',
+    totalTimeConsumption: 250,
+    waiting: 157,
+    running: 20,
+    blocked: 30,
   },
   {
     name: 'jetty',
@@ -129,7 +137,7 @@ const TESTDATA: ThreadNode[] = [
         <dt-cell
           *dtCellDef="let row"
           [dtIndicator]="row.blocked > 0"
-          dtIndicatorColor="error"
+          [dtIndicatorColor]="indicatorColor(row.blocked)"
         >
           {{ row.blocked }}ms
         </dt-cell>
@@ -214,6 +222,10 @@ export class IndicatorDemo {
       this.treeFlattener,
     );
     this.dataSource.data = TESTDATA;
+  }
+
+  indicatorColor(blocked: number): 'error' | 'critical' | null {
+    return blocked > 20 ? 'critical' : blocked > 0 ? 'error' : null;
   }
 
   hasChild = (_: number, _nodeData: ThreadFlatNode) => _nodeData.expandable;

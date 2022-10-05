@@ -7,8 +7,8 @@
     "strictInjectionParameters": true,
     "enableResourceInlining": true,
     "enableSummariesForJit": true,
-    "enableIvy": false,
-    "trace": true
+    "trace": true,
+    "compilationMode": "partial"
   },
   "compilerOptions": {
     "types": ["node", "jest"]

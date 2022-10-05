@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -124,7 +124,7 @@ function setMetadataDefaults(baristaMetadata: any): BaSinglePageMeta {
  * a barista.json metadata file recursively.
  */
 function getBaristaContentDirectoryPaths(path: string): string[] {
-  let fileList: string[] = [];
+  const fileList: string[] = [];
 
   // Only grab those dirs that include a README.md and a barista.json
   if (
@@ -134,7 +134,7 @@ function getBaristaContentDirectoryPaths(path: string): string[] {
     fileList.push(path);
   }
 
-  let files = readdirSync(path);
+  const files = readdirSync(path);
 
   for (const file of files) {
     const filePath = join(path, file);

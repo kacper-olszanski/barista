@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -25,12 +25,14 @@ export const MULTI_SELECT_DATA = {
       name: 'Months',
       multiOptions: [
         { name: 'All' },
+        { name: 'None (disabled)', disabled: true },
         {
           name: 'Winter',
           options: [
             { name: 'January' },
             { name: 'February' },
             { name: 'March' },
+            { name: 'April (disabled)', disabled: true },
           ],
         },
         {
@@ -61,6 +63,7 @@ export const MULTI_SELECT_DATA = {
         { name: 'All' },
         { name: 'All work days' },
         { name: 'All weekends' },
+        { name: 'None (disabled)', disabled: true },
         {
           name: 'Work days',
           options: [
@@ -69,6 +72,7 @@ export const MULTI_SELECT_DATA = {
             { name: 'Wednesday' },
             { name: 'Thursday' },
             { name: 'Friday' },
+            { name: 'Sunday (disabled)', disabled: true },
           ],
         },
         {
@@ -81,6 +85,32 @@ export const MULTI_SELECT_DATA = {
       name: 'CH (async, partial)',
       multiOptions: [],
       async: true,
+    },
+    {
+      name: 'Season',
+      autocomplete: [
+        {
+          name: 'Winter',
+          multiOptions: [
+            { name: 'January' },
+            { name: 'February' },
+            { name: 'March' },
+            { name: 'April (disabled)' },
+          ],
+        },
+        {
+          name: 'Spring',
+          multiOptions: [{ name: 'April' }, { name: 'May' }, { name: 'June' }],
+        },
+        {
+          name: 'Summer',
+          multiOptions: [
+            { name: 'July' },
+            { name: 'August' },
+            { name: 'September' },
+          ],
+        },
+      ],
     },
   ],
 };

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -97,8 +97,9 @@ export function modifyBazelConfig(schema): Rule {
       (node: ts.BinaryExpression) => node.left.getText() === 'COMPONENTS',
     ) as ts.BinaryExpression;
 
-    const bazelArrayElements = (componentsDeclaration.right as ts.ArrayLiteralExpression)
-      .elements;
+    const bazelArrayElements = (
+      componentsDeclaration.right as ts.ArrayLiteralExpression
+    ).elements;
     const lastElement = bazelArrayElements[
       bazelArrayElements.length - 1
     ] as ts.StringLiteral;

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,9 +16,12 @@
 
 import { DtFilterFieldDataSource } from '@dynatrace/barista-components/filter-field';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export abstract class DtQuickFilterDataSource<T = any>
   extends DtFilterFieldDataSource<T>
-  implements DtFilterFieldDataSource<T> {
+  implements DtFilterFieldDataSource<T>
+{
   /** Function that evaluates if a node should be displayed in the quick filter sidebar */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   showInSidebarFunction: (node: any) => boolean;
 }

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -19,6 +19,7 @@ import { createStringLiteral } from './create-string-literal';
 
 /**
  * Creates typescript import declaration
+ *
  * @param symbolName Name of the item that is imported
  * @param path Path to the module
  * @param named Default true whether the import is a named import or not
@@ -26,10 +27,14 @@ import { createStringLiteral } from './create-string-literal';
 export function createImportDeclaration(
   symbolName: string[],
   path: string,
-  named: boolean = true,
+  named = true,
 ): ts.ImportDeclaration {
   const importSpecifiers = symbolName.map((n) =>
-    ts.factory.createImportSpecifier(undefined, ts.factory.createIdentifier(n)),
+    ts.factory.createImportSpecifier(
+      false,
+      undefined,
+      ts.factory.createIdentifier(n),
+    ),
   );
 
   let importClause: ts.ImportClause;

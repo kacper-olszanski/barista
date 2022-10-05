@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,12 +18,13 @@ import { Directive } from '@angular/core';
 import { NgControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 
-/** An interface which allows a control to work inside of a `DtFormField`. */
+/** An interface which allows a control to work inside a `DtFormField`. */
 @Directive({
   // The @Directive with selector is required here because we're still running a lot of things
   // against ViewEngine where directives without selectors are not allowed.
   // @breaking-change Will be removed with switch to ivy.
   // convert to a selectorless Directive after we switch to Ivy.
+  // eslint-disable-next-line @angular-eslint/directive-selector
   selector: 'do-not-use-abstract-dt-form-field-control',
 })
 export abstract class DtFormFieldControl<T> {

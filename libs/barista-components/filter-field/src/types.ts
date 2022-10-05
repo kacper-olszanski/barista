@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,7 +18,7 @@ import { isDefined, isObject } from '@dynatrace/barista-components/core';
 import { getDtFilterFieldRangeNoOperatorsError } from './filter-field-errors';
 import { DtFilterFieldValidator } from './filter-field-validation';
 
-// tslint:disable:no-bitwise no-magic-numbers no-any
+/* eslint-disable no-bitwise, no-magic-numbers, @typescript-eslint/no-explicit-any, no-shadow */
 export enum DtNodeFlags {
   None = 0,
   TypeAutocomplete = 1 << 0,
@@ -56,6 +56,7 @@ export interface DtAutocompleteDef<OpGr = unknown, Op = unknown> {
   distinct: boolean;
   async: boolean;
   partial?: boolean;
+  partialHintMessage?: string;
   operators: DtNodeDef<Op>[];
   optionsOrGroups: DtNodeDef<OpGr>[];
 }
@@ -206,9 +207,7 @@ export function isAsyncDtMultiSelectDef<D>(
   );
 }
 
-export function isPartialDtMultiSelectDef(
-  def: any,
-): def is DtNodeDef & {
+export function isPartialDtMultiSelectDef(def: any): def is DtNodeDef & {
   multiSelect: DtMultiSelectDef;
   option: DtOptionDef;
 } {
@@ -232,6 +231,7 @@ export function dtAutocompleteDef<D = unknown, OG = unknown, Op = unknown>(
   distinct: boolean,
   async: boolean,
   partial: boolean = false,
+  partialHintMessage?: string,
 ): DtNodeDef<D> & { autocomplete: DtAutocompleteDef<OG, Op> } {
   const def = {
     ...nodeDef(data, existingNodeDef),
@@ -240,6 +240,7 @@ export function dtAutocompleteDef<D = unknown, OG = unknown, Op = unknown>(
       distinct,
       async,
       partial,
+      partialHintMessage,
       operators: [],
     },
   };
@@ -267,9 +268,7 @@ export function isAsyncDtAutocompleteDef<D>(
   );
 }
 
-export function isPartialDtAutocompleteDef(
-  def: any,
-): def is DtNodeDef & {
+export function isPartialDtAutocompleteDef(def: any): def is DtNodeDef & {
   autocomplete: DtAutocompleteDef;
   option: DtOptionDef;
 } {
@@ -431,7 +430,7 @@ export function isDtNodeDef<D = unknown>(def: any): def is DtNodeDef<D> {
 }
 
 /** Holds all the view values and the original filter source for providing it to the DtFilterFieldTag to display. */
-// tslint:disable-next-line: class-name
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export class DtFilterFieldTagData {
   constructor(
     public key: string | null,
@@ -470,7 +469,7 @@ export function isDtAutocompleteValue<T>(
 }
 
 /** One of the categories of values that one filter tag can be */
-// tslint:disable-next-line: class-name
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export interface DtRangeValue {
   range: number | [number, number];
   operator: string;

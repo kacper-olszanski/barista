@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,32 +14,35 @@
  * limitations under the License.
  */
 
-// tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers
-// tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
+// eslint-disable  @angular-eslint/no-lifecycle-call, no-use-before-define,@typescript-eslint/no-use-before-define, no-magic-numbers
+// eslint-disable  @typescript-eslint/no-explicit-any, max-lines, @typescript-eslint/unbound-method, @angular-eslint/use-component-selector
 
 import { DELETE } from '@angular/cdk/keycodes';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, DebugElement, OnInit, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import {
-  DtChartModule,
-  DtChartRange,
-} from '@dynatrace/barista-components/chart';
+import { DtChartModule } from '../chart-module';
+import { DtChartRange, RangeStateChangedEvent } from './range';
 import { DtIconModule } from '@dynatrace/barista-components/icon';
 import {
   dispatchFakeEvent,
   createKeyboardEvent,
 } from '@dynatrace/testing/browser';
+import { DtChartFocusTarget } from '../chart-focus-anchor';
 import {
   ARIA_DEFAULT_LEFT_HANDLE_LABEL,
   ARIA_DEFAULT_RIGHT_HANDLE_LABEL,
   ARIA_DEFAULT_SELECTED_AREA_LABEL,
   DT_RANGE_RELEASED_CLASS,
 } from './constants';
-import { RangeStateChangedEvent } from './range';
+import { DtChartBase } from '../chart-base';
 
-// tslint:disable:no-magic-numbers no-unbound-method no-use-before-declare
+/* eslint-disable no-magic-numbers, @typescript-eslint/unbound-method, no-use-before-define, @typescript-eslint/no-use-before-define */
+
+export class MockChart {
+  _focusTargets = new Set<DtChartFocusTarget>();
+}
 
 describe('DtChart Range', () => {
   beforeEach(() => {
@@ -54,6 +57,7 @@ describe('DtChart Range', () => {
         RangeTestBindingValuesComponent,
         RangeA11yTestComponent,
       ],
+      providers: [{ provide: DtChartBase, useClass: MockChart }],
     });
     TestBed.compileComponents();
   });
@@ -64,8 +68,9 @@ describe('DtChart Range', () => {
 
     beforeEach(() => {
       fixture = TestBed.createComponent<RangeTestComponent>(RangeTestComponent);
-      range = fixture.debugElement.query(By.css('dt-chart-range'))
-        .componentInstance;
+      range = fixture.debugElement.query(
+        By.css('dt-chart-range'),
+      ).componentInstance;
       range._maxWidth = 400;
       fixture.detectChanges();
     });
@@ -145,7 +150,7 @@ describe('DtChart Range', () => {
       expect(container).not.toBeNull();
 
       // imitate falsy values
-      range.value = ([100, undefined] as unknown) as [number, number];
+      range.value = [100, undefined] as unknown as [number, number];
       fixture.detectChanges();
 
       container = fixture.debugElement.query(
@@ -367,8 +372,9 @@ describe('DtChart Range', () => {
     });
 
     it('should have default aria-labels on left handle', () => {
-      const handle = fixture.debugElement.query(By.css('.dt-chart-left-handle'))
-        .nativeElement;
+      const handle = fixture.debugElement.query(
+        By.css('.dt-chart-left-handle'),
+      ).nativeElement;
 
       expect(handle.getAttribute('aria-role')).toBe('slider');
       expect(handle.getAttribute('aria-label')).toBe(

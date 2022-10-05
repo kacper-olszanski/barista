@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -61,6 +61,7 @@ import { Subject } from 'rxjs';
 let nextUniqueId = 0;
 
 /** Represents the different states that require custom transitions between them. */
+// eslint-disable-next-line no-shadow
 export const enum TransitionCheckState {
   /** The initial state of the component before any user interaction. */
   Init,
@@ -113,7 +114,8 @@ export class DtCheckbox<T>
     OnInit,
     OnChanges,
     ControlValueAccessor,
-    DtFormFieldControl<T> {
+    DtFormFieldControl<T>
+{
   /** Whether or not the checkbox is checked. */
   @Input()
   get checked(): boolean {
@@ -176,11 +178,11 @@ export class DtCheckbox<T>
   @Input() value: T;
 
   /** The 'aria-labelledby' attribute takes precedence as the element's text alternative. */
-  // tslint:disable-next-line:no-input-rename
+  // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('aria-label') ariaLabel = '';
 
   /** The 'aria-describedby' attribute is read after the element's label and field type. */
-  // tslint:disable-next-line:no-input-rename
+  // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('aria-labelledby') ariaLabelledby: string | null = null;
 
   /**
@@ -213,7 +215,7 @@ export class DtCheckbox<T>
 
   /** Event emitted when the checkbox's `checked` value changes. */
   // Disabling no-output-native rule because we want to keep a similar API to the native checkbox
-  // tslint:disable-next-line: no-output-native
+  // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() readonly change = new EventEmitter<DtCheckboxChange<T>>();
 
   /** Event emitted when the checkbox's `indeterminate` value changes. */
@@ -275,6 +277,7 @@ export class DtCheckbox<T>
     }
 
     // Force setter to be called in case id was not specified.
+    // eslint-disable-next-line no-self-assign
     this.id = this.id;
     this.tabIndex = parseInt(tabIndex, 10) || 0;
   }
@@ -436,7 +439,7 @@ export class DtCheckbox<T>
 
 export const DT_CHECKBOX_REQUIRED_VALIDATOR: Provider = {
   provide: NG_VALIDATORS,
-  // tslint:disable-next-line: no-use-before-declare no-forward-ref
+  // eslint-disable-next-line no-use-before-define, @typescript-eslint/no-use-before-define, @angular-eslint/no-forward-ref
   useExisting: forwardRef(() => DtCheckboxRequiredValidator),
   multi: true,
 };
@@ -446,6 +449,8 @@ export const DT_CHECKBOX_REQUIRED_VALIDATOR: Provider = {
  * TODO @thomaspink: Remove once CheckboxRequiredValidator supports custom checkbox
  */
 @Directive({
+  // Somehow the directive-selector eslint rule thinks the selector does not start with dt-
+  // eslint-disable-next-line @angular-eslint/directive-selector
   selector: `dt-checkbox[required][formControlName],
              dt-checkbox[required][formControl], dt-checkbox[required][ngModel]`,
   exportAs: 'dtCheckboxRequiredValidator',

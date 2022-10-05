@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -212,6 +212,7 @@ describe('New workspace', () => {
 
     // check if the angular animations package is used more than once
     expect(
+      // eslint-disable-next-line no-useless-escape
       readFileFromTree(tree, '/package.json').match(/\@angular\/animations/gim),
     ).toHaveLength(1);
     expect(readJsonFromTree(tree, '/package.json')).toMatchSnapshot();

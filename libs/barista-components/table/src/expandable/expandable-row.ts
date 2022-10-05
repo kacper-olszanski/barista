@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -20,6 +20,7 @@ import {
   style,
   AnimationBuilder,
   AnimationFactory,
+  AnimationPlayer,
 } from '@angular/animations';
 import { coerceBooleanProperty, BooleanInput } from '@angular/cdk/coercion';
 import { UniqueSelectionDispatcher } from '@angular/cdk/collections';
@@ -108,17 +109,25 @@ export class DtExpandableRowContent {}
 })
 export class DtExpandableRow
   extends DtRow
-  implements OnDestroy, AfterContentInit {
+  implements OnDestroy, AfterContentInit
+{
   private _uniqueId = `dt-expandable-row-${nextUniqueId++}`;
 
   /** Animation state of the expanded / collapsed row. */
   private _animationState = new BehaviorSubject<'collapsed' | 'expanded'>(
     'collapsed',
   );
+  private _animationStateSubscription = Subscription.EMPTY;
+
   /** AnimationFactory for the collapse animation. */
   private _collapseAnimation: AnimationFactory;
   /** AnimationFactory for the expand animation. */
   private _expandAnimation: AnimationFactory;
+
+  /** AnimationPlayer reference for the expand animation. */
+  private _expandPlayer: AnimationPlayer;
+  /** AnimationPlayer reference for the collapse animation. */
+  private _collapsePlayer: AnimationPlayer;
 
   /** The expanded state of the row. */
   @Input()
@@ -156,19 +165,19 @@ export class DtExpandableRow
 
   /** Querylist of content templates */
   @ContentChildren(DtExpandableRowContent, { read: TemplateRef })
-  // tslint:disable-next-line: no-any
-  private _expandableContentTemplates: QueryList<TemplateRef<{}>>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private _expandableContentTemplates: QueryList<TemplateRef<any>>;
 
   private _templateSubscription = Subscription.EMPTY;
 
   /** @internal the single reference that gets used in the template outlet */
-  // tslint:disable-next-line: no-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   _expandableContentTemplate: TemplateRef<any> | null;
 
   private _selectionDispatchCleanup: () => void;
 
   constructor(
-    // tslint:disable-next-line:no-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private _table: DtTable<any>,
     private _changeDetectorRef: ChangeDetectorRef,
     private _expansionDispatcher: UniqueSelectionDispatcher,
@@ -207,28 +216,37 @@ export class DtExpandableRow
         this._changeDetectorRef.markForCheck();
       });
 
-    this._animationState.pipe(distinctUntilChanged()).subscribe((state) => {
-      if (state === 'collapsed') {
-        // We need to recreate the player connected to the native element
-        // as the table recycles the elements internally and
-        // the angular decorator animation did not pick up on that change.
-        const collapsePlayer = this._collapseAnimation.create(
-          this._animationContainerRef.nativeElement,
-        );
-        collapsePlayer.play();
-      }
+    this._animationStateSubscription = this._animationState
+      .pipe(distinctUntilChanged())
+      .subscribe((state) => {
+        if (state === 'collapsed') {
+          // We need to recreate the player connected to the native element
+          // as the table recycles the elements internally and
+          // the angular decorator animation did not pick up on that change.
+          this._collapsePlayer = this._collapseAnimation.create(
+            this._animationContainerRef.nativeElement,
+          );
+          this._collapsePlayer.play();
+        }
 
-      if (state === 'expanded') {
-        const expandPlayer = this._expandAnimation.create(
-          this._animationContainerRef.nativeElement,
-        );
-        expandPlayer.play();
-      }
-    });
+        if (state === 'expanded') {
+          this._expandPlayer = this._expandAnimation.create(
+            this._animationContainerRef.nativeElement,
+          );
+          this._expandPlayer.play();
+        }
+      });
   }
 
   ngOnDestroy(): void {
     super.ngOnDestroy();
+    if (this._expandPlayer) {
+      this._expandPlayer.destroy();
+    }
+    if (this._collapsePlayer) {
+      this._collapsePlayer.destroy();
+    }
+    this._animationStateSubscription.unsubscribe();
     this._templateSubscription.unsubscribe();
     if (this._selectionDispatchCleanup) {
       this._selectionDispatchCleanup();
@@ -271,8 +289,9 @@ export class DtExpandableRow
   /** Sets the style of the expandable cell. */
   private _setExpandableCell(expanded: boolean): void {
     // Somehow a hack, a better solution would be appreciated.
-    const cells = (this._rowRef
-      .nativeElement as HTMLDivElement).querySelectorAll('dt-expandable-cell');
+    const cells = (
+      this._rowRef.nativeElement as HTMLDivElement
+    ).querySelectorAll('dt-expandable-cell');
     [].slice.call(cells).forEach((cell) => {
       (expanded ? _addCssClass : _removeCssClass)(
         cell,

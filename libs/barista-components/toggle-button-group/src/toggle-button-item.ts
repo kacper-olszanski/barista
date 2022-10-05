@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -49,6 +49,7 @@ export const _DtToggleButtonMixinBase = mixinTabIndex(
 
 /** ToggleButtonItem as a building part of the DtToggleButtonGroup */
 @Component({
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'button[dt-toggle-button-item]',
   exportAs: 'dtToggleButtonItem',
   templateUrl: 'toggle-button-item.html',
@@ -73,7 +74,8 @@ export const _DtToggleButtonMixinBase = mixinTabIndex(
 })
 export class DtToggleButtonItem<T>
   extends _DtToggleButtonMixinBase
-  implements CanDisable, HasTabIndex {
+  implements CanDisable, HasTabIndex
+{
   static ngAcceptInputType_disabled: BooleanInput;
 
   private _selected = false;
@@ -119,7 +121,7 @@ export class DtToggleButtonItem<T>
 
   /** Change event that fires if an toggle button item is selected or deselected. */
   // Disabling no-output-native rule because we want to keep a similar API to the radio button
-  // tslint:disable-next-line: no-output-native
+  // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() readonly change = new EventEmitter<DtToggleButtonChange<T>>();
 
   constructor(

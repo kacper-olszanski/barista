@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -42,7 +42,8 @@ export type DtIconColorPalette =
   | 'cta'
   | 'recovered'
   | 'light'
-  | 'dark';
+  | 'dark'
+  | 'critical';
 
 const iconLogger = DtLoggerFactory.create('DtIcon');
 
@@ -105,7 +106,7 @@ export class DtIcon implements OnChanges {
             // We do not break the app when an icon could not be loaded
             // so do only a log here
             (err: Error) => {
-              iconLogger.warn(
+              iconLogger.info(
                 `Error retrieving icon: ${this.name} ${err.message}`,
               );
             },

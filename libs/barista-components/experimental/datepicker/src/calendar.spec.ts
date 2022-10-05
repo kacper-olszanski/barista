@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -134,25 +134,22 @@ describe('DtCalendar', () => {
 
     describe('calendar today button', () => {
       it("should show the today button if 'showTodayButton' is set to false ", () => {
-        const todayBtn = fixture.debugElement.nativeElement.querySelector(
-          '.dt-today-button',
-        );
+        const todayBtn =
+          fixture.debugElement.nativeElement.querySelector('.dt-today-button');
         expect(todayBtn).not.toBeNull();
       });
 
       it("should not show the today button if 'showTodayButton' is set to false", () => {
         component.showTodayButton = false;
         fixture.detectChanges();
-        const todayBtn = fixture.debugElement.nativeElement.querySelector(
-          '.dt-today-button',
-        );
+        const todayBtn =
+          fixture.debugElement.nativeElement.querySelector('.dt-today-button');
         expect(todayBtn).toBeNull();
       });
 
       it("should correctly set today's date if the today button is clicked", fakeAsync(() => {
-        const todayBtn = fixture.debugElement.nativeElement.querySelector(
-          '.dt-today-button',
-        );
+        const todayBtn =
+          fixture.debugElement.nativeElement.querySelector('.dt-today-button');
         todayBtn.click();
         fixture.detectChanges();
         tick();
@@ -173,9 +170,8 @@ describe('DtCalendar', () => {
       });
 
       it('should emit a selectedChange event if the today button is clicked', () => {
-        const todayBtn = fixture.debugElement.nativeElement.querySelector(
-          '.dt-today-button',
-        );
+        const todayBtn =
+          fixture.debugElement.nativeElement.querySelector('.dt-today-button');
         const changeSpy = jest.fn();
         component.calendar.selectedChange.subscribe(changeSpy);
 
@@ -189,7 +185,7 @@ describe('DtCalendar', () => {
       it('should emit a selectedChange event if a date is selected', () => {
         const changeSpy = jest.fn();
         component.calendar.selectedChange.subscribe(changeSpy);
-        let selectedCell = {
+        const selectedCell = {
           displayValue: '19',
           value: 19,
           rawValue: new Date(2020, 7, 19),
@@ -211,7 +207,7 @@ describe('DtCalendar', () => {
       );
       expect(component.calendar._label).toEqual(formattedStartDate);
 
-      let selectedCell = {
+      const selectedCell = {
         displayValue: '15',
         value: 15,
         rawValue: new Date(2020, 6, 15),

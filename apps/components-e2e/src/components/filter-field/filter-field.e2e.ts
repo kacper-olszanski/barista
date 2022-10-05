@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-// tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers
-// tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
+// eslint-disable  @angular-eslint/no-lifecycle-call, no-use-before-define, @typescript-eslint/no-use-before-define, no-magic-numbers
+// eslint-disable  @typescript-eslint/no-explicit-any, max-lines, @typescript-eslint/unbound-method, @angular-eslint/use-component-selector
 
 import {
   clickOption,
@@ -32,6 +32,8 @@ import {
   multiSelectApply,
   multiSelectPanel,
   switchToSecondDatasource,
+  setupMultiselectEditScenario,
+  options,
 } from './filter-field.po';
 import { Selector } from 'testcafe';
 import { resetWindowSizeToDefault, waitForAngular } from '../../utils';
@@ -338,11 +340,11 @@ test('should choose a multiselect node with the keyboard and submit the correct 
   await testController
     // Select the multiselect node
     .pressKey('down down down enter')
-    // Wait for a certain amout fo time to let the filterfield refresh
+    // Wait for a certain amount of time to let the filterfield refresh
     .wait(250)
     // Select the desired option
     .pressKey('down space enter')
-    // Wait for a certain amout fo time to let the filterfield refresh
+    // Wait for a certain amount of time to let the filterfield refresh
     .wait(250);
 
   const tags = await getFilterfieldTags();
@@ -351,7 +353,7 @@ test('should choose a multiselect node with the keyboard and submit the correct 
     .expect(tags.length)
     .eql(1)
     .expect(tags[0])
-    .eql('SeasoningKetchup');
+    .eql('SeasoningNone');
 });
 
 test('should not apply an empty multiselect node with the keyboard', async (testController: TestController) => {
@@ -406,6 +408,22 @@ test('should choose a multiselect node with the mouse and submit the correct val
     .match(/SeasoningMustard/);
 });
 
+test('should keep selected an option as it was previously set by default', async (testController: TestController) => {
+  // Switch to second datasource.
+  await testController
+    .click(setupMultiselectEditScenario)
+    // Wait for the filterfield to catch up.
+    .wait(500);
+
+  const tag = await filterTags();
+
+  await testController.click(tag);
+
+  const currentOptionsCount = await options().find('input:checked').count;
+
+  await testController.expect(currentOptionsCount).eql(2);
+});
+
 test('should not apply an empty multiselect node with the mouse', async (testController: TestController) => {
   // Switch to second datasource.
   await testController
@@ -452,6 +470,30 @@ test('should close the multiselect when blurring the filter field mid filter, re
     .wait(250)
     .pressKey('backspace')
     .wait(250)
+    .expect(multiSelectPanel.exists)
+    .notOk();
+});
+
+test('should be able to apply without editing any selection when an option was previously selected', async (testController: TestController) => {
+  // Switch to second datasource.
+  await testController
+    .click(setupMultiselectEditScenario)
+    // Wait for the filterfield to catch up.
+    .wait(500);
+
+  const tag = await filterTags();
+
+  await testController
+    // Click on tag to open the panel
+    .click(tag)
+    .wait(250)
+    // Panel should be open
+    .expect(multiSelectPanel.exists)
+    .ok()
+    // Click on apply button
+    .click(multiSelectApply)
+    .wait(250)
+    // Panel should be closed
     .expect(multiSelectPanel.exists)
     .notOk();
 });

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -89,13 +89,14 @@ let nextUniqueId = 0;
   // We need to disable view encapsulation on the form-field so
   // are able to style label, hint, error and the control component
   // in the ng-content areas
-  // tslint:disable-next-line:use-view-encapsulation
+  // eslint-disable-next-line
   encapsulation: ViewEncapsulation.None,
   preserveWhitespaces: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DtFormField<T>
-  implements AfterContentInit, AfterContentChecked, AfterViewInit, OnDestroy {
+  implements AfterContentInit, AfterContentChecked, AfterViewInit, OnDestroy
+{
   /** @internal Unique id for the internal form field label. */
   _labelId = `dt-form-field-label-${nextUniqueId++}`;
 
@@ -197,7 +198,7 @@ export class DtFormField<T>
   /** @internal Determines whether a class from the NgControl should be forwarded to the host element. */
   _shouldForward(prop: string): boolean {
     const ngControl = this._control ? this._control.ngControl : null;
-    // tslint:disable-next-line:no-any no-unnecessary-type-assertion
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unnecessary-type-assertion
     return ngControl && (ngControl as any)[prop];
   }
 

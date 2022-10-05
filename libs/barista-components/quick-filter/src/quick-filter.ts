@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -62,10 +62,15 @@ import {
 import { createQuickFilterStore, QuickFilterState } from './state/store';
 import { DtDrawer } from '@dynatrace/barista-components/drawer';
 import { coerceBooleanProperty, BooleanInput } from '@angular/cdk/coercion';
+import {
+  DtTriggerableViewportResizer,
+  DtViewportResizer,
+} from '@dynatrace/barista-components/core';
+import { Platform } from '@angular/cdk/platform';
 
 /** Directive that is used to place a title inside the quick filters sidebar */
 @Directive({
-  selector: 'dt-quick-filter-title',
+  selector: 'dt-quick-filter-title, [dtQuickFilterTitle]',
   exportAs: 'dtQuickFilterTitle',
   host: {
     class: 'dt-quick-filter-title',
@@ -75,7 +80,7 @@ export class DtQuickFilterTitle {}
 
 /** Directive that is used to place a subtitle inside the quick filters sidebar */
 @Directive({
-  selector: 'dt-quick-filter-sub-title',
+  selector: 'dt-quick-filter-sub-title, [dtQuickFilterSubTitle]',
   exportAs: 'dtQuickFilterSubTitle',
   host: {
     class: 'dt-quick-filter-sub-title',
@@ -94,7 +99,7 @@ export class DtQuickFilterChangeEvent<T> extends DtFilterFieldChangeEvent<T> {}
  * It contains the partially added or removed filters of the filter field.
  */
 export class DtQuickFilterCurrentFilterChangeEvent<
-  T
+  T,
 > extends DtFilterFieldCurrentFilterChangeEvent<T> {}
 
 @Component({
@@ -109,6 +114,7 @@ export class DtQuickFilterCurrentFilterChangeEvent<
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.Emulated,
 })
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class DtQuickFilter<T = any> implements AfterViewInit, OnDestroy {
   /** Emits an event with the current value of the input field every time the user types. */
   @Output() readonly inputChange: Observable<string> = this._zone.onStable.pipe(
@@ -196,6 +202,7 @@ export class DtQuickFilter<T = any> implements AfterViewInit, OnDestroy {
   /** The data source instance that should be connected to the filter field. */
   @Input()
   get dataSource(): DtQuickFilterDataSource {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const dataSource = this._store.select(
       (state: BehaviorSubject<QuickFilterState>) => state.value.dataSource,
     )!;
@@ -226,7 +233,7 @@ export class DtQuickFilter<T = any> implements AfterViewInit, OnDestroy {
   /**
    * The aria-level of the group headlines for the document outline.
    */
-  @Input() groupHeadlineRole: number = 3;
+  @Input() groupHeadlineRole = 3;
 
   /**
    * The maximum amount of items that should be displayed in the quick filter
@@ -257,6 +264,8 @@ export class DtQuickFilter<T = any> implements AfterViewInit, OnDestroy {
   constructor(
     private _zone: NgZone,
     private _elementRef: ElementRef<HTMLElement>,
+    private _viewportResizer: DtViewportResizer,
+    private _platform: Platform,
   ) {}
 
   /** Angular life-cycle hook that will be called after the view is initialized */
@@ -285,6 +294,7 @@ export class DtQuickFilter<T = any> implements AfterViewInit, OnDestroy {
     stable$
       .pipe(
         switchMap(() => this._store.select(getInitialFilters)),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         filter<any[][]>(Boolean),
         takeUntil(this._destroy$),
       )
@@ -316,6 +326,7 @@ export class DtQuickFilter<T = any> implements AfterViewInit, OnDestroy {
 
   /**
    * Toggles the open state of the sidebar.
+   *
    * @param sidebarOpened the state the drawer should be toggled to – `'open' | 'close'`
    * Default the opposite of the current open state.
    */
@@ -355,6 +366,12 @@ export class DtQuickFilter<T = any> implements AfterViewInit, OnDestroy {
     this.filterChanges.emit(change);
   }
 
+  _onOpenChange(_event: boolean): void {
+    if (this._viewportResizer instanceof DtTriggerableViewportResizer) {
+      (<DtTriggerableViewportResizer>this._viewportResizer).trigger();
+    }
+  }
+
   /** Get the filter Values from the Filter Field with only the displayable autocompletes */
   private _getFilteredValues(): DtFilterValue[][] {
     return this._filterField._filterValues.filter((group) =>
@@ -376,11 +393,15 @@ export class DtQuickFilter<T = any> implements AfterViewInit, OnDestroy {
         ),
       ) || [];
 
-    return (
-      groups.reduce(
-        (height, group) => (height += group.getBoundingClientRect().height),
-        0,
-      ) - 28
-    ); // the 28 is the height of a group headline;
+    if (this._platform.isBrowser) {
+      return (
+        groups.reduce(
+          (height, group) => (height += group.getBoundingClientRect().height),
+          0,
+        ) - 28
+      ); // the 28 is the height of a group headline;
+    }
+
+    return 0;
   }
 }

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,9 +16,10 @@
 
 import { strings } from '@angular-devkit/core';
 
-export function generateComponentOptions(
-  name: string,
-): { name: string; package: string } {
+export function generateComponentOptions(name: string): {
+  name: string;
+  package: string;
+} {
   return {
     name: `Dt${strings.classify(name)}Module`,
     package: `@dynatrace/barista-components/${strings.dasherize(name)}`,

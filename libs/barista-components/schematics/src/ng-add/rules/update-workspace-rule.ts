@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,7 +18,7 @@ import {
   AssetPattern,
   Schema as BuildAngularSchema,
   // Schema.json is only importable via the src files
-} from '@angular-devkit/build-angular/src/browser/schema';
+} from '@angular-devkit/build-angular/src/builders/browser/schema';
 import {
   chain,
   Rule,
@@ -93,7 +93,8 @@ export function updateWorkspaceRule(options: ExtendedSchema): Rule {
           const buildTarget = angularApp.targets.get('build');
 
           if (buildTarget && buildTarget.options) {
-            const builderOptions = (buildTarget.options as unknown) as BuildAngularSchema;
+            const builderOptions =
+              buildTarget.options as unknown as BuildAngularSchema;
 
             // include the index for styles with typography (headlines, text-styles...)
             // or the main for only the component base styles

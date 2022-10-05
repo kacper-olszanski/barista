@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -45,7 +45,7 @@ export class DtExampleTableComparators implements AfterViewInit, OnDestroy {
 
   @ViewChild('sortable', { read: DtSort, static: true }) sortable: DtSort;
 
-  dataSource: DtTableDataSource<object>;
+  dataSource: DtTableDataSource<{ host: string; namespace: string }>;
   constructor() {
     this.dataSource = new DtTableDataSource(this.data);
   }
@@ -57,7 +57,7 @@ export class DtExampleTableComparators implements AfterViewInit, OnDestroy {
     );
   }
 
-  // tslint:disable: no-any
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   readonly compareStringLengths = (
     left: any,
     right: any,
@@ -72,7 +72,7 @@ export class DtExampleTableComparators implements AfterViewInit, OnDestroy {
 
     return compareStrings(left[name], right[name], 'asc');
   };
-  // tslint:enable: no-any
+  /* eslint-enable @typescript-eslint/no-explicit-any */
 
   ngOnDestroy(): void {
     // Not necessary but possible

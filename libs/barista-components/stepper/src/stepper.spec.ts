@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-// tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers
-// tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
+// eslint-disable  @angular-eslint/no-lifecycle-call, no-use-before-define, @typescript-eslint/no-use-before-define, no-magic-numbers
+// eslint-disable  @typescript-eslint/no-explicit-any, max-lines, @typescript-eslint/unbound-method, @angular-eslint/use-component-selector
 
 import {
   DOWN_ARROW,
@@ -34,10 +34,8 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
-import {
-  DtStepper,
-  DtStepperModule,
-} from '@dynatrace/barista-components/stepper';
+import { DtStepperModule } from './stepper-module';
+import { DtStepper } from './stepper';
 
 import { dispatchKeyboardEvent } from '@dynatrace/testing/browser';
 
@@ -49,8 +47,9 @@ describe('DtStepper', () => {
     beforeEach(() => {
       preselectedFixture = createComponent(SimplePreselectedDtStepperApp);
       preselectedFixture.detectChanges();
-      stepper = preselectedFixture.debugElement.query(By.directive(DtStepper))
-        .componentInstance;
+      stepper = preselectedFixture.debugElement.query(
+        By.directive(DtStepper),
+      ).componentInstance;
     });
 
     it('should not throw', () => {
@@ -131,8 +130,9 @@ describe('DtStepper', () => {
       const fixture = createComponent(SimpleDtStepperApp);
       fixture.detectChanges();
 
-      const stepperEl = fixture.debugElement.query(By.css('dt-stepper'))
-        .nativeElement;
+      const stepperEl = fixture.debugElement.query(
+        By.css('dt-stepper'),
+      ).nativeElement;
       expect(stepperEl.getAttribute('aria-orientation')).toBe('horizontal');
     });
 
@@ -157,8 +157,9 @@ describe('DtStepper', () => {
       fixture.detectChanges();
 
       testComponent = fixture.componentInstance;
-      stepper = fixture.debugElement.query(By.css('dt-stepper'))
-        .componentInstance;
+      stepper = fixture.debugElement.query(
+        By.css('dt-stepper'),
+      ).componentInstance;
     });
 
     it('must be visited if not optional', () => {
@@ -228,13 +229,14 @@ describe('DtStepper', () => {
 
 /** Asserts that keyboard interaction works correctly. */
 function assertCorrectKeyboardInteraction(
-  // tslint:disable-next-line: no-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fixture: ComponentFixture<any>,
   stepHeaders: DebugElement[],
   orientation: StepperOrientation,
 ): void {
-  const stepperComponent = fixture.debugElement.query(By.directive(DtStepper))
-    .componentInstance;
+  const stepperComponent = fixture.debugElement.query(
+    By.directive(DtStepper),
+  ).componentInstance;
   const nextKey = orientation === 'vertical' ? DOWN_ARROW : RIGHT_ARROW;
   const prevKey = orientation === 'vertical' ? UP_ARROW : LEFT_ARROW;
 

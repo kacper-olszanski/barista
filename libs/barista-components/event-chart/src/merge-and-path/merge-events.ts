@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,16 +18,12 @@ import { RenderEvent, RenderField } from '../render-event.interface';
 
 /** Determines whether two events overlap. */
 export function dtEventChartIsOverlappingEvent(
-  // tslint:disable-next-line: no-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   eventA: RenderEvent<any> | RenderField<any>,
-  // tslint:disable-next-line: no-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   eventB: RenderEvent<any> | RenderField<any>,
   overlapThreshold: number,
 ): boolean {
-  // Either eventA or eventB have a duration, in which case they should not overlap
-  if (eventA.x1 !== eventA.x2 || eventB.x1 !== eventB.x2) {
-    return false;
-  }
   return Math.abs(eventA.x1 - eventB.x1) < overlapThreshold;
 }
 
@@ -118,7 +114,6 @@ export function dtEventChartMergeEvents<T>(
 
 export function dtEventChartMergeFields<T>(
   renderEvents: MergedRenderField<T>[],
-  overlapThreshold: number,
 ): RenderField<T>[] {
   // Loop over the rendered fields to merge points if necessary.
   for (let index = 0; index < renderEvents.length; index += 1) {
@@ -142,11 +137,9 @@ export function dtEventChartMergeFields<T>(
       eligableIndex += 1
     ) {
       const eligableEvent: MergedRenderField<T> = renderEvents[eligableIndex];
-      const isOverlapping = dtEventChartIsOverlappingEvent(
-        currentEvent,
-        eligableEvent,
-        overlapThreshold,
-      );
+      const isOverlapping =
+        currentEvent.x1 === eligableEvent.x1 &&
+        currentEvent.x2 === eligableEvent.x2;
       const hasSameColor = currentEvent.color === eligableEvent.color;
 
       // If the lane is the same, but the fields do not overlap, there will be no more overlaps

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -27,7 +27,7 @@ export class ConsumptionDemo {
   max = 20;
   value = 5;
   color: DtConsumptionThemePalette = 'main';
-  // tslint:disable-next-line:no-magic-numbers
+  // eslint-disable-next-line no-magic-numbers
   defaultBreakdown = [
     { name: 'SAAS', value: 2 },
     { name: 'Full stack', value: 2 },
@@ -37,7 +37,7 @@ export class ConsumptionDemo {
   warningMax = 130_500_000;
   warningValue = 120_000_000;
   warningColor: DtConsumptionThemePalette = 'warning';
-  // tslint:disable-next-line:no-magic-numbers
+  // eslint-disable-next-line no-magic-numbers
   warningBreakdown = [
     { name: 'Synthetic actions', value: 36_500_000 },
     { name: 'Sessions', value: 37_400_000 },

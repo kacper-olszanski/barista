@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -106,7 +106,7 @@ export class DtFilterFieldTag implements OnDestroy {
     this._temporarilyDisabledState = value;
     this._changeDetectorRef.markForCheck();
   }
-  private _temporarilyDisabledState: boolean = false;
+  private _temporarilyDisabledState = false;
 
   /** @internal Whether the whole filter-field is disabled or not */
   @Input()
@@ -117,7 +117,7 @@ export class DtFilterFieldTag implements OnDestroy {
     this._parentFilterFieldDisabled = value;
     this._changeDetectorRef.markForCheck();
   }
-  private _parentFilterFieldDisabled: boolean = false;
+  private _parentFilterFieldDisabled = false;
 
   /** Whether the tag is editable. */
   get editable(): boolean {

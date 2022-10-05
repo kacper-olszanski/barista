@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -112,7 +112,8 @@ const LOG: DtLogger = DtLoggerFactory.create('DtConfirmationDialog');
   ],
 })
 export class DtConfirmationDialog
-  implements AfterContentChecked, AfterContentInit, OnDestroy {
+  implements AfterContentChecked, AfterContentInit, OnDestroy
+{
   /** Input for the aria-label on the confirmation dialog */
   @Input('aria-label') ariaLabel: string;
   /** Aria reference to a label describing the confirmation dialog */
@@ -145,7 +146,8 @@ export class DtConfirmationDialog
 
   /** The template that will become the overlay. */
   @ViewChild(TemplateRef, { static: true })
-  private readonly _templateRef: TemplateRef<{}>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private readonly _templateRef: TemplateRef<any>;
   /** All the "state" child elements. */
   @ContentChildren(DtConfirmationDialogState)
   private readonly _stateChildren: QueryList<DtConfirmationDialogState>;
@@ -157,7 +159,7 @@ export class DtConfirmationDialog
   private _viewportChangesSubscription: Subscription = Subscription.EMPTY;
 
   /** @internal holds the state for the wiggle animation */
-  _wiggleState: boolean = false;
+  _wiggleState = false;
 
   /** @internal holds the current position state for the animation */
   _positionState: 'down' | 'up' = 'down';
@@ -268,7 +270,8 @@ export class DtConfirmationDialog
   private _updateBackdropVisibility(): void {
     if (this._overlayRef && this._overlayRef.backdropElement) {
       if (this._showBackdrop) {
-        this._overlayRef.backdropElement.style.opacity = DT_CONFIRMATION_BACKDROP_ACTIVE_OPACITY;
+        this._overlayRef.backdropElement.style.opacity =
+          DT_CONFIRMATION_BACKDROP_ACTIVE_OPACITY;
         this._overlayRef.backdropElement.style.pointerEvents = 'auto';
       } else {
         this._overlayRef.backdropElement.style.opacity = '0';
@@ -328,7 +331,8 @@ export class DtConfirmationDialog
       this._elementRef,
       this._config,
     );
-    const containerPortal = new TemplatePortal<{}>(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const containerPortal = new TemplatePortal<any>(
       this._templateRef,
       this._viewContainerRef,
     );

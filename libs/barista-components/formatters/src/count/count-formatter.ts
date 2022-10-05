@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -25,7 +25,7 @@ import { DtUnit } from '../unit';
  *
  * @param input - numeric value to be transformed
  * @param inputUnit - input unit, typically defined unit of type DtUnit (DtUnit.COUNT by default), custom strings are also allowed
- *    value is used only as a reference in case an additional rate pipe is used
+ * value is used only as a reference in case an additional rate pipe is used
  * @param maxPrecision - The maximum amount of digits to be used, if provided
  */
 export function formatCount(

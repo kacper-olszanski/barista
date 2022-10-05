@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -57,7 +57,8 @@ const DT_TREE_TABLE_INDENT_PX = 16;
 })
 export class DtTreeTableToggleCell<T>
   extends DtCell
-  implements OnDestroy, AfterViewInit {
+  implements OnDestroy, AfterViewInit
+{
   /** The aria label for the toggle button */
   @Input('aria-label') ariaLabel: string;
   /** Aria reference to a label describing the toggle button. */

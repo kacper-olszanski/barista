@@ -6,8 +6,8 @@
     "target": "esnext",
     "module": "commonjs"
   },
-  "exclude": ["**/*.spec.ts"],
-  "include": [],
+  "exclude": ["**/*.spec.ts", "**/*.test.ts"],
+  "include": ["**/*.ts"],
   "files": [],
   "references": [
     {

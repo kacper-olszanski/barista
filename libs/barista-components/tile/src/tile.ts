@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -66,7 +66,12 @@ export class DtTileIcon {}
 })
 export class DtTileSubtitle {}
 
-export type DtTileThemePalette = 'main' | 'warning' | 'error' | 'recovered';
+export type DtTileThemePalette =
+  | 'main'
+  | 'warning'
+  | 'error'
+  | 'critical'
+  | 'recovered';
 
 // Boilerplate for applying mixins to DtTile.
 export class DtTileBase {
@@ -93,7 +98,7 @@ export const _DtTileMixinBase = mixinTabIndex(
     '[class.dt-tile-disabled]': 'disabled',
     '(click)': '_haltDisabledEvents($event)',
   },
-  // tslint:disable-next-line:use-view-encapsulation
+  // eslint-disable-next-line
   encapsulation: ViewEncapsulation.None,
   preserveWhitespaces: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -105,7 +110,8 @@ export class DtTile
     HasElementRef,
     CanColor<DtTileThemePalette>,
     HasTabIndex,
-    OnDestroy {
+    OnDestroy
+{
   /** @internal The tiles subtitle */
   @ContentChild(DtTileSubtitle, { static: true }) _subTitle: DtTileSubtitle;
 

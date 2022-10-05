@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-// tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers
-// tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
+// eslint-disable  @angular-eslint/no-lifecycle-call, no-use-before-define, @typescript-eslint/no-use-before-define, no-magic-numbers
+// eslint-disable  @typescript-eslint/no-explicit-any, max-lines, @typescript-eslint/unbound-method, @angular-eslint/use-component-selector
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, OnInit, ViewChild } from '@angular/core';
@@ -34,12 +34,7 @@ import {
   DtPagination,
   DtPaginationModule,
 } from '@dynatrace/barista-components/pagination';
-import {
-  DtSimpleColumnComparatorFunction,
-  DtSort,
-  DtTableDataSource,
-  DtTableModule,
-} from '@dynatrace/barista-components/table';
+
 import {
   createComponent,
   dispatchMouseEvent,
@@ -47,6 +42,10 @@ import {
 import { CommonModule } from '@angular/common';
 import { DtLoadingDistractorModule } from '@dynatrace/barista-components/loading-distractor';
 import { DtFormattersModule } from '@dynatrace/barista-components/formatters';
+import { DtTableModule } from './table-module';
+import { DtTableDataSource } from './table-data-source';
+import { DtSimpleColumnComparatorFunction } from './simple-columns';
+import { DtSort } from './sort/sort';
 
 const PAGE_SIZE = 2;
 
@@ -431,7 +430,7 @@ export class PaginationTestApp implements OnInit {
 
 @Component({
   selector: 'demo-component',
-  // tslint:disable
+  /* eslint-disable */
   template: `
     <dt-table [dataSource]="dataSource" dtSort #sortable>
       <dt-simple-text-column
@@ -451,7 +450,7 @@ export class PaginationTestApp implements OnInit {
       <dt-row *dtRowDef="let row; columns: ['host', 'memory']"></dt-row>
     </dt-table>
   `,
-  // tslint:enable
+  /* eslint-enable */
 })
 export class TableSortingMixedTestApp implements OnInit {
   data: Array<{ host: string; memoryPerc: number; memoryTotal: number }> = [

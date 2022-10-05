@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -26,7 +26,7 @@ import { Directive, TemplateRef, ViewContainerRef } from '@angular/core';
 })
 export class DtTabLabel extends CdkPortal {
   constructor(
-    // tslint:disable-next-line:no-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     templateRef: TemplateRef<any>,
     viewContainerRef: ViewContainerRef,
   ) {

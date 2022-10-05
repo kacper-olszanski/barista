@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -541,9 +541,8 @@ describe('StackedSeriesChart util', () => {
         imports: [DtThemingModule],
         declarations: [TestApp],
       }).compileComponents();
-      const fixture: ComponentFixture<TestApp> = TestBed.createComponent(
-        TestApp,
-      );
+      const fixture: ComponentFixture<TestApp> =
+        TestBed.createComponent(TestApp);
       fixture.detectChanges();
 
       const expected = [
@@ -573,9 +572,15 @@ describe('StackedSeriesChart util', () => {
   });
 
   describe('getTotalMaxValue', () => {
-    it("should return sum of values for node's nodes", () => {
-      const expected = 5;
-      const actual = getTotalMaxValue(series);
+    it("should return rounded sum of values for node's nodes higher to the max value", () => {
+      const legendList = getLegends(stackedSeriesChartDemoDataShows);
+      const seriesList = fillSeries(
+        stackedSeriesChartDemoDataShows,
+        legendList,
+      );
+
+      const expected = 200;
+      const actual = getTotalMaxValue(seriesList);
 
       expect(actual).toEqual(expected);
     });

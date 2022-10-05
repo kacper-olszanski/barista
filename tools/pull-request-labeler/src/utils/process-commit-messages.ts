@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
+/* eslint-disable jsdoc/check-indentation  */
+
 import { splitStringIntoCommitMessage } from './split-message-into-components';
 import { CommitTypes } from '../interfaces/commit-message';
 
 /**
- *  Rules for cherrypicking labels for pull requests targeting master
+ * Rules for cherrypicking labels for pull requests targeting master
  *
  *                         PR contains
  *                    BREAKING CHANGE COMMITS?
@@ -44,9 +46,7 @@ import { CommitTypes } from '../interfaces/commit-message';
  *                                       *target:minor*            *target:patch*
  *
  */
-export function processCommitMessages(
-  commitMessages: string[],
-): {
+export function processCommitMessages(commitMessages: string[]): {
   targets: string[];
   errors: string[];
 } {

@@ -6,12 +6,15 @@ See stacked-series-chart.layout.md
 */
 
 :host {
+  --dt-stacked-series-chart-grid-gap: #{$gap-default};
+  --dt-stacked-series-chart-max-bar-size: #{$bar-track-size-default};
+
   display: grid;
   align-items: center;
   grid-template-rows: 1fr auto;
 
   &.dt-stacked-series-chart-with-legend {
-    gap: $gap;
+    gap: $tick-gutter;
   }
 }
 
@@ -20,7 +23,7 @@ See stacked-series-chart.layout.md
   display: grid;
   grid-auto-flow: dense;
   align-self: stretch;
-  gap: $gap;
+  gap: $tick-gutter;
 }
 
 /** Track */
@@ -31,7 +34,7 @@ See stacked-series-chart.layout.md
   background: $track-color;
 }
 
-.dt-stacked-series-chart-track-selectable .dt-stacked-series-chart-slice {
+.dt-stacked-series-chart-track-selectable {
   cursor: pointer;
 }
 
@@ -43,6 +46,10 @@ See stacked-series-chart.layout.md
 }
 
 .dt-stacked-series-chart-track-hoverable {
+  .dt-stacked-series-chart-slice-selectable {
+    cursor: pointer;
+  }
+
   .dt-stacked-series-chart-slice:hover {
     opacity: $hover-opacity;
   }
@@ -51,7 +58,6 @@ See stacked-series-chart.layout.md
 /** Slice **/
 .dt-stacked-series-chart-node .dt-stacked-series-chart-slice-selected,
 .dt-stacked-series-chart-track-selected.dt-stacked-series-chart-stack {
-  cursor: default;
   position: relative;
 
   &::before {
@@ -64,10 +70,6 @@ See stacked-series-chart.layout.md
 }
 
 /** Axis */
-.dt-stacked-series-chart-value-axis {
-  position: relative;
-}
-
 .dt-stacked-series-chart-axis-tick {
   position: absolute;
 
@@ -75,8 +77,8 @@ See stacked-series-chart.layout.md
     position: absolute;
     display: block;
     background: $axis-color;
-    width: 1px;
-    height: 1px;
+    width: $axis-width;
+    height: $axis-width;
     content: ' ';
   }
 }
@@ -89,11 +91,24 @@ See stacked-series-chart.layout.md
   outline: none;
 }
 
-.dt-stacked-series-chart-series-axis-auto-mode {
-  .dt-stacked-series-chart-track-label-content {
-    display: block;
-    white-space: nowrap;
-  }
+.dt-stacked-series-chart-track-label-default {
+  opacity: 0;
+}
+
+/** Heat fields */
+.dt-stacked-series-chart-heat-field {
+  position: absolute;
+  border-radius: $heat-field-border-radius;
+  background-color: var(--dt-stacked-series-chart-heat-field-color);
+
+  cursor: pointer;
+}
+
+.dt-stacked-series-chart-heat-field-area {
+  position: absolute;
+  border-radius: $heat-field-border-radius;
+  background-color: var(--dt-stacked-series-chart-heat-field-color);
+  opacity: 0.125;
 }
 
 /** Legend */

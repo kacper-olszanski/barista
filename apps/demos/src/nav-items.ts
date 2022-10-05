@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -323,6 +323,10 @@ export const DT_DEMOS_EXAMPLE_NAV_ITEMS = [
         name: 'combobox-custom-option-height-example',
         route: '/combobox-custom-option-height-example',
       },
+      {
+        name: 'combobox-form-field-example',
+        route: '/combobox-form-field-example',
+      },
     ],
   },
   {
@@ -628,10 +632,6 @@ export const DT_DEMOS_EXAMPLE_NAV_ITEMS = [
       {
         name: 'filter-field-clearall-example',
         route: '/filter-field-clearall-example',
-      },
-      {
-        name: 'filter-field-default-example',
-        route: '/filter-field-default-example',
       },
       {
         name: 'filter-field-default-search-example',
@@ -1259,6 +1259,18 @@ export const DT_DEMOS_EXAMPLE_NAV_ITEMS = [
         name: 'stacked-series-chart-column-example',
         route: '/stacked-series-chart-column-example',
       },
+      {
+        name: 'stacked-series-chart-linear-example',
+        route: '/stacked-series-chart-linear-example',
+      },
+      {
+        name: 'stacked-series-chart-date-example',
+        route: '/stacked-series-chart-date-example',
+      },
+      {
+        name: 'stacked-series-chart-heat-field-example',
+        route: '/stacked-series-chart-heat-field-example',
+      },
     ],
   },
   {
@@ -1369,6 +1381,14 @@ export const DT_DEMOS_EXAMPLE_NAV_ITEMS = [
         route: '/table-expandable-rows-example',
       },
       {
+        name: 'table-export-example',
+        route: '/table-export-example',
+      },
+      {
+        name: 'table-export-selection-example',
+        route: '/table-export-selection-example',
+      },
+      {
         name: 'table-favorite-column-example',
         route: '/table-favorite-column-example',
       },
@@ -1383,6 +1403,10 @@ export const DT_DEMOS_EXAMPLE_NAV_ITEMS = [
       {
         name: 'table-loading-example',
         route: '/table-loading-example',
+      },
+      {
+        name: 'table-selection',
+        route: '/table-selection',
       },
       {
         name: 'table-observable-example',
@@ -1477,6 +1501,10 @@ export const DT_DEMOS_EXAMPLE_NAV_ITEMS = [
       {
         name: 'tag-removable-example',
         route: '/tag-removable-example',
+      },
+      {
+        name: 'tag-custom-add-form-example',
+        route: '/tag-custom-add-form-example',
       },
     ],
   },

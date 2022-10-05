@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -221,8 +221,7 @@ describe('publish release', () => {
           {
             path: 'barista-components',
             node_index: 0,
-            url:
-              'https://6560-218540919-gh.circle-artifacts.com/0/barista-components',
+            url: 'https://6560-218540919-gh.circle-artifacts.com/0/barista-components',
           },
         ]),
       );

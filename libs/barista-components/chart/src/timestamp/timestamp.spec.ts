@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-// tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers
-// tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
+// eslint-disable  @angular-eslint/no-lifecycle-call, no-use-before-define, @typescript-eslint/no-use-before-define, no-magic-numbers
+// eslint-disable  @typescript-eslint/no-explicit-any, max-lines, @typescript-eslint/unbound-method, @angular-eslint/use-component-selector
 
 import {
   BACKSPACE,
@@ -32,10 +32,7 @@ import {
 import { Component, DebugElement, OnInit, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import {
-  DtChartModule,
-  DtChartTimestamp,
-} from '@dynatrace/barista-components/chart';
+import { DtChartModule } from '../chart-module';
 import {
   dispatchEvent,
   dispatchKeyboardEvent,
@@ -44,6 +41,7 @@ import {
 } from '@dynatrace/testing/browser';
 import {
   ARIA_DEFAULT_SELECTED_LABEL,
+  DtChartTimestamp,
   TimestampStateChangedEvent,
 } from './timestamp';
 
@@ -104,8 +102,9 @@ describe('DtChart Timestamp', () => {
       timestamp._position = 100;
       fixture.detectChanges();
 
-      container = fixture.debugElement.query(By.css(TIMESTAMP_SELECTOR))
-        .nativeElement;
+      container = fixture.debugElement.query(
+        By.css(TIMESTAMP_SELECTOR),
+      ).nativeElement;
       expect(container.style.transform).toBe('translateX(100px)');
     });
 
@@ -122,8 +121,9 @@ describe('DtChart Timestamp', () => {
 
       timestamp.value = 100;
       fixture.detectChanges();
-      container = fixture.debugElement.query(By.css(TIMESTAMP_SELECTOR))
-        .nativeElement;
+      container = fixture.debugElement.query(
+        By.css(TIMESTAMP_SELECTOR),
+      ).nativeElement;
       expect(container.style.transform).toBe('translateX(200px)');
     });
 
@@ -139,7 +139,7 @@ describe('DtChart Timestamp', () => {
       expect(container).not.toBeNull();
 
       // imitate falsy values
-      timestamp.value = (undefined as unknown) as number;
+      timestamp.value = undefined as unknown as number;
       fixture.detectChanges();
 
       container = fixture.debugElement.query(By.css(TIMESTAMP_SELECTOR));
@@ -189,14 +189,16 @@ describe('DtChart Timestamp', () => {
 
     it('should have initial values from binding and update them', () => {
       expect(timestamp._hidden).toBe(false);
-      let container = fixture.debugElement.query(By.css(TIMESTAMP_SELECTOR))
-        .nativeElement;
+      let container = fixture.debugElement.query(
+        By.css(TIMESTAMP_SELECTOR),
+      ).nativeElement;
       expect(container.style.transform).toBe('translateX(10px)');
 
       fixture.componentInstance.value = 100;
       fixture.detectChanges();
-      container = fixture.debugElement.query(By.css(TIMESTAMP_SELECTOR))
-        .nativeElement;
+      container = fixture.debugElement.query(
+        By.css(TIMESTAMP_SELECTOR),
+      ).nativeElement;
       expect(container.style.transform).toBe('translateX(100px)');
     });
 

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-// tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers
-// tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
+// eslint-disable  @angular-eslint/no-lifecycle-call, no-use-before-define, @typescript-eslint/no-use-before-define, no-magic-numbers
+// eslint-disable  @typescript-eslint/no-explicit-any, max-lines, @typescript-eslint/unbound-method, @angular-eslint/use-component-selector
 
 import { CollectionViewer } from '@angular/cdk/collections';
 import { DataSource } from '@angular/cdk/table';
@@ -37,12 +37,10 @@ import {
 } from '@dynatrace/barista-components/core';
 import { DtIndicatorModule } from '@dynatrace/barista-components/indicator';
 import { DtIconModule } from '@dynatrace/barista-components/icon';
-import {
-  DtTreeTable,
-  DtTreeTableModule,
-} from '@dynatrace/barista-components/tree-table';
+import { DtTreeTableModule } from './tree-table-module';
 
 import { createComponent } from '@dynatrace/testing/browser';
+import { DtTreeTable } from './tree-table';
 
 describe('DtTreeTable', () => {
   let treeTableElement: HTMLElement;
@@ -288,8 +286,8 @@ export class TestData {
     pizzaCheese: string,
     pizzaBase: string,
     children: TestData[] = [],
-    isSpecial: boolean = false,
-    expanded: boolean = false,
+    isSpecial = false,
+    expanded = false,
   ) {
     this.pizzaTopping = pizzaTopping;
     this.pizzaCheese = pizzaCheese;
@@ -342,7 +340,7 @@ class FakeDataSource implements DataSource<TestData> {
     return child;
   }
 
-  addData(isSpecial: boolean = false): void {
+  addData(isSpecial = false): void {
     const nextIndex = ++this.dataIndex;
     const copiedData = this.data.slice();
     copiedData.push(
@@ -473,9 +471,9 @@ function expectTreeTableToMatch(
   `,
 })
 class SimpleDtTreeTableApp {
-  toggleCounter: number = 0;
-  expandCounter: number = 0;
-  collapseCounter: number = 0;
+  toggleCounter = 0;
+  expandCounter = 0;
+  collapseCounter = 0;
 
   getLevel = (node: TestData) => node.level;
   isExpandable = (node: TestData) => node.children.length > 0;

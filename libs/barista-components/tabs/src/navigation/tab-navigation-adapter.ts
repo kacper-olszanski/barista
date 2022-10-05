@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -69,7 +69,10 @@ export class DtTabRouterFragmentAdapter extends DtTabNavigationAdapter {
     _route.fragment
       .pipe(filter((fragment) => !!fragment))
       .subscribe((fragmentText) => {
-        const ids = fragmentText.split(',').map((id) => id.trim());
+        const ids = (fragmentText ?? '')
+          .split(',')
+          .map((id) => id.trim())
+          .filter(Boolean);
         this._tabIds = new Set(ids);
         this._controls.forEach((control) => {
           control._updateWithTabIds(ids);

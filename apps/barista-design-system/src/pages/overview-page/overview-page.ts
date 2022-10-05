@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -97,9 +97,11 @@ export class BaOverviewPage implements AfterViewInit, OnDestroy {
   _switchOverviewPageDisplay(): void {
     this._listViewActive = !this._listViewActive;
     if (this._platform.isBrowser && 'localStorage' in window) {
-      this._listViewActive
-        ? localStorage.setItem(LOCALSTORAGEKEY, 'list')
-        : localStorage.setItem(LOCALSTORAGEKEY, 'tiles');
+      if (this._listViewActive) {
+        localStorage.setItem(LOCALSTORAGEKEY, 'list');
+      } else {
+        localStorage.setItem(LOCALSTORAGEKEY, 'tiles');
+      }
     }
   }
 

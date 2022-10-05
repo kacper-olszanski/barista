@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -144,7 +144,7 @@ export class GitClient {
    */
   private _spawnGitProcess(
     args: string[],
-    printStderr: boolean = true,
+    printStderr = true,
   ): SpawnSyncReturns<string> {
     return spawnSync('git', args, {
       cwd: this.projectDir,

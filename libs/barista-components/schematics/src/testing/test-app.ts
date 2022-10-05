@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -121,12 +121,8 @@ export async function createTestCaseSetup(
   let logOutput = '';
   runner.logger.subscribe((entry) => (logOutput += `${entry.message}\n`));
 
-  const {
-    appTree,
-    tempPath,
-    writeFile,
-    removeTempDir,
-  } = await createFileSystemTestApp(runner);
+  const { appTree, tempPath, writeFile, removeTempDir } =
+    await createFileSystemTestApp(runner);
 
   _patchTypeScriptDefaultLib(appTree);
 
@@ -173,9 +169,9 @@ export async function createTestCaseSetup(
  * type checking within migration rules is not working as in real applications.
  */
 export function _patchTypeScriptDefaultLib(tree: Tree): void {
-  // tslint:disable-next-line: no-unbound-method
+  // eslint-disable-next-line @typescript-eslint/unbound-method
   const _originalRead = tree.read;
-  // tslint:disable-next-line: no-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tree.read = function (filePath: string): Buffer | any {
     // In case a file within the TypeScript package is requested, we read the file from
     // the real file system. This is necessary because within unit tests, the "typeScript"
@@ -184,6 +180,7 @@ export function _patchTypeScriptDefaultLib(tree: Tree): void {
     if (filePath.match(/node_modules[/\\]typescript/)) {
       return readFileSync(filePath);
     } else {
+      // eslint-disable-next-line prefer-rest-params
       return _originalRead.apply(this, arguments);
     }
   };

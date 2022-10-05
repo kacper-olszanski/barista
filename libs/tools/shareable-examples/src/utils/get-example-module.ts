@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -166,6 +166,7 @@ export function createTransformer(
 
       if (isNgModuleObject(node)) {
         // HACK: No idea how to properly fix this since there's no ts.factory.updateNodeArray()
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (node.properties as any) = tsFactory.createNodeArray([
           ...node.properties,
           tsFactory.createPropertyAssignment(

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -25,6 +25,7 @@ import {
 
 /**
  * Prints a typescript node and returns the result
+ *
  * @param node The node to print.
  * @param sourceFile A source file that provides context for the node
  */

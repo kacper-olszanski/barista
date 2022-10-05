@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -41,10 +43,12 @@ import {
   DtFilterValue,
   isDtAutocompleteValue,
 } from '../types';
+import { DOWN_ARROW, UP_ARROW } from '@angular/cdk/keycodes';
 
 export interface FilterFieldTestContext {
   fixture: ComponentFixture<TestApp>;
   filterField: DtFilterField;
+  inputElement: HTMLInputElement;
   zone: MockNgZone;
   overlayContainer: OverlayContainer;
   overlayContainerElement: HTMLElement;
@@ -62,6 +66,7 @@ export interface FilterFieldTestContext {
 export function setupFilterFieldTest(): FilterFieldTestContext {
   let fixture: ComponentFixture<TestApp> | undefined;
   let filterField: DtFilterField | undefined;
+  let inputElement: HTMLInputElement | undefined;
   let zone: MockNgZone | undefined;
   let overlayContainer: OverlayContainer | undefined;
   let overlayContainerElement: HTMLElement | undefined;
@@ -89,8 +94,10 @@ export function setupFilterFieldTest(): FilterFieldTestContext {
     })();
 
     fixture = createComponent(TestApp);
-    filterField = fixture.debugElement.query(By.directive(DtFilterField))
-      .componentInstance;
+    filterField = fixture.debugElement.query(
+      By.directive(DtFilterField),
+    ).componentInstance;
+    inputElement = fixture!.debugElement.query(By.css('input')).nativeElement;
   });
   configureTestModule();
 
@@ -119,7 +126,7 @@ export function setupFilterFieldTest(): FilterFieldTestContext {
     optionOverlayContainer: HTMLElement,
     nthOption: number,
   ): void {
-    let options = getOptions(optionOverlayContainer);
+    const options = getOptions(optionOverlayContainer);
     const selectedOption = options[nthOption];
     selectedOption.click();
     advanceFilterfieldCycle();
@@ -129,13 +136,13 @@ export function setupFilterFieldTest(): FilterFieldTestContext {
    * Types the passed value into the filter field input element
    */
   function typeIntoFilterElement(inputString: string): void {
-    const inputEl = fixture!.debugElement.query(By.css('input')).nativeElement;
-    typeInElement(inputString, inputEl);
+    typeInElement(inputString, inputElement!);
   }
 
   return {
     fixture: fixture!,
     filterField: filterField!,
+    inputElement: inputElement!,
     zone: zone!,
     overlayContainer: overlayContainer!,
     overlayContainerElement: overlayContainerElement!,
@@ -146,7 +153,7 @@ export function setupFilterFieldTest(): FilterFieldTestContext {
 }
 
 @Component({
-  selector: 'test-app',
+  selector: 'dt-test-app',
   template: `
     <dt-filter-field
       [dataSource]="dataSource"
@@ -156,17 +163,18 @@ export function setupFilterFieldTest(): FilterFieldTestContext {
   `,
 })
 export class TestApp {
-  // tslint:disable-next-line:no-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dataSource = new DtFilterFieldDefaultDataSource(FILTER_FIELD_TEST_DATA_ASYNC);
 
   label = 'Filter by';
   clearAllLabel = 'Clear all';
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   @ViewChild(DtFilterField) filterField: DtFilterField<any>;
 }
 
 @Component({
-  selector: 'test-app',
+  selector: 'dt-test-app',
   template: `
     <dt-filter-field
       [dataSource]="dataSource"
@@ -182,17 +190,18 @@ export class TestApp {
   ],
 })
 export class TestAppCustomParserConfig {
-  // tslint:disable-next-line:no-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dataSource = new DtFilterFieldDefaultDataSource(FILTER_FIELD_TEST_DATA_ASYNC);
 
   label = 'Filter by';
   clearAllLabel = 'Clear all';
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   @ViewChild(DtFilterField) filterField: DtFilterField<any>;
 }
 
 @Component({
-  selector: 'test-app',
+  selector: 'dt-test-app',
   template: `
     <dt-filter-field
       [dataSource]="dataSource"
@@ -203,13 +212,14 @@ export class TestAppCustomParserConfig {
   `,
 })
 export class TestAppCustomParserInput {
-  // tslint:disable-next-line:no-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dataSource = new DtFilterFieldDefaultDataSource(FILTER_FIELD_TEST_DATA_ASYNC);
 
   label = 'Filter by';
   clearAllLabel = 'Clear all';
   parserFn = customParser;
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   @ViewChild(DtFilterField) filterField: DtFilterField<any>;
 }
 
@@ -237,6 +247,12 @@ export function customParser(
     }
   }
   return tagData;
+}
+
+export function getPartialResultsHintPanel(
+  overlayContainerElement: HTMLElement,
+): HTMLElement | null {
+  return overlayContainerElement.querySelector('.dt-filter-field-hint-partial');
 }
 
 export function getOptions(
@@ -286,9 +302,7 @@ export function getRangeApplyButton(
 export function getMultiSelectTrigger(
   overlayContainerElement: HTMLElement,
 ): HTMLElement[] {
-  return Array.from(
-    overlayContainerElement.querySelectorAll('input[dtFilterFieldMultiSelect]'),
-  );
+  return Array.from(overlayContainerElement.querySelectorAll('input'));
 }
 
 export function getMultiSelect(
@@ -340,8 +354,9 @@ interface FilterTagTestData {
   deletable?: boolean;
 }
 
-// tslint:disable-next-line:no-any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function getFilterTags(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fixture: ComponentFixture<any>,
 ): Array<FilterTagTestData> {
   return Array.from(
@@ -374,15 +389,17 @@ export function getFilterTags(
   });
 }
 
-export function getTagButtons(
-  tag: FilterTagTestData,
-): { label: HTMLButtonElement; deleteButton: HTMLButtonElement } {
+export function getTagButtons(tag: FilterTagTestData): {
+  label: HTMLButtonElement;
+  deleteButton: HTMLButtonElement;
+} {
   const tagNative = tag.ele.nativeElement;
   const label = tagNative.querySelector('.dt-filter-field-tag-label');
   const deleteButton = tagNative.querySelector('.dt-filter-field-tag-button');
   return { label, deleteButton };
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function getInput(fixture: ComponentFixture<any>): HTMLInputElement {
   return fixture.debugElement.query(By.css('.dt-filter-field-input'))
     .nativeElement;
@@ -390,6 +407,7 @@ export function getInput(fixture: ComponentFixture<any>): HTMLInputElement {
 
 /** Get the clearAll button. */
 export function getClearAll(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fixture: ComponentFixture<any>,
 ): HTMLButtonElement | null {
   const dbgEl = fixture.debugElement.query(
@@ -399,10 +417,19 @@ export function getClearAll(
 }
 
 /** Get the clearAll button and evaluate if it is visible or not. */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function isClearAllVisible(fixture: ComponentFixture<any>): boolean {
   const clearAll = getClearAll(fixture);
   return (
     clearAll !== null &&
     !clearAll.classList.contains('dt-filter-field-clear-all-button-hidden')
   );
+}
+
+export function moveKeyUp(): KeyboardEvent {
+  return new KeyboardEvent('keydown', { keyCode: UP_ARROW });
+}
+
+export function moveKeyDown(): KeyboardEvent {
+  return new KeyboardEvent('keydown', { keyCode: DOWN_ARROW });
 }

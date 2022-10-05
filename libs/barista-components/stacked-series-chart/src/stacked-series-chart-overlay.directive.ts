@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -29,3 +29,16 @@ import { Directive } from '@angular/core';
   exportAs: 'dtStackedSeriesChartOverlay',
 })
 export class DtStackedSeriesChartOverlay {}
+
+/**
+ * Overlay directive to be used alongside with StackedSeriesChart.
+ *
+ * @example
+ * <ng-template dtStackedSeriesChartHeatFieldOverlay let-heatField>
+ *   <!-- [content of overlay here] -->
+ * </ng-template>
+ */
+@Directive({
+  selector: 'ng-template[dtStackedSeriesChartHeatFieldOverlay]',
+})
+export class DtStackedSeriesChartHeatFieldOverlay {}

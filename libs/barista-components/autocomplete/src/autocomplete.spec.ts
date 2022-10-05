@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-// tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers
-// tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
+// eslint-disable  @angular-eslint/no-lifecycle-call, no-use-before-define, @typescript-eslint/no-use-before-define, no-magic-numbers
+// eslint-disable  @typescript-eslint/no-explicit-any, max-lines, @typescript-eslint/unbound-method, @angular-eslint/use-component-selector
+// eslint-disable @typescript-eslint/no-non-null-assertion
 
 import {
   DOWN_ARROW,
@@ -55,13 +56,6 @@ import { Observable, Subscription } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 
 import {
-  DT_AUTOCOMPLETE_DEFAULT_OPTIONS,
-  DtAutocomplete,
-  DtAutocompleteModule,
-  DtAutocompleteTrigger,
-  getDtAutocompleteMissingPanelError,
-} from '@dynatrace/barista-components/autocomplete';
-import {
   DtOption,
   DtOptionSelectionChange,
   DT_UI_TEST_CONFIG,
@@ -82,6 +76,13 @@ import {
   typeInElement,
 } from '@dynatrace/testing/browser';
 import { TemplatePortal } from '@angular/cdk/portal';
+import { DtAutocompleteModule } from './autocomplete-module';
+import {
+  DtAutocomplete,
+  DT_AUTOCOMPLETE_DEFAULT_OPTIONS,
+} from './autocomplete';
+import { DtAutocompleteTrigger } from './autocomplete-trigger';
+import { getDtAutocompleteMissingPanelError } from './autocomplete-errors';
 
 describe('DtAutocomplete', () => {
   let overlayContainer: OverlayContainer;
@@ -270,9 +271,8 @@ describe('DtAutocomplete', () => {
       fixture.detectChanges();
       tick();
 
-      let options = overlayContainerElement.querySelectorAll<HTMLElement>(
-        'dt-option',
-      );
+      let options =
+        overlayContainerElement.querySelectorAll<HTMLElement>('dt-option');
       options[0].click();
 
       // Changing value from 'Alabama' to 'al' to re-populate the option list,
@@ -282,9 +282,8 @@ describe('DtAutocomplete', () => {
       fixture.detectChanges();
       tick();
 
-      options = overlayContainerElement.querySelectorAll<HTMLElement>(
-        'dt-option',
-      );
+      options =
+        overlayContainerElement.querySelectorAll<HTMLElement>('dt-option');
       options[1].click();
       fixture.detectChanges();
 
@@ -411,7 +410,8 @@ describe('DtAutocomplete', () => {
     });
 
     it('should not emit the `opened` event when no options are being shown', () => {
-      fixture.componentInstance.filteredStates = fixture.componentInstance.states = [];
+      fixture.componentInstance.filteredStates =
+        fixture.componentInstance.states = [];
       fixture.detectChanges();
 
       fixture.componentInstance.trigger.openPanel();
@@ -445,7 +445,8 @@ describe('DtAutocomplete', () => {
     });
 
     it('should not emit the `closed` event when no options were shown', () => {
-      fixture.componentInstance.filteredStates = fixture.componentInstance.states = [];
+      fixture.componentInstance.filteredStates =
+        fixture.componentInstance.states = [];
       fixture.detectChanges();
 
       fixture.componentInstance.trigger.openPanel();
@@ -527,9 +528,8 @@ describe('DtAutocomplete', () => {
       fixture.detectChanges();
       zone.simulateZoneExit();
 
-      const options = overlayContainerElement.querySelectorAll<HTMLElement>(
-        'dt-option',
-      );
+      const options =
+        overlayContainerElement.querySelectorAll<HTMLElement>('dt-option');
       options[1].click();
       fixture.detectChanges();
 
@@ -544,9 +544,8 @@ describe('DtAutocomplete', () => {
       fixture.detectChanges();
       zone.simulateZoneExit();
 
-      const options = overlayContainerElement.querySelectorAll<HTMLElement>(
-        'dt-option',
-      );
+      const options =
+        overlayContainerElement.querySelectorAll<HTMLElement>('dt-option');
       options[1].click();
       fixture.detectChanges();
 
@@ -562,9 +561,8 @@ describe('DtAutocomplete', () => {
       fixture.detectChanges();
       zone.simulateZoneExit();
 
-      const options = overlayContainerElement.querySelectorAll<HTMLElement>(
-        'dt-option',
-      );
+      const options =
+        overlayContainerElement.querySelectorAll<HTMLElement>('dt-option');
       options[1].click();
       fixture.detectChanges();
 
@@ -580,9 +578,8 @@ describe('DtAutocomplete', () => {
       fixture.componentInstance.options.toArray()[1].value = 'test value';
       fixture.detectChanges();
 
-      const options = overlayContainerElement.querySelectorAll<HTMLElement>(
-        'dt-option',
-      );
+      const options =
+        overlayContainerElement.querySelectorAll<HTMLElement>('dt-option');
       options[1].click();
 
       fixture.detectChanges();
@@ -650,9 +647,8 @@ describe('DtAutocomplete', () => {
       fixture.detectChanges();
       zone.simulateZoneExit();
 
-      const options = overlayContainerElement.querySelectorAll<HTMLElement>(
-        'dt-option',
-      );
+      const options =
+        overlayContainerElement.querySelectorAll<HTMLElement>('dt-option');
       options[1].click();
       fixture.detectChanges();
 
@@ -770,9 +766,8 @@ describe('DtAutocomplete', () => {
 
     it('should set the active item to the first option when DOWN key is pressed', () => {
       const componentInstance = fixture.componentInstance;
-      const optionEls = overlayContainerElement.querySelectorAll<HTMLElement>(
-        'dt-option',
-      );
+      const optionEls =
+        overlayContainerElement.querySelectorAll<HTMLElement>('dt-option');
 
       expect(componentInstance.trigger.panelOpen).toBe(true);
 
@@ -799,9 +794,8 @@ describe('DtAutocomplete', () => {
 
     it('should set the active item to the last option when UP key is pressed', () => {
       const componentInstance = fixture.componentInstance;
-      const optionEls = overlayContainerElement.querySelectorAll<HTMLElement>(
-        'dt-option',
-      );
+      const optionEls =
+        overlayContainerElement.querySelectorAll<HTMLElement>('dt-option');
 
       expect(componentInstance.trigger.panelOpen).toBe(true);
 
@@ -842,9 +836,8 @@ describe('DtAutocomplete', () => {
       componentInstance.trigger._handleKeydown(DOWN_ARROW_EVENT);
       fixture.detectChanges();
 
-      const optionEls = overlayContainerElement.querySelectorAll<HTMLElement>(
-        'dt-option',
-      );
+      const optionEls =
+        overlayContainerElement.querySelectorAll<HTMLElement>('dt-option');
 
       expect(
         componentInstance.trigger.activeOption ===
@@ -1085,8 +1078,9 @@ describe('DtAutocomplete', () => {
       fixture.componentInstance.trigger.openPanel();
       fixture.detectChanges();
 
-      const panel = fixture.debugElement.query(By.css('.dt-autocomplete-panel'))
-        .nativeElement;
+      const panel = fixture.debugElement.query(
+        By.css('.dt-autocomplete-panel'),
+      ).nativeElement;
 
       expect(panel.getAttribute('role')).toEqual('listbox');
     });
@@ -1151,8 +1145,9 @@ describe('DtAutocomplete', () => {
       fixture.componentInstance.trigger.openPanel();
       fixture.detectChanges();
 
-      const panel = fixture.debugElement.query(By.css('.dt-autocomplete-panel'))
-        .nativeElement;
+      const panel = fixture.debugElement.query(
+        By.css('.dt-autocomplete-panel'),
+      ).nativeElement;
 
       expect(input.getAttribute('aria-owns')).toBe(panel.getAttribute('id'));
     });
@@ -1206,9 +1201,8 @@ describe('DtAutocomplete', () => {
       fixture.componentInstance.trigger.openPanel();
       fixture.detectChanges();
 
-      let options = overlayContainerElement.querySelectorAll<HTMLElement>(
-        'dt-option',
-      );
+      let options =
+        overlayContainerElement.querySelectorAll<HTMLElement>('dt-option');
       options[0].click();
       fixture.detectChanges();
       zone.simulateZoneExit();
@@ -1217,9 +1211,8 @@ describe('DtAutocomplete', () => {
       const componentOptions = fixture.componentInstance.options.toArray();
       expect(componentOptions[0].selected).toBe(true);
 
-      options = overlayContainerElement.querySelectorAll<HTMLElement>(
-        'dt-option',
-      );
+      options =
+        overlayContainerElement.querySelectorAll<HTMLElement>('dt-option');
       options[1].click();
       fixture.detectChanges();
 
@@ -1231,9 +1224,8 @@ describe('DtAutocomplete', () => {
       fixture.componentInstance.trigger.openPanel();
       fixture.detectChanges();
 
-      let options = overlayContainerElement.querySelectorAll<HTMLElement>(
-        'dt-option',
-      );
+      let options =
+        overlayContainerElement.querySelectorAll<HTMLElement>('dt-option');
       options[0].click();
       fixture.detectChanges();
       zone.simulateZoneExit();
@@ -1244,9 +1236,8 @@ describe('DtAutocomplete', () => {
 
       expect(componentOptions[0].selected).toBe(true);
 
-      options = overlayContainerElement.querySelectorAll<HTMLElement>(
-        'dt-option',
-      );
+      options =
+        overlayContainerElement.querySelectorAll<HTMLElement>('dt-option');
       options[1].click();
       fixture.detectChanges();
 
@@ -1257,7 +1248,8 @@ describe('DtAutocomplete', () => {
     }));
 
     it('should be able to preselect the first option', fakeAsync(() => {
-      fixture.componentInstance.trigger.autocomplete.autoActiveFirstOption = true;
+      fixture.componentInstance.trigger.autocomplete.autoActiveFirstOption =
+        true;
       fixture.componentInstance.trigger.openPanel();
       fixture.detectChanges();
       zone.simulateZoneExit();
@@ -1270,7 +1262,8 @@ describe('DtAutocomplete', () => {
 
     it('should be able to preselect the first option on focus', fakeAsync(() => {
       const input = fixture.debugElement.query(By.css('input')).nativeElement;
-      fixture.componentInstance.trigger.autocomplete.autoActiveFirstOption = true;
+      fixture.componentInstance.trigger.autocomplete.autoActiveFirstOption =
+        true;
       fixture.detectChanges();
 
       dispatchFakeEvent(input, 'focusin');
@@ -1314,9 +1307,9 @@ describe('DtAutocomplete', () => {
         fixture.componentInstance.trigger.openPanel();
         fixture.detectChanges();
         zone.simulateZoneExit();
-        (overlayContainerElement.querySelector(
-          'dt-option',
-        ) as HTMLElement).click();
+        (
+          overlayContainerElement.querySelector('dt-option') as HTMLElement
+        ).click();
         fixture.detectChanges();
         zone.simulateZoneExit();
       };
@@ -1357,9 +1350,8 @@ describe('DtAutocomplete', () => {
       trigger = fixture.componentInstance.trigger;
 
       closingActionSpy = jest.fn();
-      closingActionsSub = trigger.panelClosingActions.subscribe(
-        closingActionSpy,
-      );
+      closingActionsSub =
+        trigger.panelClosingActions.subscribe(closingActionSpy);
     }));
 
     afterEach(() => {
@@ -1447,9 +1439,8 @@ describe('DtAutocomplete', () => {
         typeInElement('d', input);
         fixture.detectChanges();
 
-        const options = overlayContainerElement.querySelectorAll<HTMLElement>(
-          'dt-option',
-        );
+        const options =
+          overlayContainerElement.querySelectorAll<HTMLElement>('dt-option');
         expect(options.length).toBe(1);
       }).not.toThrowError();
     });
@@ -1572,9 +1563,8 @@ describe('DtAutocomplete', () => {
       tick();
       fixture.detectChanges();
 
-      const autocomplete = fixture.debugElement.nativeElement.querySelector(
-        'dt-autocomplete',
-      );
+      const autocomplete =
+        fixture.debugElement.nativeElement.querySelector('dt-autocomplete');
       const panel = overlayContainerElement.querySelector(
         '.dt-autocomplete-panel',
       )!;
@@ -1588,9 +1578,8 @@ describe('DtAutocomplete', () => {
   });
   describe('propagate attribute to overlay', () => {
     it('should propagate attribute to overlay when `dt-ui-test-id` is provided', () => {
-      const fixture: ComponentFixture<PropagateAttribute> = createComponent(
-        PropagateAttribute,
-      );
+      const fixture: ComponentFixture<PropagateAttribute> =
+        createComponent(PropagateAttribute);
       fixture.detectChanges();
       const trigger = fixture.componentInstance.trigger;
       trigger.openPanel();
@@ -1604,9 +1593,8 @@ describe('DtAutocomplete', () => {
   });
   describe('additional programmatic options', () => {
     it('should add the additional option at the end of the normal content projected options', () => {
-      const fixture: ComponentFixture<PropagateAttribute> = createComponent(
-        ProgrammaticOptions,
-      );
+      const fixture: ComponentFixture<PropagateAttribute> =
+        createComponent(ProgrammaticOptions);
       fixture.detectChanges();
       const trigger = fixture.componentInstance.trigger;
       trigger.openPanel();

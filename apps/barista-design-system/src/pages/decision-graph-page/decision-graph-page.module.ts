@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -20,13 +20,13 @@ import { Route, RouterModule } from '@angular/router';
 import { DtButtonModule } from '@dynatrace/barista-components/button';
 import { DtThemingModule } from '@dynatrace/barista-components/theming';
 import { BaDecisionGraphPage } from './decision-graph-page';
-import { DsPageGuard } from '@dynatrace/shared/design-system/ui';
-import { BaDecisionGraph } from './components/ba-decision-graph/ba-decision-graph';
+import { DsPageGuard, DsPageService } from '@dynatrace/shared/design-system/ui';
 import {
+  BaDecisionGraph,
   BaDecisionGraphNode,
   BaDecisiongraphNodeNavigation,
-} from './components/ba-decision-graph/ba-decision-graph-node';
-import { BaDecisionGraphStartnode } from './components/ba-decision-graph/ba-decision-graph-start-node';
+  BaDecisionGraphStartnode,
+} from './components/ba-decision-graph';
 
 export const routes: Route[] = [
   {
@@ -43,11 +43,18 @@ export const routes: Route[] = [
     DtThemingModule,
     RouterModule.forChild(routes),
   ],
+  providers: [DsPageService],
   declarations: [
     BaDecisionGraphPage,
     BaDecisionGraph,
-    BaDecisionGraphNode,
     BaDecisionGraphStartnode,
+    BaDecisionGraphNode,
+    BaDecisiongraphNodeNavigation,
+  ],
+  exports: [
+    BaDecisionGraph,
+    BaDecisionGraphStartnode,
+    BaDecisionGraphNode,
     BaDecisiongraphNodeNavigation,
   ],
 })

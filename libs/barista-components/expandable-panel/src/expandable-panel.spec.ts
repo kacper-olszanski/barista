@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-// tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers
-// tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
-// tslint:disable deprecation
+// eslint-disable  @angular-eslint/no-lifecycle-call, no-use-before-define, @typescript-eslint/no-use-before-define, no-magic-numbers
+// eslint-disable  @typescript-eslint/no-explicit-any, max-lines, @typescript-eslint/unbound-method, @angular-eslint/use-component-selector
+// eslint-disable  import/no-deprecated
 
 import { Component, DebugElement } from '@angular/core';
 import { TestBed, waitForAsync, ComponentFixture } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
-import {
-  DtExpandablePanel,
-  DtExpandablePanelModule,
-} from '@dynatrace/barista-components/expandable-panel';
+import { DtExpandablePanelModule } from './expandable-panel-module';
+import { DtExpandablePanel } from './expandable-panel';
 
 import { createComponent } from '@dynatrace/testing/browser';
 
@@ -58,9 +56,10 @@ describe('DtExpandablePanel', () => {
           By.directive(DtExpandablePanel),
         );
         instanceElement = instanceDebugElement.nativeElement;
-        expandablePanelInstance = instanceDebugElement.injector.get<DtExpandablePanel>(
-          DtExpandablePanel,
-        );
+        expandablePanelInstance =
+          instanceDebugElement.injector.get<DtExpandablePanel>(
+            DtExpandablePanel,
+          );
       }),
     );
 
@@ -130,9 +129,8 @@ describe('DtExpandablePanel', () => {
       const expandedSpy = jest.fn();
       const changedSpy = jest.fn();
       const instance = instanceDebugElement.componentInstance;
-      const expandedSubscription = instance._panelExpanded.subscribe(
-        expandedSpy,
-      );
+      const expandedSubscription =
+        instance._panelExpanded.subscribe(expandedSpy);
       const changedSubscription = instance.expandChange.subscribe(changedSpy);
 
       expandablePanelInstance.open();
@@ -150,9 +148,8 @@ describe('DtExpandablePanel', () => {
       const collapsedSpy = jest.fn();
       const changedSpy = jest.fn();
       const instance = instanceDebugElement.componentInstance;
-      const collapsedSubscription = instance._panelCollapsed.subscribe(
-        collapsedSpy,
-      );
+      const collapsedSubscription =
+        instance._panelCollapsed.subscribe(collapsedSpy);
       const changedSubscription = instance.expandChange.subscribe(changedSpy);
 
       expandablePanelInstance.close();

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,7 +15,11 @@
  */
 
 export * from './stacked-series-chart-single-example/stacked-series-chart-single-example';
+export * from './stacked-series-chart-column-example/stacked-series-chart-column-example';
 export * from './stacked-series-chart-connected-legend-example/stacked-series-chart-connected-legend-example';
 export * from './stacked-series-chart-generic-example/stacked-series-chart-generic-example';
 export * from './stacked-series-chart-filled-example/stacked-series-chart-filled-example';
+export * from './stacked-series-chart-linear-example/stacked-series-chart-linear-example';
+export * from './stacked-series-chart-date-example/stacked-series-chart-date-example';
+export * from './stacked-series-chart-heat-field-example/stacked-series-chart-heat-field-example';
 export * from './stacked-series-chart-examples.module';

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -39,9 +39,8 @@ export interface DtTableSelectionConfig {
 }
 
 /** Injectiontoken used to the DtTableSelection configuration */
-export const DT_TABLE_SELECTION_CONFIG = new InjectionToken<DtTableSelectionConfig>(
-  'DT_TABLE_SELECTION_CONFIG',
-);
+export const DT_TABLE_SELECTION_CONFIG =
+  new InjectionToken<DtTableSelectionConfig>('DT_TABLE_SELECTION_CONFIG');
 
 /**
  * Directive for managing selection on a DtTable component
@@ -66,9 +65,8 @@ export class DtTableSelection<T> implements OnInit {
    * The event contains rows that were added and removed from the selection
    */
   @Output('dtTableSelectionChange')
-  readonly selectionChange: Observable<
-    SelectionChange<T>
-  > = this._selectionModel.changed.asObservable();
+  readonly selectionChange: Observable<SelectionChange<T>> =
+    this._selectionModel.changed.asObservable();
 
   /**
    * The rows that should be selected initially
@@ -97,6 +95,7 @@ export class DtTableSelection<T> implements OnInit {
   get selectionLimitReached(): boolean {
     return (
       isNumber(this._config?.selectionLimit) &&
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this._config!.selectionLimit <= this._selectionModel.selected.length
     );
   }

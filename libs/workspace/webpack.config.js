@@ -9,7 +9,7 @@ const entries = [
   'src/builders/barista-build/renderer.ts',
   'src/builders/typescript/index.ts',
   'src/builders/packager/index.ts',
-  'src/builders/affected-e2e/index.ts',
+  'src/builders/stylelint/index.ts',
   'src/index.ts',
 ];
 
@@ -24,9 +24,13 @@ module.exports = (config) => {
     config.entry[name] = [join(__dirname, entry)];
   }
 
+  // cacheUnaffected is enabled by default, but cannot be used with optimization
+  // useExports true/global.
+  config.experiments.cacheUnaffected = false;
+
   // Add tree shaking with terser
   config.optimization = {
-    usedExports: true,
+    usedExports: 'global',
     minimizer: [new TerserPlugin()],
   };
 

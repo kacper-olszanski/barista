@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -28,8 +28,6 @@ import { PortalModule } from '@angular/cdk/portal';
 import { DtOptionModule } from '@dynatrace/barista-components/core';
 
 @NgModule({
-  exports: [DtCombobox, DtOptionModule],
-  declarations: [DtCombobox],
   imports: [
     CommonModule,
     PortalModule,
@@ -40,5 +38,7 @@ import { DtOptionModule } from '@dynatrace/barista-components/core';
     DtLoadingDistractorModule,
     PortalModule,
   ],
+  exports: [DtCombobox, DtOptionModule],
+  declarations: [DtCombobox],
 })
 export class DtComboboxModule {}

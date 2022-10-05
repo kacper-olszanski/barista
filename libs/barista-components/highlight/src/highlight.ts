@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -77,7 +77,8 @@ function escapeRegExp(text: string): string {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DtHighlight
-  implements AfterContentChecked, AfterViewInit, OnChanges, OnDestroy {
+  implements AfterContentChecked, AfterViewInit, OnChanges, OnDestroy
+{
   /**
    * The caseSensitive input can be set to search for case sensitive occurrences.
    * Per default the search is case insensitive.
@@ -113,7 +114,7 @@ export class DtHighlight
   constructor(
     private _zone: NgZone,
     private _elementRef: ElementRef,
-    // tslint:disable-next-line: no-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     @Optional() @Inject(DOCUMENT) private _document?: any,
   ) {}
 

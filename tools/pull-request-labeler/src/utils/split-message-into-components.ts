@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -19,6 +19,7 @@ import { CommitMessage, CommitTypes } from '../interfaces/commit-message';
 /**
  * Splits the commit message string into its own components. This helps for
  * further processing of the commit messages.
+ *
  * @param original Original string of the commit message.
  */
 export function splitStringIntoCommitMessage(original: string): CommitMessage {
@@ -56,9 +57,10 @@ export function splitStringIntoCommitMessage(original: string): CommitMessage {
     original.toLowerCase(),
   );
 
-  const releaseCommit = /chore: bump version to ([\d|\.].*?) w\/ changelog/gim.test(
-    original.toLowerCase(),
-  );
+  const releaseCommit =
+    /chore: bump version to ([\d|\.].*?) w\/ changelog/gim.test(
+      original.toLowerCase(),
+    );
 
   return {
     type,

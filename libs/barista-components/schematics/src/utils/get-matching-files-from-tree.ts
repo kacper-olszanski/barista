@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,6 +18,7 @@ import { Tree } from '@angular-devkit/schematics/src/tree/interface';
 
 /**
  * Returns a set of matched files in a tree by a provided matcher function
+ *
  * @param tree The tree where we have to search for the files
  * @param matcher A function that gets a file path and check if the path matches
  */

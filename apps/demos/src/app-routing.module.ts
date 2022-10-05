@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -86,7 +86,6 @@ import {
   DtExampleConsumptionError,
   DtExampleConsumptionWarning,
   DtExampleComboboxSimple,
-  DtExampleComboboxFormControl,
   DtExampleContainerBreakpointObserverDefault,
   DtExampleContainerBreakpointObserverIfElse,
   DtExampleContainerBreakpointObserverIf,
@@ -137,7 +136,6 @@ import {
   DtExampleExpandableTextDefault,
   DtExampleFilterFieldAsync,
   DtExampleFilterFieldClearall,
-  DtExampleFilterFieldDefault,
   DtExampleFilterFieldDefaultSearch,
   DtExampleFilterFieldDisabled,
   DtExampleFilterFieldDistinct,
@@ -270,6 +268,9 @@ import {
   DtExampleStackedSeriesChartGeneric,
   DtExampleStackedSeriesChartFilled,
   DtExampleStackedSeriesChartColumn,
+  DtExampleStackedSeriesChartLinear,
+  DtExampleStackedSeriesChartDate,
+  DtExampleStackedSeriesChartHeatField,
   DtExampleSwitchDark,
   DtExampleSwitchDefault,
   DtExampleSwitchResponsive,
@@ -282,6 +283,8 @@ import {
   DtExampleTableDynamicColumns,
   DtExampleTableEmptyState,
   DtExampleTableExpandableRows,
+  DtExampleTableExport,
+  DtExampleTableExportSelection,
   DtExampleTableFavoriteColumn,
   DtExampleTableFavoriteColumnNoHeader,
   DtExampleTableInteractiveRows,
@@ -294,6 +297,7 @@ import {
   DtExampleTableProblem,
   DtExampleTableResponsive,
   DtExampleTableSearch,
+  DtExampleTableSelection,
   DtExampleTableShowMore,
   DtExampleTableSorting,
   DtExampleTableSortingMixedColumns,
@@ -310,6 +314,7 @@ import {
   DtExampleTileDefault,
   DtExampleTileDisabled,
   DtExampleTileError,
+  DtExampleTileCritical,
   DtExampleTileMain,
   DtExampleTileWarning,
   DtExampleTileRecovered,
@@ -328,11 +333,13 @@ import {
   DtExampleTreeTableProblemIndicator,
   DtExampleTreeTableSimple,
   DtExampleComboboxCustomOptionHeight,
+  DtExampleComboboxFormField,
   DtExampleSelectCustomValueTemplate,
   DtExampleCalendarMinMax,
   DtExampleTimepickerMinMax,
   DtExampleDatepickerDark,
-  DtExampleDatepickerDefault
+  DtExampleDatepickerDefault,
+  DtExampleCustomAddFormTag,
 } from '@dynatrace/barista-examples';
 
 // The Routing Module replaces the routing configuration in the root or feature module.
@@ -494,12 +501,12 @@ const ROUTES: Routes = [
     component: DtExampleComboboxSimple,
   },
   {
-    path: 'combobox-form-control-example',
-    component: DtExampleComboboxFormControl,
-  },
-  {
     path: 'combobox-custom-option-height-example',
     component: DtExampleComboboxCustomOptionHeight,
+  },
+  {
+    path: 'combobox-form-field-example',
+    component: DtExampleComboboxFormField,
   },
   {
     path: 'confirmation-dialog-default-example',
@@ -594,10 +601,10 @@ const ROUTES: Routes = [
   { path: 'drawer-dynamic-example', component: DtExampleDrawerDynamic },
   { path: 'drawer-nested-example', component: DtExampleDrawerNested },
   { path: 'drawer-over-example', component: DtExampleDrawerOver },
-  { path: 'calendar-min-max-example', component: DtExampleCalendarMinMax},
-  { path: 'timepicker-min-max-example', component: DtExampleTimepickerMinMax},
-  { path: 'datepicker-dark-example', component: DtExampleDatepickerDark},
-  { path: 'datepicker-default-example', component: DtExampleDatepickerDefault},
+  { path: 'calendar-min-max-example', component: DtExampleCalendarMinMax },
+  { path: 'timepicker-min-max-example', component: DtExampleTimepickerMinMax },
+  { path: 'datepicker-dark-example', component: DtExampleDatepickerDark },
+  { path: 'datepicker-default-example', component: DtExampleDatepickerDefault },
   {
     path: 'drawer-table-default-example',
     component: DtExampleDrawerTableDefault,
@@ -700,10 +707,6 @@ const ROUTES: Routes = [
   {
     path: 'filter-field-clearall-example',
     component: DtExampleFilterFieldClearall,
-  },
-  {
-    path: 'filter-field-default-example',
-    component: DtExampleFilterFieldDefault,
   },
   {
     path: 'filter-field-default-search-example',
@@ -1047,6 +1050,18 @@ const ROUTES: Routes = [
     path: 'stacked-series-chart-column-example',
     component: DtExampleStackedSeriesChartColumn,
   },
+  {
+    path: 'stacked-series-chart-linear-example',
+    component: DtExampleStackedSeriesChartLinear,
+  },
+  {
+    path: 'stacked-series-chart-date-example',
+    component: DtExampleStackedSeriesChartDate,
+  },
+  {
+    path: 'stacked-series-chart-heat-field-example',
+    component: DtExampleStackedSeriesChartHeatField,
+  },
   { path: 'stepper-default-example', component: DtExampleStepperDefault },
   { path: 'stepper-editable-example', component: DtExampleStepperEditable },
   { path: 'stepper-linear-example', component: DtExampleStepperLinear },
@@ -1090,6 +1105,14 @@ const ROUTES: Routes = [
     component: DtExampleTableExpandableRows,
   },
   {
+    path: 'table-export-example',
+    component: DtExampleTableExport,
+  },
+  {
+    path: 'table-export-selection-example',
+    component: DtExampleTableExportSelection,
+  },
+  {
     path: 'table-favorite-column-example',
     component: DtExampleTableFavoriteColumn,
   },
@@ -1101,6 +1124,7 @@ const ROUTES: Routes = [
     path: 'table-interactive-rows-example',
     component: DtExampleTableInteractiveRows,
   },
+  { path: 'table-selection', component: DtExampleTableSelection },
   { path: 'table-loading-example', component: DtExampleTableLoading },
   { path: 'table-observable-example', component: DtExampleTableObservable },
   { path: 'table-order-column-example', component: DtExampleTableOrderColumn },
@@ -1144,6 +1168,7 @@ const ROUTES: Routes = [
   { path: 'tile-default-example', component: DtExampleTileDefault },
   { path: 'tile-disabled-example', component: DtExampleTileDisabled },
   { path: 'tile-error-example', component: DtExampleTileError },
+  { path: 'tile-critical-example', component: DtExampleTileCritical },
   { path: 'tile-main-example', component: DtExampleTileMain },
   { path: 'tile-warning-example', component: DtExampleTileWarning },
   { path: 'tile-recovered-example', component: DtExampleTileRecovered },
@@ -1192,6 +1217,7 @@ const ROUTES: Routes = [
     path: 'select-custom-value-template-example',
     component: DtExampleSelectCustomValueTemplate,
   },
+  { path: 'tag-custom-add-form-example', component: DtExampleCustomAddFormTag },
 ];
 
 @NgModule({

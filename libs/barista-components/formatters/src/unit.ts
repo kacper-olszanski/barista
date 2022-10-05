@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+/* eslint-disable no-shadow */
+
 /**
  * Enumeration for the different basic units
  */
@@ -26,6 +28,11 @@ export const enum DtUnit {
   GIGA_BYTES = 'GB',
   TERA_BYTES = 'TB',
   PETA_BYTES = 'PB',
+  KIBI_BYTES = 'kiB',
+  MEBI_BYTES = 'MiB',
+  GIBI_BYTES = 'GiB',
+  TEBI_BYTES = 'TiB',
+  PEBI_BYTES = 'PiB',
   BITS = 'bit',
   KILO_BITS = 'kbit',
   MEGA_BITS = 'Mbit',

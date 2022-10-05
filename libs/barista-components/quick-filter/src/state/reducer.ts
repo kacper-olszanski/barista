@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   DtLogger,
   DtLoggerFactory,
@@ -146,6 +148,7 @@ export function findSelectedOption(
     }
     // if the option is distinct we only have to check for the groups name because
     // there can only be one distinct option selected so we know immediately if it is selected
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     if (distinct && uid.startsWith(path[0].option.uid!)) {
       return true;
     }

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,25 +14,26 @@
  * limitations under the License.
  */
 import { NgModule } from '@angular/core';
-import { DtComboboxModule } from '@dynatrace/barista-components/experimental/combobox';
-import { DtExampleComboboxSimple } from './combobox-simple-example/combobox-simple-example';
-import { DtExampleComboboxFormControl } from './combobox-form-control-example/combobox-form-control-example';
-import { DtOptionModule } from '@dynatrace/barista-components/core';
 import { CommonModule } from '@angular/common';
-import { DtExampleComboboxCustomOptionHeight } from './combobox-custom-option-height-example/combobox-custom-option-height-example';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
+import { DtComboboxModule } from '@dynatrace/barista-components/experimental/combobox';
+import { DtFormFieldModule } from '@dynatrace/barista-components/form-field';
+import { DtExampleComboboxSimple } from './combobox-simple-example/combobox-simple-example';
+import { DtExampleComboboxCustomOptionHeight } from './combobox-custom-option-height-example/combobox-custom-option-height-example';
+import { DtExampleComboboxFormField } from './combobox-form-field-example/combobox-form-field-example';
+import { DtOptionModule } from '@dynatrace/barista-components/core';
 @NgModule({
   imports: [
     DtComboboxModule,
     FormsModule,
     ReactiveFormsModule,
     DtOptionModule,
+    DtFormFieldModule,
     CommonModule,
   ],
   declarations: [
     DtExampleComboboxSimple,
-    DtExampleComboboxFormControl,
+    DtExampleComboboxFormField,
     DtExampleComboboxCustomOptionHeight,
   ],
 })

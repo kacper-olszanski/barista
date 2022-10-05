@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/* eslint-disable no-redeclare */
 
 import { Directive, ElementRef, NgModule } from '@angular/core';
 
@@ -37,6 +38,7 @@ export type DtThemePalette =
   | 'cta'
   | 'recovered'
   | 'neutral'
+  | 'critical'
   | undefined;
 
 /** Mixin to augment a directive with a `color` property. */
@@ -46,11 +48,11 @@ export function mixinColor<T extends Constructor<HasElementRef>>(
 ): Constructor<CanColor<DtThemePalette>> & T;
 export function mixinColor<
   T extends Constructor<HasElementRef>,
-  P extends Partial<DtThemePalette>
+  P extends Partial<DtThemePalette>,
 >(base: T, defaultColor?: P): Constructor<CanColor<P>> & T;
 export function mixinColor<
   T extends Constructor<HasElementRef>,
-  P extends Partial<DtThemePalette>
+  P extends Partial<DtThemePalette>,
 >(base: T, defaultColor?: P): Constructor<CanColor<P>> & T {
   return class extends base {
     private _color: P;
@@ -67,7 +69,7 @@ export function mixinColor<
       }
     }
 
-    // tslint:disable-next-line:no-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     constructor(...args: any[]) {
       super(...args);
       // Set the default color that can be specified from the mixin.
@@ -77,7 +79,7 @@ export function mixinColor<
 }
 
 export function setComponentColorClasses<
-  T extends { color?: string } & HasElementRef
+  T extends { color?: string } & HasElementRef,
 >(component: T, color?: string): void {
   if (color !== component.color) {
     _replaceCssClass(
@@ -108,7 +110,8 @@ export const _DtColorMixinBase = mixinColor(DtColorBase);
 })
 export class DtColor
   extends _DtColorMixinBase
-  implements CanColor<DtThemePalette> {
+  implements CanColor<DtThemePalette>
+{
   constructor(elementRef: ElementRef) {
     super(elementRef);
   }

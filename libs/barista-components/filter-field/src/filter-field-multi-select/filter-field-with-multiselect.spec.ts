@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-// tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers
-// tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
+// eslint-disable  @angular-eslint/no-lifecycle-call, no-use-before-define, @typescript-eslint/no-use-before-define, no-magic-numbers
+// eslint-disable  @typescript-eslint/no-explicit-any, max-lines, @typescript-eslint/unbound-method, @angular-eslint/use-component-selector
 
 import { ESCAPE } from '@angular/cdk/keycodes';
 import { OverlayContainer } from '@angular/cdk/overlay';
@@ -27,14 +27,11 @@ import {
 } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import {
-  DtFilterField,
-  DtFilterFieldChangeEvent,
-} from '@dynatrace/barista-components/filter-field';
-import {
   dispatchFakeEvent,
   dispatchKeyboardEvent,
 } from '@dynatrace/testing/browser';
 import { FILTER_FIELD_TEST_DATA_SINGLE_OPTION } from '@dynatrace/testing/fixtures';
+import { DtFilterField, DtFilterFieldChangeEvent } from '../filter-field';
 import {
   TEST_DATA_MULTI_SELECT,
   TEST_DATA_MULTI_SELECT_EDIT_MODE,
@@ -48,6 +45,8 @@ import {
   getMultiselectCheckboxInputs,
   getMultiselectCheckboxLabels,
   getOptions,
+  moveKeyDown,
+  moveKeyUp,
   setupFilterFieldTest,
   TestApp,
 } from '../testing/filter-field-test-helpers';
@@ -56,6 +55,7 @@ describe('DtFilterField', () => {
   let fixture: ComponentFixture<TestApp>;
   let overlayContainerElement: HTMLElement;
   let filterField: DtFilterField<any>;
+  let inputElement: HTMLInputElement;
   let advanceFilterfieldCycle: (
     simulateMicrotasks?: boolean,
     simulateZoneExit?: boolean,
@@ -65,10 +65,14 @@ describe('DtFilterField', () => {
     nthOption: number,
   ) => void;
 
+  const scrollIntoViewMock = jest.fn();
+  window.HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
+
   beforeEach(() => {
     ({
       fixture,
       filterField,
+      inputElement: inputElement,
       overlayContainerElement,
       advanceFilterfieldCycle,
       getAndClickOption,
@@ -102,6 +106,85 @@ describe('DtFilterField', () => {
       expect(filterFieldMultiSelectElements.length).toBe(1);
     });
 
+    describe('custom keyboard navigation', () => {
+      it('should have selected the last active item (ignore disabled ones) on panel after using up arrow', () => {
+        getAndClickOption(overlayContainerElement, 0);
+
+        inputElement.dispatchEvent(moveKeyUp());
+        fixture.detectChanges();
+        const options = getOptions(overlayContainerElement);
+        const lastActiveOption = options[3];
+        const lastOptionButDisabled = options[4];
+        expect(lastActiveOption.className).toContain('dt-option-active');
+        expect(lastOptionButDisabled.className).toContain('dt-option');
+      });
+
+      it('should have selected the first active item on panel after using down arrow', () => {
+        inputElement.dispatchEvent(moveKeyDown());
+        fixture.detectChanges();
+        const firstActiveOption = getOptions(overlayContainerElement)[0];
+        expect(firstActiveOption.className).toContain('dt-option-active');
+      });
+
+      it('should not have active items on panel after updating filter field input value', () => {
+        // previously the focus must be on some item of the panel
+        inputElement.dispatchEvent(moveKeyDown());
+        fixture.detectChanges();
+        const firstActiveOption = getOptions(overlayContainerElement)[0];
+        expect(firstActiveOption.className).toContain('dt-option-active');
+
+        // update input value to trigger input value change
+        inputElement.value = 'Mayo';
+        fixture.detectChanges();
+        const options = getOptions(overlayContainerElement);
+        options.forEach((option) => {
+          expect(option.className).toContain('dt-option');
+        });
+      });
+
+      it('should not have active items on panel after updating filter field input value', () => {
+        // previously the focus must be on some item of the panel
+        inputElement.dispatchEvent(moveKeyDown());
+        fixture.detectChanges();
+        const firstActiveOption = getOptions(overlayContainerElement)[0];
+        expect(firstActiveOption.className).toContain('dt-option-active');
+
+        // update input value to trigger input value change
+        inputElement.value = 'Mayo';
+        fixture.detectChanges();
+        const options = getOptions(overlayContainerElement);
+        options.forEach((option) => {
+          expect(option.className).toContain('dt-option');
+        });
+      });
+
+      it('should focus on input after having first active option selected and then use up arrow', () => {
+        inputElement.dispatchEvent(moveKeyDown());
+        fixture.detectChanges();
+        const firstActiveOption = getOptions(overlayContainerElement)[0];
+        expect(firstActiveOption.className).toContain('dt-option-active');
+
+        inputElement.dispatchEvent(moveKeyUp());
+        fixture.detectChanges();
+        expect(inputElement.getAttribute('readonly')).not.toBe('');
+      });
+
+      it('should focus on input after having last active option selected and then use down arrow', async () => {
+        getAndClickOption(overlayContainerElement, 0);
+
+        inputElement.dispatchEvent(moveKeyUp());
+        fixture.detectChanges();
+        const options = getOptions(overlayContainerElement);
+        const lastActiveOption = options[3];
+        expect(lastActiveOption.className).toContain('dt-option-active');
+        expect(inputElement.getAttribute('readonly')).toBe('');
+
+        inputElement.dispatchEvent(moveKeyDown());
+        fixture.detectChanges();
+        expect(inputElement.getAttribute('readonly')).not.toBe('');
+      });
+    });
+
     describe('opened', () => {
       beforeEach(() => {
         // Open the filter-field-multiSelect overlay.
@@ -114,7 +197,7 @@ describe('DtFilterField', () => {
         );
         const applyButton = getMultiselectApplyButton(overlayContainerElement);
 
-        expect(checkboxes.length).toBe(4);
+        expect(checkboxes.length).toBe(5);
         expect(checkboxes[0].textContent?.trim()).toBe('NoneNone');
         expect(checkboxes[1].textContent?.trim()).toBe('KetchupKetchup');
         expect(checkboxes[2].textContent?.trim()).toBe('MustardMustard');
@@ -122,10 +205,18 @@ describe('DtFilterField', () => {
         expect(applyButton).toBeDefined();
       });
 
-      it('should set the focus onto the first checkbox by default', () => {
-        const firstOption = getOptions(overlayContainerElement)[0];
+      it('should have set a checkbox as "disabled"', () => {
+        const checkboxInputs = getMultiselectCheckboxInputs(
+          overlayContainerElement,
+        );
+        const checkboxLabels = getMultiselectCheckboxLabels(
+          overlayContainerElement,
+        );
+        const applyButton = getMultiselectApplyButton(overlayContainerElement);
 
-        expect(firstOption.className).toContain('dt-option-active');
+        expect(checkboxLabels[4].textContent?.trim()).toBe('ImportedImported');
+        expect(checkboxInputs[4].disabled).toBeTruthy();
+        expect(applyButton).toBeDefined();
       });
 
       it('should keep the apply button disabled until something is selected', () => {
@@ -391,6 +482,63 @@ describe('DtFilterField', () => {
         // Previosly selected option should be kept selected
         expect(options[0].checked).toBe(true);
       });
+
+      it('should apply multiselect values after a selecting a complex filter field', () => {
+        const DATA = {
+          name: 'State',
+          autocomplete: [
+            {
+              name: 'Oberösterreich',
+              multiOptions: [
+                { name: 'Linz' },
+                { name: 'Wels' },
+                { name: 'Steyr' },
+                { name: 'Leonding' },
+                { name: 'Traun' },
+                { name: 'Vöcklabruck' },
+              ],
+            },
+          ],
+        };
+
+        fixture.componentInstance.dataSource.data = DATA;
+        fixture.detectChanges();
+        filterField.focus();
+        advanceFilterfieldCycle();
+
+        getAndClickOption(overlayContainerElement, 0);
+
+        // Fetching data
+        fixture.detectChanges();
+        advanceFilterfieldCycle();
+
+        getAndClickOption(overlayContainerElement, 0);
+
+        // Fetching data
+        fixture.detectChanges();
+        advanceFilterfieldCycle();
+
+        const options = getMultiselectCheckboxInputs(overlayContainerElement);
+        const applyButton = getMultiselectApplyButton(overlayContainerElement);
+
+        // Apply firs
+        Array.of(1, 2, 3).forEach((_, index) => {
+          options[index].click();
+          expect(options[index].checked).toBe(true);
+        });
+
+        fixture.detectChanges();
+        applyButton[0].click();
+        fixture.detectChanges();
+
+        const tags = getFilterTags(fixture);
+
+        expect(tags[0].key).toBe('Oberösterreich');
+        expect(tags[0].separator).toBe(':');
+        expect(tags[0].value.trim()).toBe('Linz, Wels, Steyr');
+
+        expect(options[0].checked).toBe(true);
+      });
     });
 
     it('should add partial update to the multiOptions', fakeAsync(() => {
@@ -471,10 +619,11 @@ describe('DtFilterField', () => {
 
     describe('edit mode', () => {
       beforeEach(() => {
-        fixture.componentInstance.dataSource.data = TEST_DATA_MULTI_SELECT_EDIT_MODE;
+        fixture.componentInstance.dataSource.data =
+          TEST_DATA_MULTI_SELECT_EDIT_MODE;
         advanceFilterfieldCycle();
 
-        let multiSelectFilter = [
+        const multiSelectFilter = [
           TEST_DATA_MULTI_SELECT_EDIT_MODE.autocomplete[0],
           (TEST_DATA_MULTI_SELECT_EDIT_MODE as any).autocomplete[0]
             .multiOptions[1].options[0],
@@ -549,6 +698,36 @@ describe('DtFilterField', () => {
         expect(filterTags[0].value).toBe('Ketchup, Mustard');
       });
 
+      it('should reset the multiSelect filter when not changing anything and clicking on apply', () => {
+        const tags = fixture.debugElement.queryAll(
+          By.css('.dt-filter-field-tag-label'),
+        );
+        tags[0].nativeElement.click();
+        advanceFilterfieldCycle();
+
+        // Expect the multiSelect filter to be open
+        let multiSelect = getMultiSelect(overlayContainerElement);
+        expect(multiSelect.length).toBe(1);
+
+        // Click the apply button
+        const applyButton = getMultiselectApplyButton(
+          overlayContainerElement,
+        )[0];
+        applyButton.click();
+        fixture.detectChanges();
+
+        // Expect the multiSelect filter to be closed again
+        multiSelect = getMultiSelect(overlayContainerElement);
+        expect(multiSelect.length).toBe(0);
+
+        // Read the filters again and make expectations
+        const filterTags = getFilterTags(fixture);
+
+        expect(filterTags[0].key).toBe('Seasoning');
+        expect(filterTags[0].separator).toBe(':');
+        expect(filterTags[0].value).toBe('Ketchup, Mustard');
+      });
+
       it('should make the edit to the first tag', () => {
         const tags = fixture.debugElement.queryAll(
           By.css('.dt-filter-field-tag-label'),
@@ -558,7 +737,7 @@ describe('DtFilterField', () => {
 
         const options = getMultiselectCheckboxInputs(overlayContainerElement);
         // Make sure that the autocomplete actually opened.
-        expect(options.length).toBe(4);
+        expect(options.length).toBe(5);
 
         // Unselect Ketchup
         options[1].click();
@@ -581,7 +760,8 @@ describe('DtFilterField', () => {
       it('should emit a filterchange event when the edit of a multiSelect is completed', () => {
         let filterChangeEvent: DtFilterFieldChangeEvent<any> | undefined;
 
-        fixture.componentInstance.dataSource.data = FILTER_FIELD_TEST_DATA_SINGLE_OPTION;
+        fixture.componentInstance.dataSource.data =
+          FILTER_FIELD_TEST_DATA_SINGLE_OPTION;
         const sub = filterField.filterChanges.subscribe(
           (ev) => (filterChangeEvent = ev),
         );
@@ -595,7 +775,7 @@ describe('DtFilterField', () => {
 
         const options = getMultiselectCheckboxInputs(overlayContainerElement);
         // Make sure that the autocomplete actually opened.
-        expect(options.length).toBe(4);
+        expect(options.length).toBe(5);
 
         // Unselect ketchup
         options[1].click();
@@ -617,7 +797,8 @@ describe('DtFilterField', () => {
 
     describe('programmatic setting', () => {
       beforeEach(() => {
-        fixture.componentInstance.dataSource.data = TEST_DATA_MULTI_SELECT_EDIT_MODE;
+        fixture.componentInstance.dataSource.data =
+          TEST_DATA_MULTI_SELECT_EDIT_MODE;
         advanceFilterfieldCycle();
       });
 

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -34,7 +34,7 @@ import { options as chartOptions } from '../chart/chart-options';
         position: absolute;
         top: 0;
         right: 0;
-        // this is the highest possible z-index (integer max range)
+        /* this is the highest possible z-index (integer max range) */
         z-index: 2147483647;
       }
     `,
@@ -51,9 +51,7 @@ export class DtE2EDrawer {
   // Added type here due to missing support for type inference on windows with typescript 3.4.5
   // error TS2742: The inferred type of 'series$' cannot be named without a reference to '...@types/highcharts'.
   // This is likely not portable. A type annotation is necessary.
-  series$: Observable<
-    Highcharts.SeriesOptionsType[]
-  > = this._dataService
+  series$: Observable<Highcharts.SeriesOptionsType[]> = this._dataService
     .getFixture<{ data: Highcharts.SeriesOptionsType[] }>('/data-small.json')
     .pipe(map((result) => result.data));
 

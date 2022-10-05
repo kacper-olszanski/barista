@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-// tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers
-// tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
+// eslint-disable  @angular-eslint/no-lifecycle-call, no-use-before-define, @typescript-eslint/no-use-before-define, no-magic-numbers
+// eslint-disable  @typescript-eslint/no-explicit-any, max-lines, @typescript-eslint/unbound-method, @angular-eslint/use-component-selector
 
 import { ESCAPE } from '@angular/cdk/keycodes';
 import { OverlayContainer, OverlayConfig } from '@angular/cdk/overlay';
@@ -31,12 +31,7 @@ import {
   tick,
 } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-
-import {
-  DtContextDialog,
-  DtContextDialogModule,
-  DtContextDialogTrigger,
-} from '@dynatrace/barista-components/context-dialog';
+import { DtContextDialogModule } from './context-dialog-module';
 import { DtIconModule } from '@dynatrace/barista-components/icon';
 
 import {
@@ -48,9 +43,11 @@ import {
   DtUiTestConfiguration,
 } from '@dynatrace/barista-components/core';
 import {
+  DtContextDialog,
   DT_CONTEXT_DIALOG_CONFIG,
-  _DT_CONTEXT_DIALOG_DEFAULT_MAX_WIDTH,
+  _DT_CONTEXT_DIALOG_DEFAULT_CONSTRAINTS,
 } from './context-dialog';
+import { DtContextDialogTrigger } from './context-dialog-trigger';
 
 describe('DtContextDialog', () => {
   let overlayContainer: OverlayContainer;
@@ -66,7 +63,7 @@ describe('DtContextDialog', () => {
     panelClass: 'my-fancy-panel-class',
   };
 
-  // tslint:disable-next-line:no-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function configureDtContextDialogTestingModule(
     declarations: any[],
     providers: any[] = [],
@@ -328,7 +325,7 @@ describe('DtContextDialog', () => {
           expect(panel).toBeNull();
         });
 
-        // tslint:disable-next-line: dt-no-focused-tests
+        // eslint-disable-next-line
         it.skip('should focus the first interactive element when opening', fakeAsync(() => {
           // TODO: [e2e] focus can not be tested in jsdom environment
           document.body.focus(); // ensure that focus isn't on the trigger already
@@ -391,7 +388,7 @@ describe('DtContextDialog', () => {
         fixture = TestBed.createComponent(BasicContextDialog);
         fixture.detectChanges();
       }));
-      // tslint:disable-next-line: dt-no-focused-tests
+      // eslint-disable-next-line
       it('should propagate attribute to overlay when `dt-ui-test-id` is provided', fakeAsync(() => {
         const contextDialog = fixture.componentInstance.contextDialog;
         contextDialog.open();
@@ -425,24 +422,7 @@ describe('DtContextDialog', () => {
           .getContainerElement()
           .querySelector('.cdk-overlay-pane');
         expect(cdkOverlayPane?.getAttribute('style')).not.toContain(
-          `max-width: ${_DT_CONTEXT_DIALOG_DEFAULT_MAX_WIDTH}px`,
-        );
-      }),
-    );
-
-    it(
-      'should have no maxWidth set if it is explicitly removed from the config',
-      waitForAsync(() => {
-        configureDtContextDialogTestingModule([BasicContextDialog]);
-
-        const fixture = createComponent(BasicContextDialog);
-        fixture.componentInstance.contextDialog.open();
-        fixture.detectChanges();
-        const cdkOverlayPane = overlayContainer
-          .getContainerElement()
-          .querySelector('.cdk-overlay-pane');
-        expect(cdkOverlayPane?.getAttribute('style')).toContain(
-          `max-width: ${_DT_CONTEXT_DIALOG_DEFAULT_MAX_WIDTH}px`,
+          `max-width: ${_DT_CONTEXT_DIALOG_DEFAULT_CONSTRAINTS.maxWidth}`,
         );
       }),
     );

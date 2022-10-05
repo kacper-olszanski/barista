@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-// tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers
-// tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
+// eslint-disable  @angular-eslint/no-lifecycle-call, no-use-before-define, @typescript-eslint/no-use-before-define, no-magic-numbers
+// eslint-disable  @typescript-eslint/no-explicit-any, max-lines, @typescript-eslint/unbound-method, @angular-eslint/use-component-selector
 import { Validators } from '@angular/forms';
 
 export const TEST_DATA = {
@@ -23,12 +23,15 @@ export const TEST_DATA = {
     {
       name: 'DE',
       defaultSearch: true,
-      suggestions: [{ name: 'Berlin' }, { name: 'Bremen' }, { name: 'Munich' }],
+      autocomplete: [
+        { name: 'Berlin', options: [{ name: 'test1', disabled: true }] },
+        { name: 'Bremen' },
+        { name: 'Munich' },
+      ],
       unique: true,
       validators: [
         {
           validatorFn: Validators.minLength(2),
-          error: 'Country code needs at least 2 characters',
         },
       ],
     },
@@ -37,7 +40,7 @@ export const TEST_DATA = {
       distinct: true,
       autocomplete: [
         { name: 'Vienna' },
-        { name: 'Linz' },
+        { name: 'Linz', disabled: true },
         {
           name: 'custom',
           suggestions: [],
@@ -138,6 +141,7 @@ export const TEST_DATA_ASYNC_FREETEXT = {
 export const MULTI_SELECT_DATA_ASYNC = {
   name: 'Years (async)',
   multiOptions: [
+    { name: '1999 (disabled)', disabled: true },
     { name: '2018' },
     { name: '2019' },
     { name: '2020' },
@@ -149,8 +153,8 @@ export const MULTI_SELECT_DATA_ASYNC = {
 
 export const MULTI_SELECT_DATA_ASYNC_PARTIAL = {
   name: 'CH (async, partial)',
-  autocomplete: [
-    { name: 'Zürich' },
+  multiOptions: [
+    { name: 'Zürich (disabled)', disabled: true },
     { name: 'Genf' },
     { name: 'Basel' },
     { name: 'Bern' },
@@ -160,8 +164,8 @@ export const MULTI_SELECT_DATA_ASYNC_PARTIAL = {
 
 export const TEST_DATA_PARTIAL = {
   name: 'CH (async, partial)',
-  autocomplete: [
-    { name: 'Zürich' },
+  multiOptions: [
+    { name: 'Zürich (disabled)', disabled: true },
     { name: 'Genf' },
     { name: 'Basel' },
     { name: 'Bern' },
@@ -175,7 +179,7 @@ export const TEST_DATA_PARTIAL_2 = {
     { name: 'Zug' },
     { name: 'Schaffhausen' },
     { name: 'Luzern' },
-    { name: 'St. Gallen' },
+    { name: 'St. Gallen (disabled)', disabled: true },
   ],
   partial: true,
 };

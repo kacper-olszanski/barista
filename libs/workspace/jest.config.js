@@ -1,6 +1,6 @@
 module.exports = {
   name: 'workspace',
-  preset: '../../jest.config.js',
+  preset: '../../jest.preset.js',
   transform: {
     '^.+\\.[tj]sx?$': 'ts-jest',
   },
@@ -8,4 +8,5 @@ module.exports = {
   coverageDirectory: '../../coverage/libs/workspace',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   globals: { 'ts-jest': { tsconfig: '<rootDir>/tsconfig.spec.json' } },
+  testEnvironment: 'node',
 };

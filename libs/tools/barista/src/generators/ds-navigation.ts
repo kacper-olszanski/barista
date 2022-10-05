@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -23,7 +23,7 @@ function addNavSection(
   sideNav: DsSideNavContent,
   navGroup: string,
 ): DsSideNavContent {
-  let newSideNav = { ...sideNav };
+  const newSideNav = { ...sideNav };
   for (const section of newSideNav.sections) {
     if (section.title && navGroup == section.title) {
       return newSideNav;

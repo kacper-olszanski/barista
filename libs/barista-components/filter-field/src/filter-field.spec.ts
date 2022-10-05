@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-// tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers
-// tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
+// eslint-disable  @angular-eslint/no-lifecycle-call, no-use-before-define, @typescript-eslint/no-use-before-define, no-magic-numbers
+// eslint-disable  @typescript-eslint/no-explicit-any, max-lines, @typescript-eslint/unbound-method, @angular-eslint/use-component-selector
 
 import {
   BACKSPACE,
@@ -35,10 +35,6 @@ import {
 } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import {
-  DtFilterField,
-  DtFilterFieldChangeEvent,
-} from '@dynatrace/barista-components/filter-field';
-import {
   createComponent,
   dispatchFakeEvent,
   dispatchKeyboardEvent,
@@ -50,6 +46,7 @@ import {
   FILTER_FIELD_TEST_DATA_SINGLE_DISTINCT,
   FILTER_FIELD_TEST_DATA_SINGLE_OPTION,
 } from '@dynatrace/testing/fixtures';
+import { DtFilterField, DtFilterFieldChangeEvent } from './filter-field';
 import { EditionParserFunction } from './filter-field-config';
 import { TEST_DATA_EDITMODE_ASYNC } from './filter-field-edit-mode.spec';
 import {
@@ -72,6 +69,7 @@ import {
   getInput,
   getTagButtons,
   isClearAllVisible,
+  getPartialResultsHintPanel,
 } from './testing/filter-field-test-helpers';
 import { DtAutocompleteValue, DtFilterValue } from './types';
 
@@ -121,8 +119,9 @@ describe('DtFilterField', () => {
 
   describe('focus on input', () => {
     it('should focus the input field when focusing the host', () => {
-      const input = fixture.debugElement.query(By.css('.dt-filter-field-input'))
-        .nativeElement;
+      const input = fixture.debugElement.query(
+        By.css('.dt-filter-field-input'),
+      ).nativeElement;
       filterField.focus();
       expect(document.activeElement).toBe(input);
     });
@@ -143,7 +142,8 @@ describe('DtFilterField', () => {
 
     it('should disable all tags if filter field is disabled', fakeAsync(() => {
       // given
-      fixture.componentInstance.dataSource.data = FILTER_FIELD_TEST_DATA_SINGLE_DISTINCT;
+      fixture.componentInstance.dataSource.data =
+        FILTER_FIELD_TEST_DATA_SINGLE_DISTINCT;
       fixture.detectChanges();
 
       filterField.focus();
@@ -217,7 +217,8 @@ describe('DtFilterField', () => {
 
     it('should disable programmatically set tags when they are set during a disabled state', fakeAsync(() => {
       // given
-      fixture.componentInstance.dataSource.data = FILTER_FIELD_TEST_DATA_SINGLE_DISTINCT;
+      fixture.componentInstance.dataSource.data =
+        FILTER_FIELD_TEST_DATA_SINGLE_DISTINCT;
       fixture.detectChanges();
 
       // when
@@ -805,7 +806,7 @@ describe('DtFilterField', () => {
       filterField.focus();
       advanceFilterfieldCycle();
 
-      let options = getOptions(overlayContainerElement);
+      const options = getOptions(overlayContainerElement);
       expect(options[0].textContent).toContain('AUT');
       expect(options[1].textContent).toContain('USA');
 
@@ -828,7 +829,8 @@ describe('DtFilterField', () => {
     it('should emit filterChanges when adding an option', fakeAsync(() => {
       let filterChangeEvent: DtFilterFieldChangeEvent<any> | undefined;
 
-      fixture.componentInstance.dataSource.data = FILTER_FIELD_TEST_DATA_SINGLE_OPTION;
+      fixture.componentInstance.dataSource.data =
+        FILTER_FIELD_TEST_DATA_SINGLE_OPTION;
       const sub = filterField.filterChanges.subscribe(
         (ev) => (filterChangeEvent = ev),
       );
@@ -853,7 +855,8 @@ describe('DtFilterField', () => {
     it('should emit filterChanges when removing an option', fakeAsync(() => {
       let filterChangeEvent: DtFilterFieldChangeEvent<any> | undefined;
 
-      fixture.componentInstance.dataSource.data = FILTER_FIELD_TEST_DATA_SINGLE_OPTION;
+      fixture.componentInstance.dataSource.data =
+        FILTER_FIELD_TEST_DATA_SINGLE_OPTION;
       const sub = filterField.filterChanges.subscribe(
         (ev) => (filterChangeEvent = ev),
       );
@@ -866,6 +869,7 @@ describe('DtFilterField', () => {
       options[0].click();
 
       tick();
+      fixture.detectChanges();
 
       const tags = getFilterTags(fixture);
       tags[0].removeButton.click();
@@ -995,7 +999,8 @@ describe('DtFilterField', () => {
     });
 
     it('should show option again after adding all possible options and removing this option from the filters', () => {
-      fixture.componentInstance.dataSource.data = FILTER_FIELD_TEST_DATA_SINGLE_DISTINCT;
+      fixture.componentInstance.dataSource.data =
+        FILTER_FIELD_TEST_DATA_SINGLE_DISTINCT;
       fixture.detectChanges();
 
       filterField.focus();
@@ -1051,7 +1056,8 @@ describe('DtFilterField', () => {
     });
 
     it('should remove a parent from an autocomplete if it is distinct and an option has been selected', () => {
-      fixture.componentInstance.dataSource.data = FILTER_FIELD_TEST_DATA_SINGLE_DISTINCT;
+      fixture.componentInstance.dataSource.data =
+        FILTER_FIELD_TEST_DATA_SINGLE_DISTINCT;
       fixture.detectChanges();
       filterField.focus();
       advanceFilterfieldCycle();
@@ -1146,10 +1152,16 @@ describe('DtFilterField', () => {
       let options = getOptions(overlayContainerElement);
       expect(options).toHaveLength(0);
 
+      let hintPanel = getPartialResultsHintPanel(overlayContainerElement);
+      expect(hintPanel).toBeNull();
+
       fixture.componentInstance.dataSource.data = DATA_PARTIAL;
       fixture.detectChanges();
       advanceFilterfieldCycle(true, true);
       tick();
+
+      hintPanel = getPartialResultsHintPanel(overlayContainerElement);
+      expect(hintPanel).not.toBeNull();
 
       options = getOptions(overlayContainerElement);
       expect(options).toHaveLength(4);
@@ -1169,6 +1181,51 @@ describe('DtFilterField', () => {
       expect(options[1].textContent).toContain('Schaffhausen');
       expect(options[2].textContent).toContain('Luzern');
       expect(options[3].textContent).toContain('St. Gallen');
+    }));
+
+    it('should disable partial autocomplete option without a group', fakeAsync(() => {
+      const DATA = {
+        autocomplete: [
+          {
+            name: 'CH (async, partial)',
+            async: true,
+            autocomplete: [],
+          },
+        ],
+      };
+
+      const DATA_PARTIAL = {
+        name: 'CH (async, partial)',
+        autocomplete: [{ name: 'Zürich', disabled: true }],
+        partial: true,
+      };
+
+      fixture.componentInstance.dataSource.data = DATA;
+      fixture.detectChanges();
+      filterField.focus();
+      advanceFilterfieldCycle(true, true);
+
+      getAndClickOption(overlayContainerElement, 0);
+
+      let options = getOptions(overlayContainerElement);
+      expect(options).toHaveLength(0);
+
+      let hintPanel = getPartialResultsHintPanel(overlayContainerElement);
+      expect(hintPanel).toBeNull();
+
+      fixture.componentInstance.dataSource.data = DATA_PARTIAL;
+      fixture.detectChanges();
+      advanceFilterfieldCycle(true, true);
+      tick();
+
+      hintPanel = getPartialResultsHintPanel(overlayContainerElement);
+      expect(hintPanel).not.toBeNull();
+
+      options = getOptions(overlayContainerElement);
+      expect(options).toHaveLength(1);
+
+      // dt-option-disabled
+      expect(options[0].getAttribute('class')).toContain('dt-option-disabled');
     }));
 
     it('should mark the input as readonly while loading async data', () => {
@@ -1615,17 +1672,13 @@ describe('DtFilterField', () => {
       freeTextTagInst!.deletable = false;
       fixture.detectChanges();
       const tags = getFilterTags(fixture);
-      const {
-        label: autoLabel,
-        deleteButton: autoDeleteButton,
-      } = getTagButtons(tags[0]);
+      const { label: autoLabel, deleteButton: autoDeleteButton } =
+        getTagButtons(tags[0]);
       expect(autoLabel.disabled).toBeTruthy();
       expect(autoDeleteButton.disabled).toBeFalsy();
 
-      const {
-        label: freeTextLabel,
-        deleteButton: freeTextDeleteButton,
-      } = getTagButtons(tags[0]);
+      const { label: freeTextLabel, deleteButton: freeTextDeleteButton } =
+        getTagButtons(tags[0]);
       expect(freeTextLabel.disabled).toBeTruthy();
       expect(freeTextDeleteButton.disabled).toBeFalsy();
 
@@ -1659,17 +1712,13 @@ describe('DtFilterField', () => {
       freeTextTagInst!.deletable = false;
       fixture.detectChanges();
       const tags = getFilterTags(fixture);
-      const {
-        label: autoLabel,
-        deleteButton: autoDeleteButton,
-      } = getTagButtons(tags[0]);
+      const { label: autoLabel, deleteButton: autoDeleteButton } =
+        getTagButtons(tags[0]);
       expect(autoLabel.disabled).toBeTruthy();
       expect(autoDeleteButton.disabled).toBeFalsy();
 
-      const {
-        label: freeTextLabel,
-        deleteButton: freeTextDeleteButton,
-      } = getTagButtons(tags[0]);
+      const { label: freeTextLabel, deleteButton: freeTextDeleteButton } =
+        getTagButtons(tags[0]);
       expect(freeTextLabel.disabled).toBeTruthy();
       expect(freeTextDeleteButton.disabled).toBeFalsy();
 
@@ -1692,6 +1741,32 @@ describe('DtFilterField', () => {
       const tags = getFilterTags(fixture);
       expect(tags.length).toBe(1);
     });
+
+    it('should not emit the filter change event when the edit button is clicked', fakeAsync(() => {
+      const freeTextFilter = [
+        TEST_DATA_EDITMODE.autocomplete[2],
+        'Custom free text',
+      ];
+      filterField.filters = [autocompleteFilter, freeTextFilter];
+      fixture.detectChanges();
+
+      const tags = getFilterTags(fixture);
+      const { label: freeTextLabel } = getTagButtons(tags[0]);
+      const spy = jest.fn();
+      const subscription = filterField.filterChanges.subscribe(spy);
+
+      // enter editmode
+      freeTextLabel.click();
+      advanceFilterfieldCycle();
+      filterField.focus();
+      advanceFilterfieldCycle();
+
+      tick();
+
+      expect(spy).not.toHaveBeenCalled();
+
+      subscription.unsubscribe();
+    }));
   });
 
   describe('data-source switching', () => {
@@ -1731,7 +1806,8 @@ describe('DtFilterField', () => {
     it('should not remove the current filter if the data is changed when the filterChanges event fires', () => {
       const filterChangesSubscription = filterField.filterChanges.subscribe(
         () => {
-          fixture.componentInstance.dataSource.data = FILTER_FIELD_TEST_DATA_ASYNC;
+          fixture.componentInstance.dataSource.data =
+            FILTER_FIELD_TEST_DATA_ASYNC;
         },
       );
 
@@ -1970,8 +2046,10 @@ describe('DtFilterField', () => {
     it('should display a default (first iterator) value when placeholder is not overwritten', fakeAsync(() => {
       selectFields();
 
-      const placeholder = (fixtureCustom.debugElement.query(placeholderElement)
-        ?.nativeElement as HTMLDivElement)?.textContent;
+      const placeholder = (
+        fixtureCustom.debugElement.query(placeholderElement)
+          ?.nativeElement as HTMLDivElement
+      )?.textContent;
       expect(placeholder).toBe(TEST_DATA_PLACEHOLDER.autocomplete[0].name);
     }));
     it('should display a correct value when placeholder is overwrite by input', fakeAsync(() => {
@@ -1986,8 +2064,10 @@ describe('DtFilterField', () => {
 
       selectFields();
 
-      const placeholder = (fixtureCustom.debugElement.query(placeholderElement)
-        ?.nativeElement as HTMLDivElement)?.textContent;
+      const placeholder = (
+        fixtureCustom.debugElement.query(placeholderElement)
+          ?.nativeElement as HTMLDivElement
+      )?.textContent;
       expect(placeholder).toBe('Locations.Linz');
     }));
   });

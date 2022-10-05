@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -29,6 +29,7 @@ export function getAffectedProjects(
 
   const affected = execSync(command.join(' ')).toString().trim();
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const parsed = JSON.parse(affected) as any;
 
   return target

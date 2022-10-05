@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -187,7 +187,7 @@ export class DevApp implements AfterContentInit, OnDestroy {
   private _increaseZoneStable(): void {
     let el = this._zoneCounterEl;
     if (!el) {
-      // tslint:disable-next-line: ban
+      // eslint-disable-next-line
       el = document.createElement('code');
       el.className = 'dev-app-zone-counter';
       document.body.appendChild(el);

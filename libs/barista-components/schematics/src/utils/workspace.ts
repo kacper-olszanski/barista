@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/* eslint-disable no-redeclare */
 
 import { Tree, Rule } from '@angular-devkit/schematics';
 import { workspaces } from '@angular-devkit/core';
@@ -39,7 +41,7 @@ function createHost(tree: Tree): workspaces.WorkspaceHost {
 /** Get the angular workspace out of the tree */
 export async function getWorkspace(
   tree: Tree,
-  path: string = '/',
+  path = '/',
 ): Promise<workspaces.WorkspaceDefinition> {
   const host = createHost(tree);
   const { workspace } = await workspaces.readWorkspace(path, host);
@@ -69,7 +71,7 @@ export function updateWorkspace(
 
       const result = updaterOrWorkspace(workspace);
       if (result !== undefined) {
-        // tslint:disable-next-line: await-promise
+        // eslint-disable-next-line @typescript-eslint/await-thenable
         await result;
       }
 

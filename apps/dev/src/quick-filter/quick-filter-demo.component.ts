@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -23,7 +23,8 @@ import { DtQuickFilterDefaultDataSource } from '@dynatrace/barista-components/qu
   styleUrls: ['./quick-filter-demo.component.scss'],
 })
 export class QuickFilterDemoComponent
-  implements OnInit, OnDestroy, AfterViewInit {
+  implements OnInit, OnDestroy, AfterViewInit
+{
   show = true;
   pageSize = 6;
   searchValue = '';

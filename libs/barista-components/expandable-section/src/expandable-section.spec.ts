@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-// tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers
-// tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
-// tslint:disable deprecation
+// eslint-disable  @angular-eslint/no-lifecycle-call, no-use-before-define, @typescript-eslint/no-use-before-define, no-magic-numbers
+// eslint-disable  @typescript-eslint/no-explicit-any, max-lines, @typescript-eslint/unbound-method, @angular-eslint/use-component-selector
+// eslint-disable  import/no-deprecated
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, DebugElement } from '@angular/core';
@@ -24,13 +24,11 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
-import {
-  DtExpandableSection,
-  DtExpandableSectionModule,
-} from '@dynatrace/barista-components/expandable-section';
+import { DtExpandableSectionModule } from './expandable-section-module';
 import { DtIconModule } from '@dynatrace/barista-components/icon';
 
 import { createComponent } from '@dynatrace/testing/browser';
+import { DtExpandableSection } from './expandable-section';
 
 describe('DtExpandableSection', () => {
   beforeEach(() => {
@@ -63,9 +61,10 @@ describe('DtExpandableSection', () => {
           By.directive(DtExpandableSection),
         );
         instanceElement = instanceDebugElement.nativeElement;
-        expandableSectionInstance = instanceDebugElement.injector.get<DtExpandableSection>(
-          DtExpandableSection,
-        );
+        expandableSectionInstance =
+          instanceDebugElement.injector.get<DtExpandableSection>(
+            DtExpandableSection,
+          );
       }),
     );
 
@@ -219,9 +218,8 @@ describe('DtExpandableSection', () => {
       const expandedSpy = jest.fn();
       const changedSpy = jest.fn();
       const instance = instanceDebugElement.componentInstance;
-      const expandedSubscription = instance._sectionExpanded.subscribe(
-        expandedSpy,
-      );
+      const expandedSubscription =
+        instance._sectionExpanded.subscribe(expandedSpy);
       const changedSubscription = instance.expandChange.subscribe(changedSpy);
 
       expandableSectionInstance.open();
@@ -241,9 +239,8 @@ describe('DtExpandableSection', () => {
       const collapsedSpy = jest.fn();
       const changedSpy = jest.fn();
       const instance = instanceDebugElement.componentInstance;
-      const collapsedSubscription = instance._sectionCollapsed.subscribe(
-        collapsedSpy,
-      );
+      const collapsedSubscription =
+        instance._sectionCollapsed.subscribe(collapsedSpy);
       const changedSubscription = instance.expandChange.subscribe(changedSpy);
 
       expandableSectionInstance.close();
@@ -263,9 +260,10 @@ describe('DtExpandableSection', () => {
       const instanceDebugElement = fixture.debugElement.query(
         By.directive(DtExpandableSection),
       );
-      const expandableSectionInstance = instanceDebugElement.injector.get<DtExpandableSection>(
-        DtExpandableSection,
-      );
+      const expandableSectionInstance =
+        instanceDebugElement.injector.get<DtExpandableSection>(
+          DtExpandableSection,
+        );
       fixture.detectChanges();
 
       expect(expandableSectionInstance.expanded).toBe(true);
@@ -276,9 +274,10 @@ describe('DtExpandableSection', () => {
       const instanceDebugElement = fixture.debugElement.query(
         By.directive(DtExpandableSection),
       );
-      const expandableSectionInstance = instanceDebugElement.injector.get<DtExpandableSection>(
-        DtExpandableSection,
-      );
+      const expandableSectionInstance =
+        instanceDebugElement.injector.get<DtExpandableSection>(
+          DtExpandableSection,
+        );
       fixture.detectChanges();
 
       expect(expandableSectionInstance.disabled).toBe(true);

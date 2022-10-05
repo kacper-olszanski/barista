@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,7 +21,7 @@ export const waitForAngular = ClientFunction((waitTimeout = 10000) => {
   /** Interval in milliseconds where to ping angular */
   const PING_INTERVAL = 500;
 
-  return new Promise((resolve, reject) => {
+  return new Promise<void | Error>((resolve, reject) => {
     let pingIntervalId: number;
     let pingTimeoutId: number;
 

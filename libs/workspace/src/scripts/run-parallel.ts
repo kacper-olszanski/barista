@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -82,6 +82,7 @@ export async function runParallel(): Promise<string | null> {
   if (withDeps) {
     // The nx meta gets generated through the print-affected command
     // that is executed via the `getAffectedProjects`
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const nxMeta = await tryJsonParse<any>(NX_META);
     const nxDependencies = nxMeta.dependencies;
 

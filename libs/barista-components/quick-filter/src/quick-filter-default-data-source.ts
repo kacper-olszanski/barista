@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -29,11 +29,16 @@ export interface DtQuickFilterDefaultDataSourceSimpleOption {
   id?: string | number;
 }
 
-export type DtQuickFilterDefaultDataSourceRange = DtFilterFieldDefaultDataSourceRange;
-export type DtQuickFilterDefaultDataSourceFreeText = DtFilterFieldDefaultDataSourceFreeText;
-export type DtQuickFilterDefaultDataSourceAutocomplete = DtFilterFieldDefaultDataSourceAutocomplete;
-export type DtQuickFilterDefaultDataSourceGroup = DtFilterFieldDefaultDataSourceGroup;
-export type DtQuickFilterDefaultDataSourceSimpleGroup = DtFilterFieldDefaultDataSourceSimpleGroup;
+export type DtQuickFilterDefaultDataSourceRange =
+  DtFilterFieldDefaultDataSourceRange;
+export type DtQuickFilterDefaultDataSourceFreeText =
+  DtFilterFieldDefaultDataSourceFreeText;
+export type DtQuickFilterDefaultDataSourceAutocomplete =
+  DtFilterFieldDefaultDataSourceAutocomplete;
+export type DtQuickFilterDefaultDataSourceGroup =
+  DtFilterFieldDefaultDataSourceGroup;
+export type DtQuickFilterDefaultDataSourceSimpleGroup =
+  DtFilterFieldDefaultDataSourceSimpleGroup;
 export type DtQuickFilterDefaultDataSourceType =
   | DtQuickFilterDefaultDataSourceOption
   | DtQuickFilterDefaultDataSourceGroup
@@ -49,16 +54,18 @@ export type DtQuickFilterDefaultDataSourceOption =
   | (DtQuickFilterDefaultDataSourceRange &
       DtQuickFilterDefaultDataSourceSimpleOption);
 export interface DtQuickFilterDefaultDataSourceConfig {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   showInSidebar?: (node: any) => boolean;
 }
 
 export class DtQuickFilterDefaultDataSource<
-    T extends DtQuickFilterDefaultDataSourceType
+    T extends DtQuickFilterDefaultDataSourceType,
   >
   extends DtFilterFieldDefaultDataSource
-  implements DtQuickFilterDataSource {
+  implements DtQuickFilterDataSource
+{
   constructor(
-    initialData: T = (null as unknown) as T,
+    initialData: T = null as unknown as T,
     config: DtQuickFilterDefaultDataSourceConfig = {},
   ) {
     super(initialData);
@@ -66,5 +73,6 @@ export class DtQuickFilterDefaultDataSource<
   }
 
   /** Function that evaluates if a node should be displayed in the quick filter sidebar */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   showInSidebarFunction: (node: any) => boolean;
 }

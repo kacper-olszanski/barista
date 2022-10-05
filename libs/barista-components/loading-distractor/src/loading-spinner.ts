@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -40,12 +40,12 @@ import {
 export class DtLoadingSpinner {
   // We have to disable the no-input-rename rule here because the
   // minus character can't be used in an variable name.
-  // tslint:disable:no-input-rename
+  /* eslint-disable @angular-eslint/no-input-rename */
 
   /** The aria-labelledby attribute. */
   @Input('aria-labelledby') ariaLabelledby: string;
 
   /** The aria-label attribute. */
   @Input('aria-label') ariaLabel: string;
-  // tslint:enable:no-input-rename
+  /* eslint-enable @angular-eslint/no-input-rename */
 }

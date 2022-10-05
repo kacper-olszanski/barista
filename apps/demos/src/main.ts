@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,8 +21,8 @@ import { DtDemosAppModule } from './app.module';
 platformBrowserDynamic()
   .bootstrapModule(DtDemosAppModule, { preserveWhitespaces: true })
   .catch(
-    // tslint:disable-next-line:typedef
+    // eslint-disable-next-line
     (err): void => {
-      console.log(err); // tslint:disable-line:no-console
+      console.log(err); // eslint-disable-line no-console
     },
   );

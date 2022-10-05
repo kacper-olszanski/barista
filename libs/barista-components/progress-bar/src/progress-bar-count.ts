@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,7 +18,7 @@ import { Directive } from '@angular/core';
 
 /** Counter text wrapper for dt-progress-bar */
 @Directive({
-  selector: `dt-progress-bar-count`,
+  selector: 'dt-progress-bar-count, [dtProgressBarCount]',
   exportAs: 'dtProgressBarCount',
   host: {
     class: 'dt-progress-bar-count',

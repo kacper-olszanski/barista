@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -19,12 +19,13 @@ import { fork } from 'child_process';
 /**
  * Starts the server that is serving the ssr application.
  * Returns the process id of the server.
+ *
  * @param serverPath The path to the express server that should be started
  * @param port The port where the server should run on.
  */
 export function startServer(
   serverPath: string,
-  port: number = 4000,
+  port = 4000,
   env?: { [key: string]: string },
 ): Promise<{ pid: number }> {
   const child = fork(serverPath, [], {

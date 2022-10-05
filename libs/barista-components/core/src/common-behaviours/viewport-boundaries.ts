@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -35,7 +35,7 @@ export interface HasDtViewportResizer {
 
 /** Mixin to augment a directive with a `viewportBoundaries$` property. */
 export function mixinViewportBoundaries<
-  T extends Constructor<HasDtViewportResizer>
+  T extends Constructor<HasDtViewportResizer>,
 >(
   base: T,
 ): Constructor<HasViewportBoundaries> & Constructor<HasDestroySubject> & T {
@@ -44,7 +44,7 @@ export function mixinViewportBoundaries<
 
     _destroy$ = new Subject<void>();
 
-    // tslint:disable-next-line:no-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     constructor(...args: any[]) {
       super(...args);
 

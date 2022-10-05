@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-// tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers
-// tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
+// eslint-disable  @angular-eslint/no-lifecycle-call, no-use-before-define, @typescript-eslint/no-use-before-define, no-magic-numbers
+// eslint-disable  @typescript-eslint/no-explicit-any, max-lines, @typescript-eslint/unbound-method, @angular-eslint/use-component-selector
 
 import { Component, ViewChild } from '@angular/core';
 import { TestBed, fakeAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { DtIndicator } from './indicator';
 
-import {
-  DtIndicator,
-  DtIndicatorModule,
-} from '@dynatrace/barista-components/indicator';
+import { DtIndicatorModule } from './indicator-module';
 
 describe('DtIndicator without table', () => {
   beforeEach(fakeAsync(() => {
@@ -36,6 +34,7 @@ describe('DtIndicator without table', () => {
         DtIndicatorColor,
         DtIndicatorWarning,
         DtIndicatorRecovered,
+        DtIndicatorCritical,
       ],
     });
 
@@ -91,6 +90,18 @@ describe('DtIndicator without table', () => {
 
     expect(indicator.classList.contains('dt-indicator-active')).toBe(true);
     expect(indicator.classList.contains('dt-color-recovered')).toBe(true);
+  });
+
+  it('should set the color to critical', () => {
+    const fixture = TestBed.createComponent(DtIndicatorCritical);
+    fixture.detectChanges();
+
+    const indicator: HTMLSpanElement = fixture.debugElement.query(
+      By.css('.dt-indicator'),
+    ).nativeElement;
+
+    expect(indicator.classList.contains('dt-indicator-active')).toBe(true);
+    expect(indicator.classList.contains('dt-color-critical')).toBe(true);
   });
 
   it('should set the color on a binding', () => {
@@ -160,4 +171,10 @@ class DtIndicatorColor {
 })
 class DtIndicatorRecovered {
   color = 'recovered';
+}
+@Component({
+  template: ` <span dtIndicator [dtIndicatorColor]="color"></span> `,
+})
+class DtIndicatorCritical {
+  color = 'critical';
 }

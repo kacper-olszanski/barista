@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -31,16 +31,7 @@ import { DtChartSelectionAreaAction } from './selection-area/overlay-action';
 import { DtChartSelectionArea } from './selection-area/selection-area';
 import { DtChartTimestamp } from './timestamp/timestamp';
 import { DtChartTooltip } from './tooltip/chart-tooltip';
-
-/** components that should be declared and exported */
-const COMPONENTS = [
-  DtChart,
-  DtChartHeatfield,
-  DtChartRange,
-  DtChartTimestamp,
-  DtChartTooltip,
-  DtChartSelectionAreaAction,
-];
+import { DtChartFocusAnchor, DtChartFocusTarget } from './chart-focus-anchor';
 
 @NgModule({
   imports: [
@@ -52,7 +43,24 @@ const COMPONENTS = [
     DtButtonModule,
     DtFormattersModule,
   ],
-  exports: [...COMPONENTS],
-  declarations: [...COMPONENTS, DtChartSelectionArea],
+  exports: [
+    DtChart,
+    DtChartHeatfield,
+    DtChartRange,
+    DtChartTimestamp,
+    DtChartTooltip,
+    DtChartSelectionAreaAction,
+  ],
+  declarations: [
+    DtChart,
+    DtChartHeatfield,
+    DtChartRange,
+    DtChartTimestamp,
+    DtChartTooltip,
+    DtChartSelectionAreaAction,
+    DtChartFocusAnchor,
+    DtChartFocusTarget,
+    DtChartSelectionArea,
+  ],
 })
 export class DtChartModule {}

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -43,6 +43,7 @@ import {
   ViewContainerRef,
   ViewEncapsulation,
   isDevMode,
+  OnDestroy,
 } from '@angular/core';
 
 import {
@@ -61,7 +62,8 @@ export const DT_OVERLAY_DELAY = 100;
 // Boilerplate for applying mixins to DtOverlayContainer.
 export class DtOverlayContainerBase
   extends BasePortalOutlet
-  implements HasNgZone {
+  implements HasNgZone
+{
   constructor(public _ngZone: NgZone) {
     super();
   }
@@ -110,7 +112,8 @@ export const _DtOverlayContainerMixin = mixinNotifyDomExit(
 })
 export class DtOverlayContainer
   extends _DtOverlayContainerMixin
-  implements CanNotifyOnExit {
+  implements CanNotifyOnExit, OnDestroy
+{
   /** @internal */
   @ViewChild(CdkPortalOutlet, { static: true }) _portalOutlet: CdkPortalOutlet;
 
@@ -128,10 +131,14 @@ export class DtOverlayContainer
     private _elementRef: ElementRef,
     private _focusTrapFactory: FocusTrapFactory,
     private _viewContainerRef: ViewContainerRef,
-    // tslint:disable-next-line:no-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     @Optional() @Inject(DOCUMENT) private _document: any,
   ) {
     super(_ngZone);
+  }
+
+  ngOnDestroy(): void {
+    this._notifyDomExit();
   }
 
   /**
@@ -196,7 +203,7 @@ export class DtOverlayContainer
   private _restoreFocus(): void {
     const toFocus = this._elementFocusedBeforeDialogWasOpened;
 
-    // tslint:disable-next-line: strict-type-predicates no-unbound-method
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     if (toFocus && typeof toFocus.focus === 'function') {
       toFocus.focus();
     }

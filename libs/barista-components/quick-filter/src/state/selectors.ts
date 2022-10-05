@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -44,6 +44,7 @@ export const getAutocompletes = (
     ),
     map(([nodeDef, dataSource, detailGroup]) => {
       const filtered = filterNodeDefs(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         nodeDef!.autocomplete!.optionsOrGroups,
       ).filter((node) => dataSource.showInSidebarFunction(node.data));
 
@@ -73,6 +74,7 @@ export const getIsDetailView = (state$: Observable<QuickFilterState>) =>
 
 /**
  * Filter out all display able autocomplete out of the defs and groups
+ *
  * @param nodeDefs The defs that should be checked
  */
 function filterNodeDefs(nodeDefs: DtNodeDef[]): DtNodeDef[] {

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -22,6 +22,7 @@ import { GET_TAG_PUSH_ERROR } from './release-errors';
 /**
  * Creates a tag if it does not already exist and checks whether the commit
  * message is a bump version message
+ *
  * @throws Will throw if the tag would be created on a non bump message
  */
 export async function createReleaseTag(

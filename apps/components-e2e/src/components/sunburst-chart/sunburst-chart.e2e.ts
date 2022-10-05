@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -77,16 +77,4 @@ test('should enable selection and select with relative values', async (testContr
     .match(/All/)
     .expect(centralValue.textContent)
     .match(/100 %/);
-});
-
-test('should show overlay on hover', async (testController: TestController) => {
-  await testController
-    .hover(sliceShephard, { ...mouseInteraction, offsetY: -20 })
-    .expect(overlay.exists)
-    .ok()
-    .expect(overlay.textContent)
-    .match(/Shephard: 23/)
-    .hover(root, { ...mouseInteraction, offsetX: 10, offsetY: 10 })
-    .expect(overlay.exists)
-    .notOk();
 });

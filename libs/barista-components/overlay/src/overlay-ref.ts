@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -48,6 +48,9 @@ export class DtOverlayRef<T> {
     return coerceBooleanProperty(this._config.pinnable);
   }
 
+  /** Subject for notifying the user that the overlays pinned state has changed */
+  pinnedChanged = new Subject<boolean>();
+
   /** Subject for notifying the user that the overlay has finished exiting. */
   private readonly _afterExit = new Subject<void>();
 
@@ -86,9 +89,10 @@ export class DtOverlayRef<T> {
 
   /** Pins the overlay */
   pin(value: boolean): void {
-    if (!this._config.pinnable) {
+    if (!this._config.pinnable || this._pinned === value) {
       return;
     }
+
     this._pinned = value;
     if (this._overlayRef.backdropElement) {
       if (value) {
@@ -113,10 +117,11 @@ export class DtOverlayRef<T> {
         this._backDropClickSub.unsubscribe();
       }
     }
+    this.pinnedChanged.next(value);
   }
 
   /** Update the implicit context on the template portal if one exists. */
-  // tslint:disable-next-line: no-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   updateImplicitContext(data: any): void {
     if (this._templatePortal) {
       this._templatePortal.context.$implicit = data;
@@ -129,6 +134,7 @@ export class DtOverlayRef<T> {
     this._disposableFns.forEach((fn) => {
       fn();
     });
+    this.pinnedChanged.next(false);
   }
 
   /**

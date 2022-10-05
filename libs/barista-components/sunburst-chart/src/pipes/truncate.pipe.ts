@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,6 +18,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 /**
  * Truncate string and an ellipsis at the end
+ *
  * @param value - Value to be truncated
  * @param limit - Limit of characters before being truncated
  */

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -96,7 +96,7 @@ import { Platform } from '@angular/cdk/platform';
 /** Provider that allows the autocomplete to register as a ControlValueAccessor. */
 export const DT_AUTOCOMPLETE_VALUE_ACCESSOR: Provider = {
   provide: NG_VALUE_ACCESSOR,
-  // tslint:disable-next-line: no-use-before-declare no-forward-ref
+  // eslint-disable-next-line no-use-before-define, @typescript-eslint/no-use-before-define, @angular-eslint/no-forward-ref
   useExisting: forwardRef(() => DtAutocompleteTrigger),
   multi: true,
 };
@@ -123,9 +123,10 @@ export const AUTOCOMPLETE_PANEL_MAX_HEIGHT = 256;
  *
  * @param preferredOptionHeight The intended option height
  */
-export function calculateOptionHeight(
-  preferredOptionHeight: number,
-): { height: number; maxPanelHeight: number } {
+export function calculateOptionHeight(preferredOptionHeight: number): {
+  height: number;
+  maxPanelHeight: number;
+} {
   const height =
     preferredOptionHeight > AUTOCOMPLETE_OPTION_HEIGHT
       ? preferredOptionHeight
@@ -171,7 +172,8 @@ export const _DtAutocompleteTriggerMixinBase = mixinViewportBoundaries<
 })
 export class DtAutocompleteTrigger<T>
   extends _DtAutocompleteTriggerMixinBase
-  implements ControlValueAccessor, OnDestroy {
+  implements ControlValueAccessor, OnDestroy
+{
   private _optionHeight: number;
   private _maxPanelHeight: number;
 
@@ -213,7 +215,7 @@ export class DtAutocompleteTrigger<T>
   @Input('dtAutocompleteConnectedTo') connectedTo: DtAutocompleteOrigin;
 
   /** `View -> model callback called when value changes` */
-  // tslint:disable-next-line:no-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private _onChange: (value: any) => void = () => {};
 
   /** `View -> model callback called when autocomplete has been touched` */
@@ -318,7 +320,7 @@ export class DtAutocompleteTrigger<T>
     private _platform: Platform,
     private _overlayContainer: OverlayContainer,
     @Optional() @Host() private _formField?: DtFormField<string>,
-    // tslint:disable-next-line:no-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     @Optional() @Inject(DOCUMENT) private _document?: any,
     @Optional()
     @Inject(DT_UI_TEST_CONFIG)
@@ -328,7 +330,7 @@ export class DtAutocompleteTrigger<T>
     optionConfig?: DtOptionConfiguration,
   ) {
     super(_viewportResizer);
-    // tslint:disable-next-line:strict-type-predicates
+    // eslint-disable-next-line
     if (typeof window !== 'undefined') {
       _zone.runOutsideAngular(() => {
         fromEvent(window, 'blur')
@@ -617,7 +619,20 @@ export class DtAutocompleteTrigger<T>
           overlayY: 'bottom',
           panelClass: 'dt-autocomplete-panel-above',
         },
-        // tslint:disable-next-line:no-any
+        {
+          originX: 'end',
+          originY: 'bottom',
+          overlayX: 'end',
+          overlayY: 'top',
+        },
+        {
+          originX: 'end',
+          originY: 'top',
+          overlayX: 'end',
+          overlayY: 'bottom',
+          panelClass: 'dt-autocomplete-panel-above',
+        },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ] as any[]);
 
     return this._positionStrategy;
@@ -656,7 +671,7 @@ export class DtAutocompleteTrigger<T>
             this.autocomplete._setVisibility();
 
             if (this.panelOpen) {
-              this._overlayRef!.updatePosition();
+              this._overlayRef?.updatePosition();
             }
 
             // TODO @thomas.pink: Remove/Rework once angular material issue has been resolved
@@ -677,7 +692,7 @@ export class DtAutocompleteTrigger<T>
   }
 
   /** Stream of clicks outside of the autocomplete panel. */
-  // tslint:disable-next-line:no-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private _getOutsideClickStream(): Observable<any> {
     if (!this._document) {
       return observableOf(null);
@@ -744,7 +759,7 @@ export class DtAutocompleteTrigger<T>
 
     // Simply falling back to an empty string if the display value is falsy does not work properly.
     // The display value can also be the number zero and shouldn't fall back to an empty string.
-    // tslint:disable-next-line:no-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const inputValue = isDefined(toDisplay) ? toDisplay : '';
 
     // If it's used within a `DtFormField`, we should set it through the property so it can go
@@ -789,12 +804,13 @@ export class DtAutocompleteTrigger<T>
   }
 
   /** Implemented as part of ControlValueAccessor. */
-  // tslint:disable-next-line:no-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/ban-types
   registerOnChange(fn: (value: any) => {}): void {
     this._onChange = fn;
   }
 
   /** Implemented as part of ControlValueAccessor. */
+  // eslint-disable-next-line @typescript-eslint/ban-types
   registerOnTouched(fn: () => {}): void {
     this._onTouched = fn;
   }

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-// tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers
-// tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
+// eslint-disable  @angular-eslint/no-lifecycle-call, no-use-before-define, @typescript-eslint/no-use-before-define, no-magic-numbers
+// eslint-disable  @typescript-eslint/no-explicit-any, max-lines, @typescript-eslint/unbound-method, @angular-eslint/use-component-selector
 
 import { Component, OnDestroy, QueryList, ViewChildren } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
@@ -23,13 +23,12 @@ import { By } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
 
 import { DtLogConsumer, DtLogEntry } from '@dynatrace/barista-components/core';
+import { DtTabsModule } from './tabs-module';
+import { DtTab, DtTabChange } from './tab/tab';
 import {
+  DT_TABGROUP_NO_ENABLED_TABS_ERROR,
   DT_TABGROUP_SINGLE_TAB_ERROR,
-  DtTab,
-  DtTabChange,
-  DtTabsModule,
-} from '@dynatrace/barista-components/tabs';
-import { DT_TABGROUP_NO_ENABLED_TABS_ERROR } from './tab-group';
+} from './tab-group';
 
 import { createComponent } from '@dynatrace/testing/browser';
 
@@ -106,7 +105,7 @@ describe('DtTabs', () => {
       tabs[1].selected = true;
       fixture.detectChanges();
 
-      // tslint:disable-next-line no-unbound-method
+      // eslint-disable-next-line  @typescript-eslint/unbound-method
       expect(component.handleTabChange).toHaveBeenCalledTimes(1);
       expect(component.selectEvent.source.id).toBe(tabs[1].id);
     });
@@ -122,7 +121,7 @@ describe('DtTabs', () => {
 
       const tabs = fixture.componentInstance.tabs.toArray();
 
-      // tslint:disable-next-line no-unbound-method
+      // eslint-disable-next-line  @typescript-eslint/unbound-method
       expect(component.handleTabChange).toHaveBeenCalledTimes(1);
       expect(component.selectEvent.source).toBe(tabs[1]);
     });
@@ -217,7 +216,7 @@ describe('DtTabs', () => {
 
       component.dynamicTab = false;
       fixture.detectChanges();
-      // tslint:disable-next-line no-unbound-method
+      // eslint-disable-next-line  @typescript-eslint/unbound-method
       expect(component.handleTabChange).toHaveBeenCalledTimes(2);
       expect(component.selectEvent.source).toBe(tabs[0]);
     });
@@ -296,7 +295,7 @@ describe('DtTabs', () => {
  * Checks that the label and body have their
  * respective `active` classes
  */
-// tslint:disable-next-line:no-any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function checkSelected(
   expectedIndex: number,
   fixture: ComponentFixture<any>,
@@ -312,7 +311,7 @@ export function checkSelected(
   );
 }
 /** checks if the label at given index has the given class */
-// tslint:disable-next-line:no-any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function checkLabelClass(
   expectedIndex: number,
   fixture: ComponentFixture<any>,

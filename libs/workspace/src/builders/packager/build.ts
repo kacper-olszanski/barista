@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -19,7 +19,7 @@ import {
   BuilderOutput,
   Target,
 } from '@angular-devkit/architect';
-import { Schema as AngularJson } from '@angular/cli/lib/config/schema';
+import { Schema as AngularJson } from '@angular/cli/lib/config/workspace-schema';
 import { writeFileSync } from 'fs';
 import { join, dirname, resolve } from 'path';
 import { green } from 'chalk';
@@ -52,6 +52,7 @@ export async function packager(
   let ngPackagrBuilderOptions;
   try {
     // Read the options of the build target options set up with the ng-packagr builder
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ngPackagrBuilderOptions = (await context.getTargetOptions(target)) as any;
 
     if (ngPackagrBuilderOptions.project === undefined) {
@@ -112,6 +113,10 @@ export async function packager(
     const build = await context.scheduleTarget(target);
 
     const buildResult = await build.result;
+
+    if (buildResult.error) {
+      console.error(buildResult.error);
+    }
 
     // Path to the package json file that we are going to ship with the library
     const releasePackageJsonPath = join(libraryDestination, 'package.json');
@@ -183,9 +188,10 @@ export async function packager(
   return { success: false };
 }
 
-function parseAdditionalTargets(
-  targetRef: string,
-): { target: string; project: string } {
+function parseAdditionalTargets(targetRef: string): {
+  target: string;
+  project: string;
+} {
   const [project, target] = targetRef.split(':');
   return { project, target };
 }

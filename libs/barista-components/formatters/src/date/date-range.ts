@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,11 +16,11 @@
 
 import { formatDate } from '@angular/common';
 import { Inject, LOCALE_ID, Pipe, PipeTransform } from '@angular/core';
-
 import { DtLogger, DtLoggerFactory } from '@dynatrace/barista-components/core';
 
 /**
  * Error message that should be logged if no numbers are provided to the dateRange formatter.
+ *
  * @internal
  */
 export const ERROR_MESSAGE_NO_NUMBERS_PROVIDED =
@@ -28,6 +28,7 @@ export const ERROR_MESSAGE_NO_NUMBERS_PROVIDED =
 
 /**
  * Error message that should be logged if not 2 numbers are provided.
+ *
  * @internal
  */
 export const ERROR_MESSAGE_WRONG_FORMAT =
@@ -60,7 +61,7 @@ export class DtDateRange implements PipeTransform {
    * `{{ [startUtcTimestamp, endUtcTimestamp] | dtDateRange }}`
    */
   transform(value: [number, number]): string {
-    // tslint:disable-next-line no-magic-numbers
+    // eslint-disable-next-line  no-magic-numbers
     if (!Array.isArray(value) || value.length !== 2) {
       logger.error(ERROR_MESSAGE_WRONG_FORMAT);
       return PLACEHOLDER;
@@ -72,6 +73,7 @@ export class DtDateRange implements PipeTransform {
 
 /**
  * Formats two provided dates (start and end) to reflect a range.
+ *
  * @param start The start timestamp.
  * @param end The end timestamp.
  * @param locale The locale to format with – default: *en-US*
@@ -104,7 +106,7 @@ export function dtFormatDateRange(
 
     if (
       date1.getUTCMonth() === date2.getUTCMonth() &&
-      date1.getUTCDay() === date2.getUTCDay()
+      date1.getDate() === date2.getDate()
     ) {
       dateString2 = 'HH:mm';
     }

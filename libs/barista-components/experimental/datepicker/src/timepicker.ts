@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -134,7 +134,7 @@ export class DtTimepicker {
     this._isDisabled = coerceBooleanProperty(disabled);
     this._changeDetectorRef.markForCheck();
   }
-  private _isDisabled: boolean = false;
+  private _isDisabled = false;
   static ngAcceptInputType_disabled: BooleanInput;
 
   /** @internal Reference to the timeInput component */

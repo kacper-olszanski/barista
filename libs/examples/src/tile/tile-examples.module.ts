@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -23,6 +23,7 @@ import { DtExampleTileError } from './tile-error-example/tile-error-example';
 import { DtIconModule } from '@dynatrace/barista-components/icon';
 import { DtExampleTileMain } from './tile-main-example/tile-main-example';
 import { DtExampleTileWarning } from './tile-warning-example/tile-warning-example';
+import { DtExampleTileCritical } from './tile-critical-example/tile-critical-example';
 
 @NgModule({
   imports: [DtTileModule, DtIconModule],
@@ -30,6 +31,7 @@ import { DtExampleTileWarning } from './tile-warning-example/tile-warning-exampl
     DtExampleTileDefault,
     DtExampleTileDisabled,
     DtExampleTileError,
+    DtExampleTileCritical,
     DtExampleTileMain,
     DtExampleTileWarning,
     DtExampleTileRecovered,

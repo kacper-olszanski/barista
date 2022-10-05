@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-// tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers
-// tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
+// eslint-disable  @angular-eslint/no-lifecycle-call, no-use-before-define, @typescript-eslint/no-use-before-define, no-magic-numbers
+// eslint-disable  @typescript-eslint/no-explicit-any, max-lines, @typescript-eslint/unbound-method, @angular-eslint/use-component-selector
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, NgZone } from '@angular/core';
@@ -27,10 +27,6 @@ import {
 } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
-import {
-  DtFilterFieldModule,
-  DtFilterFieldTag,
-} from '@dynatrace/barista-components/filter-field';
 import { DtIconModule } from '@dynatrace/barista-components/icon';
 
 import { Platform } from '@angular/cdk/platform';
@@ -45,6 +41,8 @@ import { mockObjectProperty } from '@dynatrace/testing/node';
 
 import { DtFilterFieldTagData } from '../types';
 import { DtOverlayTrigger } from '@dynatrace/barista-components/overlay';
+import { DtFilterFieldTag } from './filter-field-tag';
+import { DtFilterFieldModule } from '../filter-field-module';
 
 describe('DtFilterFieldTag', () => {
   let fixture: ComponentFixture<TestApp>;
@@ -69,8 +67,9 @@ describe('DtFilterFieldTag', () => {
     }).compileComponents();
 
     fixture = createComponent(TestApp);
-    filterFieldTag = fixture.debugElement.query(By.directive(DtFilterFieldTag))
-      .componentInstance;
+    filterFieldTag = fixture.debugElement.query(
+      By.directive(DtFilterFieldTag),
+    ).componentInstance;
     filterFieldTagHost = fixture.debugElement.query(
       By.css('.dt-filter-field-tag'),
     ).nativeElement;
@@ -104,7 +103,7 @@ describe('DtFilterFieldTag', () => {
   it('should also accept string values to handle disabled', () => {
     expect(filterFieldTag.disabled).toBe(false);
 
-    // tslint:disable-next-line:no-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     filterFieldTag.disabled = 'disabled' as any;
 
     expect(filterFieldTag.disabled).toBe(true);
@@ -159,6 +158,7 @@ describe('DtFilterFieldTag', () => {
     /** Get the overlay trigger directive from the fixture. */
     function getOverlayTriggerDirective(
       passedFixture: ComponentFixture<TestApp>,
+      // eslint-disable-next-line @typescript-eslint/ban-types
     ): DtOverlayTrigger<{}> {
       return passedFixture.debugElement
         .query(By.directive(DtOverlayTrigger))

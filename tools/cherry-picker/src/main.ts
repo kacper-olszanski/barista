@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2019 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -85,10 +85,8 @@ async function run(): Promise<void> {
 
   // Get the current minor and patch branches based on the version of the
   // master package json.
-  const {
-    currentMinorBranch,
-    currentPatchBranch,
-  } = await getCurrentMinorAndPatchBranches();
+  const { currentMinorBranch, currentPatchBranch } =
+    await getCurrentMinorAndPatchBranches();
 
   const cherryPickMessages: string[] = [];
   if (pullRequestHasLabel(pullRequestDetails, 'target: minor')) {

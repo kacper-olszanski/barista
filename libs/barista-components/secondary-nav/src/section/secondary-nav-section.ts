@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -33,7 +33,7 @@ import { filter } from 'rxjs/operators';
 import { DtSecondaryNavLinkActive } from './secondary-nav-link';
 
 @Directive({
-  selector: 'dt-secondary-nav-section-title',
+  selector: 'dt-secondary-nav-section-title, [dtSecondaryNavSectionTitle]',
   host: {
     class: 'dt-secondary-nav-section-title',
   },
@@ -42,7 +42,8 @@ import { DtSecondaryNavLinkActive } from './secondary-nav-link';
 export class DtSecondaryNavSectionTitle {}
 
 @Directive({
-  selector: 'dt-secondary-nav-section-description',
+  selector:
+    'dt-secondary-nav-section-description, [dtSecondaryNavSectionDescription]',
   host: {
     class: 'dt-secondary-nav-section-description',
   },

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-export * from './/src/stacked-series-chart-overlay.directive';
+export * from './src/stacked-series-chart-overlay.directive';
 export * from './src/stacked-series-chart';
 export * from './src/stacked-series-chart.module';
 export {
@@ -22,9 +22,14 @@ export {
   DtStackedSeriesChartLegend,
   DtStackedSeriesChartMode,
   DtStackedSeriesChartNode,
+  DtStackedSeriesHeatField,
   DtStackedSeriesChartSeries,
   DtStackedSeriesChartTooltipData,
   DtStackedSeriesChartSelectionMode,
   DtStackedSeriesChartValueDisplayMode,
   DtStackedSeriesChartLabelAxisMode,
+  DtStackedSeriesChartValueContinuousAxisMap,
+  DtStackedSeriesChartValueContinuousAxisType,
+  TimeInterval,
+  CountableTimeInterval,
 } from './src/stacked-series-chart.util';

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -34,6 +34,7 @@ export type DtIndicatorThemePalette =
   | 'error'
   | 'warning'
   | 'recovered'
+  | 'critical'
   | undefined;
 
 // Boilerplate for applying mixins to DtIndicator.
@@ -57,7 +58,8 @@ export const _DtIndicatorMixinBase = mixinColor<
 })
 export class DtIndicator
   extends _DtIndicatorMixinBase
-  implements CanColor<DtIndicatorThemePalette>, OnDestroy, OnChanges {
+  implements CanColor<DtIndicatorThemePalette>, OnDestroy, OnChanges
+{
   /**
    * @internal
    * Emits whenever some inputs change on the indicator so the row can reevaluate the indicator

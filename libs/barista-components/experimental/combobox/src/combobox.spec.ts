@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -19,15 +19,26 @@ import {
   fakeAsync,
   inject,
   flush,
+  tick,
 } from '@angular/core/testing';
 import {
   Component,
+  ViewChild,
   //NgZone
 } from '@angular/core';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import {
+  FormControl,
+  FormGroup,
+  FormGroupDirective,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { DtFormFieldModule } from '@dynatrace/barista-components/form-field';
 
 import {
   createComponent,
@@ -49,10 +60,6 @@ describe('Combobox', () => {
   let overlayContainer: OverlayContainer;
   let overlayContainerElement: HTMLElement;
 
-  let fixture: ComponentFixture<TestComponent>;
-  let input: HTMLInputElement;
-  let trigger: HTMLDivElement;
-  let combobox: DtCombobox<unknown>;
   //let zone: MockNgZone;
 
   beforeEach(fakeAsync(() => {
@@ -60,11 +67,18 @@ describe('Combobox', () => {
       imports: [
         NoopAnimationsModule,
         DtComboboxModule,
+        DtFormFieldModule,
         CommonModule,
+        ReactiveFormsModule,
+        FormsModule,
         HttpClientTestingModule,
         DtIconModule.forRoot({ svgIconLocation: `{{name}}.svg` }),
       ],
-      declarations: [TestComponent, TestLoadingComponent],
+      declarations: [
+        TestComponent,
+        TestLoadingComponent,
+        ComboboxInsideFormGroup,
+      ],
       providers: [
         //{ provide: NgZone, useFactory: () => (zone = new MockNgZone()) },
       ],
@@ -83,14 +97,22 @@ describe('Combobox', () => {
   });
 
   describe('Basic', () => {
+    let fixture: ComponentFixture<TestComponent>;
+    let input: HTMLInputElement;
+    let trigger: HTMLDivElement;
+    let combobox: DtCombobox<unknown>;
+
     beforeEach(() => {
       fixture = createComponent(TestComponent);
-      combobox = fixture.debugElement.query(By.directive(DtCombobox))
-        .componentInstance;
-      input = fixture.debugElement.query(By.css('.dt-combobox-input'))
-        .nativeElement;
-      trigger = fixture.debugElement.query(By.css('.dt-combobox-trigger'))
-        .nativeElement;
+      combobox = fixture.debugElement.query(
+        By.directive(DtCombobox),
+      ).componentInstance;
+      input = fixture.debugElement.query(
+        By.css('.dt-combobox-input'),
+      ).nativeElement;
+      trigger = fixture.debugElement.query(
+        By.css('.dt-combobox-trigger'),
+      ).nativeElement;
     });
 
     it('should not open when the options are empty', fakeAsync(() => {
@@ -136,6 +158,99 @@ describe('Combobox', () => {
       fixture.detectChanges();
       expect(input.value).toBe('Value 2');
     }));
+
+    it('should emit a filterChange event when the input value changes', fakeAsync(() => {
+      fixture.componentInstance.setOptions();
+      fixture.detectChanges();
+      focusInput(input);
+
+      jest.spyOn(combobox.filterChange, 'emit');
+
+      input.value = 'espresso';
+      dispatchFakeEvent(input, 'input');
+
+      // Wait for debounce
+      tick(200);
+
+      expect(combobox.filterChange.emit).toHaveBeenCalledWith({
+        filter: 'espresso',
+        isResetEvent: false,
+      });
+    }));
+  });
+
+  describe('inside of a form group', () => {
+    let fixture: ComponentFixture<ComboboxInsideFormGroup>;
+    let testComponent: ComboboxInsideFormGroup;
+    let combobox: HTMLElement;
+
+    beforeEach(() => {
+      fixture = createComponent(ComboboxInsideFormGroup);
+      testComponent = fixture.componentInstance;
+      combobox = fixture.debugElement.query(
+        By.css('dt-combobox'),
+      ).nativeElement;
+    });
+
+    it('should not set the invalid class on a clean combobox', fakeAsync(() => {
+      expect(testComponent.formGroup.untouched).toBe(true);
+      expect(testComponent.formControl.invalid).toBe(true);
+      expect(combobox.classList).not.toContain('dt-combobox-invalid');
+      expect(combobox.getAttribute('aria-invalid')).toBe('false');
+    }));
+
+    it('should appear as invalid if it becomes touched', fakeAsync(() => {
+      expect(combobox.classList).not.toContain('dt-combobox-invalid');
+      expect(combobox.getAttribute('aria-invalid')).toBe('false');
+
+      testComponent.formControl.markAsDirty();
+      fixture.detectChanges();
+
+      expect(combobox.classList).toContain('dt-combobox-invalid');
+      expect(combobox.getAttribute('aria-invalid')).toBe('true');
+    }));
+
+    it('should not have the invalid class when the combobox becomes valid', fakeAsync(() => {
+      testComponent.formControl.markAsDirty();
+      fixture.detectChanges();
+
+      expect(combobox.classList).toContain('dt-combobox-invalid');
+      expect(combobox.getAttribute('aria-invalid')).toBe('true');
+
+      testComponent.formControl.setValue('value1');
+      fixture.detectChanges();
+
+      expect(combobox.classList).not.toContain('dt-combobox-invalid');
+      expect(combobox.getAttribute('aria-invalid')).toBe('false');
+    }));
+
+    it('should appear as invalid when the parent form group is submitted', fakeAsync(() => {
+      expect(combobox.classList).not.toContain('dt-combobox-invalid');
+      expect(combobox.getAttribute('aria-invalid')).toBe('false');
+
+      dispatchFakeEvent(
+        fixture.debugElement.query(By.css('form')).nativeElement,
+        'submit',
+      );
+      fixture.detectChanges();
+
+      expect(combobox.classList).toContain('dt-combobox-invalid');
+      expect(combobox.getAttribute('aria-invalid')).toBe('true');
+    }));
+
+    it('should render the error messages when the parent form is submitted', fakeAsync(() => {
+      const debugEl = fixture.debugElement.nativeElement;
+
+      expect(debugEl.querySelectorAll('dt-error').length).toBe(0);
+
+      dispatchFakeEvent(
+        fixture.debugElement.query(By.css('form')).nativeElement,
+        'submit',
+      );
+      fixture.detectChanges();
+
+      expect(debugEl.querySelectorAll('dt-error').length).toBe(1);
+    }));
   });
 
   it('should not throw an error when loading is true initially', () => {
@@ -158,7 +273,7 @@ describe('Combobox', () => {
     <dt-combobox
       (opened)="openedSpy()"
       (closed)="closedSpy()"
-      [value]="value$ | async"
+      [value]="(value$ | async)!"
       placeholder="My placeholder"
       [compareWith]="compareFn"
       [displayWith]="displayFn"
@@ -213,4 +328,34 @@ class TestLoadingComponent {
     { name: 'Value 3', value: '[value: Value 3]' },
   ];
   loading = true;
+}
+
+@Component({
+  template: `
+    <form [formGroup]="formGroup">
+      <dt-form-field>
+        <dt-combobox formControlName="value">
+          <dt-option *ngFor="let option of options" [value]="option.value">
+            {{ option.name }}
+          </dt-option>
+        </dt-combobox>
+        <dt-error>This field is required</dt-error>
+      </dt-form-field>
+    </form>
+  `,
+})
+class ComboboxInsideFormGroup {
+  options: { name: string; value: string }[] = [
+    { name: 'Value 1', value: 'value1' },
+    { name: 'Value 2', value: 'value2' },
+    { name: 'Value 3', value: 'value3' },
+  ];
+  initialValue = this.options[0];
+  @ViewChild(FormGroupDirective)
+  formGroupDirective: FormGroupDirective;
+  @ViewChild(DtCombobox) combobox: DtCombobox<any>;
+  formControl = new FormControl(null, Validators.required);
+  formGroup = new FormGroup({
+    value: this.formControl,
+  });
 }

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-// tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers
-// tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
+// eslint-disable  @angular-eslint/no-lifecycle-call, no-use-before-define, @typescript-eslint/no-use-before-define, no-magic-numbers
+// eslint-disable  @typescript-eslint/no-explicit-any, max-lines, @typescript-eslint/unbound-method, @angular-eslint/use-component-selector
 
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { Component, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed, inject } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
-import { DtEventChartModule } from '@dynatrace/barista-components/event-chart';
+import { DtEventChartModule } from './event-chart-module';
 
 import { dispatchFakeEvent } from '@dynatrace/testing/browser';
 import { DtEventChart } from './event-chart';
@@ -49,9 +49,7 @@ function getRenderedEventsPath(fixture: ComponentFixture<any>): string {
 }
 
 /** Get legend items from the fixture. */
-function getLegendItems(
-  fixture: ComponentFixture<any>,
-): {
+function getLegendItems(fixture: ComponentFixture<any>): {
   label: string;
   hasErrorColor: boolean;
   hasConversionColor: boolean;
@@ -78,7 +76,7 @@ function getLegendItems(
       .nativeElement.classList.toString()
       .includes('filtered');
     const hasPattern =
-      // tslint:disable-next-line: strict-type-predicates
+      // eslint-disable-next-line
       element.query(
         By.css(
           '.dt-event-chart-legend-symbol .dt-event-chart-legend-symbol-pattern',
@@ -206,20 +204,24 @@ describe('DtEventChart', () => {
         .replace(/ ([M,L,C,A])/gim, ' *$1')
         .split('*')
         .map((pathInstruction) => pathInstruction.trim())
-        .map((pathInstruction: string): {
-          key: string;
-          x: number;
-          y: number;
-        } => {
-          const key = pathInstruction[0];
-          const [x, y] = pathInstruction
-            .slice(1)
-            .split(' ')
-            .map((directionInstruction: string): number =>
-              parseFloat(directionInstruction),
-            );
-          return { key, x, y };
-        });
+        .map(
+          (
+            pathInstruction: string,
+          ): {
+            key: string;
+            x: number;
+            y: number;
+          } => {
+            const key = pathInstruction[0];
+            const [x, y] = pathInstruction
+              .slice(1)
+              .split(' ')
+              .map((directionInstruction: string): number =>
+                parseFloat(directionInstruction),
+              );
+            return { key, x, y };
+          },
+        );
 
       // Expect instructions to be correct
       expect(splitPath.map((e) => e.key)).toEqual([

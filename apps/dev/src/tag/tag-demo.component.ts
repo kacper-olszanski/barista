@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -25,6 +25,7 @@ import { DtTag } from '@dynatrace/barista-components/tag';
 })
 export class TagDemo implements OnInit {
   tags = new Set<string>();
+  users = new Set<string>();
 
   value1 = 'My value 1';
   value2 = 'My value 2';
@@ -82,10 +83,16 @@ export class TagDemo implements OnInit {
       .add('Pine456')
       .add('Pine421')
       .add('Pine1233');
+
+    this.users.add('John').add('Jane').add('Max');
   }
 
   addTag(tag: string): void {
     this.tags.add(tag);
+  }
+
+  addUser(event: { tag: string }): void {
+    this.users.add(event.tag);
   }
 
   doRemove(tag: DtTag<string>): void {

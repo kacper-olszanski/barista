@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,16 +14,11 @@
  * limitations under the License.
  */
 
-// tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers deprecation
-// tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
+// eslint-disable  @angular-eslint/no-lifecycle-call, no-use-before-define, @typescript-eslint/no-use-before-define, no-magic-numbers, import/no-deprecated
+// eslint-disable  @typescript-eslint/no-explicit-any, max-lines, @typescript-eslint/unbound-method, @angular-eslint/use-component-selector
 
 import { Validators } from '@angular/forms';
-import {
-  dtAutocompleteDef,
-  dtFreeTextDef,
-  dtGroupDef,
-  dtOptionDef,
-} from '@dynatrace/barista-components/filter-field';
+
 // Import locally because utils are not exported for the public
 import {
   defaultEditionDataForFilterValuesParser,
@@ -44,11 +39,15 @@ import {
   peekOptionId,
 } from './filter-field-util';
 import {
+  dtAutocompleteDef,
   DtAutocompleteValue,
   DtFilterValue,
+  dtFreeTextDef,
+  dtGroupDef,
   dtMultiSelectDef,
   DtNodeDef,
   DtNodeFlags,
+  dtOptionDef,
   dtRangeDef,
   DtRangeValue,
   isDtFreeTextDef,
@@ -599,7 +598,8 @@ describe('DtFilterField Util', () => {
         false,
         false,
       );
-      outerOptionAutocompleteDef.option!.parentAutocomplete = rootAutocompleteDef;
+      outerOptionAutocompleteDef.option!.parentAutocomplete =
+        rootAutocompleteDef;
 
       const values = [outerOptionDef, innerOptionDef] as DtFilterValue[];
       const tagData = defaultTagDataForFilterValuesParser(values);
@@ -1461,7 +1461,8 @@ describe('DtFilterField Util', () => {
   describe('defaultEditionDataForFilterValuesParser', () => {
     it('should return an empty string when filterValues is not defined', () => {
       // given
-      const filterValues: DtFilterValue[] = (undefined as unknown) as DtFilterValue[];
+      const filterValues: DtFilterValue[] =
+        undefined as unknown as DtFilterValue[];
       // when
       const result = defaultEditionDataForFilterValuesParser(filterValues);
       // then

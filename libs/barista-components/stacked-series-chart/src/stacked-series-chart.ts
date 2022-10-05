@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -40,44 +40,76 @@ import {
   isDefined,
 } from '@dynatrace/barista-components/core';
 import { formatCount } from '@dynatrace/barista-components/formatters';
-import { DtColors, DtTheme } from '@dynatrace/barista-components/theming';
-import { scaleLinear } from 'd3-scale';
-import { merge, Subject } from 'rxjs';
-import { first, tap, switchMapTo, takeUntil } from 'rxjs/operators';
+import {
+  DtColors,
+  DtTheme,
+  getDtChartColorPalette,
+} from '@dynatrace/barista-components/theming';
+import {
+  ScaleLinear,
+  scaleLinear,
+  ScalePoint,
+  scalePoint,
+  scaleTime,
+  ScaleTime,
+} from 'd3-scale';
+import { merge, ReplaySubject, Subject } from 'rxjs';
+import {
+  debounceTime,
+  filter,
+  first,
+  pairwise,
+  switchMapTo,
+  takeUntil,
+  tap,
+} from 'rxjs/operators';
 import { DtStackedSeriesChartNode } from '..';
-import { DtStackedSeriesChartOverlay } from './stacked-series-chart-overlay.directive';
+import {
+  DtStackedSeriesChartHeatFieldOverlay,
+  DtStackedSeriesChartOverlay,
+} from './stacked-series-chart-overlay.directive';
 import {
   DtStackedSeriesChartFilledSeries,
   DtStackedSeriesChartFillMode,
+  DtStackedSeriesChartLabelAxisMode,
   DtStackedSeriesChartLegend,
   DtStackedSeriesChartMode,
+  DtStackedSeriesChartSelection,
+  DtStackedSeriesChartSelectionMode,
   DtStackedSeriesChartSeries,
   DtStackedSeriesChartTooltipData,
+  DtStackedSeriesChartValueContinuousAxisMap,
+  DtStackedSeriesChartValueContinuousAxisType,
   DtStackedSeriesChartValueDisplayMode,
-  DtStackedSeriesChartSelectionMode,
-  DtStackedSeriesChartSelection,
+  DtStackedSeriesContinuousScale,
+  DtStackedSeriesContinuousTick,
+  DtStackedSeriesHeatField,
+  DtStackedSeriesHeatFieldLevel,
+  DtStackedSeriesHoverData,
+  DtStackedSeriesLegendHoverData,
+  DtStackedSeriesStackHoverData,
   fillSeries,
   getLegends,
   getSeriesWithState,
   getTotalMaxValue,
+  TimeInterval,
   updateNodesVisibility,
-  DtStackedSeriesChartLabelAxisMode,
-  DtStackedSeriesStackHoverData,
-  DtStackedSeriesLegendHoverData,
-  DtStackedSeriesHoverData,
 } from './stacked-series-chart.util';
-import { DtOverlayRef, DtOverlay } from '@dynatrace/barista-components/overlay';
 import {
+  BooleanInput,
   coerceBooleanProperty,
   coerceNumberProperty,
   NumberInput,
-  BooleanInput,
 } from '@angular/cdk/coercion';
+import { Platform } from '@angular/cdk/platform';
 
 // horizontal ticks
 const TICK_BAR_SPACING = 160;
 // vertical ticks
 const TICK_COLUMN_SPACING = 80;
+
+// minimum tick for tracks
+const MIN_TRACK_TICKS = 2;
 
 @Component({
   selector: 'dt-stacked-series-chart',
@@ -96,7 +128,6 @@ const TICK_COLUMN_SPACING = 80;
     '[class.dt-stacked-series-chart-with-value-axis]': 'visibleValueAxis',
     '[class.dt-stacked-series-chart-bar]': "mode === 'bar'",
     '[class.dt-stacked-series-chart-column]': "mode === 'column'",
-    '[style.--dt-stacked-series-chart-grid-gap]': '_gridGap',
   },
 })
 export class DtStackedSeriesChart implements OnDestroy, OnInit {
@@ -107,14 +138,13 @@ export class DtStackedSeriesChart implements OnDestroy, OnInit {
   }
   set series(value: DtStackedSeriesChartSeries[]) {
     if (value !== this._series) {
-      this._series = value;
+      this._series = value || [];
       this._updateFilledSeries();
-      this._render();
     }
   }
   private _series: DtStackedSeriesChartSeries[];
   /** Series with filled nodes */
-  private _filledSeries: DtStackedSeriesChartFilledSeries[];
+  private _filledSeries: DtStackedSeriesChartFilledSeries[] = [];
 
   /** Whether to make just the nodes selectable or the whole row/column */
   @Input() selectionMode: DtStackedSeriesChartSelectionMode = 'node';
@@ -138,13 +168,15 @@ export class DtStackedSeriesChart implements OnDestroy, OnInit {
       this._selectable = coerceBooleanProperty(value) ?? false;
     }
   }
-  _selectable: boolean = false;
+  _selectable = false;
   static ngAcceptInputType_selectable: BooleanInput;
 
   /** Max value in the chart */
   @Input()
   get max(): number | undefined {
-    return this._max !== undefined ? this._max : getTotalMaxValue(this.series);
+    return this._max !== undefined
+      ? this._max
+      : getTotalMaxValue(this._filledSeries);
   }
   set max(value: number | undefined) {
     if (value !== this._max) {
@@ -176,6 +208,56 @@ export class DtStackedSeriesChart implements OnDestroy, OnInit {
   @Input() valueDisplayMode: DtStackedSeriesChartValueDisplayMode = 'none';
   /** @internal Will be true if display mode is not 'none' and only has one series */
   _canShowValue: boolean;
+
+  /**
+   * Sets the type for Continuous Axis scale calculation
+   * to 'none', 'date' or linear.
+   */
+  @Input() continuousAxisType: DtStackedSeriesChartValueContinuousAxisType =
+    'none';
+
+  /**
+   * In case we want a specific interval for ticks. I.e.: every 5 mins, per day...
+   */
+  @Input()
+  get continuousAxisInterval(): TimeInterval {
+    return this._continuousAxisInterval;
+  }
+  set continuousAxisInterval(value: TimeInterval) {
+    this._continuousAxisInterval = value;
+    this._render();
+  }
+  _continuousAxisInterval: TimeInterval;
+
+  /**
+   * Specific format for tick label.
+   * It follows D3 format (https://github.com/d3/d3-format) for linear type
+   * and D3 time format (https://github.com/d3/d3-time-format) for date type
+   */
+  @Input()
+  get continuousAxisFormat(): string {
+    return this._continuousAxisFormat;
+  }
+  set continuousAxisFormat(value: string) {
+    this._continuousAxisFormat = value;
+    this._render();
+  }
+  _continuousAxisFormat: string;
+
+  /**
+   * Mapping function to create d3 domain.
+   * If we have a date string like "12:45:20", we will map it to a Date()
+   * so that d3 could understand the domain and build the scale properly
+   */
+  @Input()
+  get continuousAxisMap(): DtStackedSeriesChartValueContinuousAxisMap {
+    return this._continuousAxisMap ?? (({ origin }) => origin.label);
+  }
+  set continuousAxisMap(value: DtStackedSeriesChartValueContinuousAxisMap) {
+    this._continuousAxisMap = value;
+    this._render();
+  }
+  _continuousAxisMap: DtStackedSeriesChartValueContinuousAxisMap;
 
   /** Array of legends that can be used to toggle bar nodes. Useful when the legend used is outside this component */
   @Input()
@@ -241,17 +323,6 @@ export class DtStackedSeriesChart implements OnDestroy, OnInit {
   }
   _mode: DtStackedSeriesChartMode = 'bar';
 
-  /** Maximum size of the track */
-  @Input()
-  get maxTrackSize(): number {
-    return this._maxTrackSize;
-  }
-  set maxTrackSize(value: number) {
-    this._maxTrackSize = coerceNumberProperty(value);
-  }
-  private _maxTrackSize = 16;
-  static ngAcceptInputType_maxTrackSize: NumberInput;
-
   /** Visibility of value axis */
   @Input()
   get visibleValueAxis(): boolean {
@@ -264,7 +335,10 @@ export class DtStackedSeriesChart implements OnDestroy, OnInit {
   static ngAcceptInputType_visibleValueAxis: BooleanInput;
 
   /** @internal Ticks for value axis */
-  _axisTicks: { pos: number; value: number; valueRelative: number }[] = [];
+  _axisTicks: { position: number; value: number; valueRelative: number }[] = [];
+  _trackTicks: { position: number; value: string }[] = [];
+  _defaultTicks: DtStackedSeriesContinuousTick[] = [];
+  _trackAmount: number;
 
   /** @internal Value axis width to allow it inside the boundaries of the component */
   _valueAxisSize: { absolute: number; relative: number } = {
@@ -272,14 +346,33 @@ export class DtStackedSeriesChart implements OnDestroy, OnInit {
     relative: 0,
   };
 
-  /** Whether to show the label axis rotated to fit more labels */
+  /**
+   * Heat Fields, they will be place at the top or left part of the chart
+   * Overlap supported
+   */
+  @Input()
+  get heatFields(): DtStackedSeriesHeatField[] {
+    return this._heatFields;
+  }
+  set heatFields(value: DtStackedSeriesHeatField[]) {
+    this._selectedHeatFieldIndex = -1;
+    this._heatFields = value;
+    this._render();
+  }
+  _heatFieldLevels: DtStackedSeriesHeatFieldLevel[];
+  _heatFields: DtStackedSeriesHeatField[];
+  _selectedHeatFieldIndex = -1;
+
   @Input() labelAxisMode: DtStackedSeriesChartLabelAxisMode = 'full';
+
   /** @internal  Support only for mode === 'column', wouldn't make sense for 'row' */
+  private _isCompactModeEnabled = false;
+
   get _labelAxisCompactModeEnabled(): boolean {
     return (
       this.mode === 'column' &&
       (this.labelAxisMode === 'compact' ||
-        (this.labelAxisMode === 'auto' && this._isAnyLabelOverflowing()))
+        (this.labelAxisMode === 'auto' && this._isCompactModeEnabled))
     );
   }
 
@@ -300,9 +393,8 @@ export class DtStackedSeriesChart implements OnDestroy, OnInit {
   private _selected: DtStackedSeriesChartSelection | [] = [];
 
   /** Event that fires when a node is clicked with an array of [series, node]  */
-  @Output() selectedChange: EventEmitter<
-    DtStackedSeriesChartSelection | []
-  > = new EventEmitter();
+  @Output() selectedChange: EventEmitter<DtStackedSeriesChartSelection | []> =
+    new EventEmitter();
 
   /** Notifies the component container of the start of hover events on legend and stacks  */
   @Output() hoverStart = new EventEmitter<DtStackedSeriesHoverData>();
@@ -312,9 +404,16 @@ export class DtStackedSeriesChart implements OnDestroy, OnInit {
 
   /** @internal Template reference for the DtStackedSeriesChart */
   @ContentChild(DtStackedSeriesChartOverlay, { read: TemplateRef })
-  _overlay: TemplateRef<DtStackedSeriesChartTooltipData>;
+  _overlay: DtStackedSeriesChartOverlay;
 
-  /** @internal Reference to the root svgElement. */
+  /** @internal Template reference for the DtStackedSeriesChartHeatField */
+  @ContentChild(DtStackedSeriesChartHeatFieldOverlay, { read: TemplateRef })
+  _heatFieldOverlay: DtStackedSeriesChartHeatFieldOverlay;
+
+  /** @internal Reference to the default label element. */
+  @ViewChild('label') _defaultLabelElement: ElementRef;
+
+  /** @internal Reference to the root axis Element. */
   @ViewChild('valueAxis') _valueAxis: ElementRef;
 
   /** @internal Reference to the root element. */
@@ -323,23 +422,49 @@ export class DtStackedSeriesChart implements OnDestroy, OnInit {
   /** @internal Reference to the elements on the label axis. */
   @ViewChildren('label') labels: QueryList<ElementRef>;
 
-  /** Reference to the open overlay. */
-  private _overlayRef: DtOverlayRef<DtStackedSeriesChartTooltipData> | null;
-
   /** @internal Slices to be painted */
   _tracks: DtStackedSeriesChartFilledSeries[] = [];
+  _isScalePoint = false;
+  _scale:
+    | ScalePoint<string>
+    | ScaleLinear<number, number>
+    | ScaleTime<number, number>;
+
+  _defaultLabel: string;
+
+  /** Indicates when scale should be built */
+  private _shouldRenderInner = new ReplaySubject();
+  _shouldRender = this._shouldRenderInner.pipe(
+    debounceTime(0),
+    tap(() => {
+      // We don't want the subject to be cancelled due to errors
+      try {
+        this._renderInner();
+      } catch (_) {
+        console.error(_);
+      }
+    }),
+  );
+
+  /** Indicates when unpin is done so that we unselect heatfield item */
+  onUnpinInner$ = new Subject<boolean>();
+  onUnpin$ = this.onUnpinInner$.pipe(
+    pairwise(),
+    filter(([prev, next]) => prev && !next),
+    tap(() => (this._selectedHeatFieldIndex = -1)),
+  );
 
   /** Indicates when ticks should be recalculated */
-  private _shouldUpdateTicks = new Subject();
+  private _shouldUpdateTicks = new ReplaySubject();
 
   /** Subject to be called upon component destroy to remove pending subscriptions */
   private readonly _destroy$ = new Subject<void>();
 
   constructor(
     private readonly _changeDetectorRef: ChangeDetectorRef,
-    private _resizer: DtViewportResizer,
     private _zone: NgZone,
-    private _overlayService: DtOverlay,
+    private _platform: Platform,
+    private _resizer: DtViewportResizer,
     /**
      * @deprecated Remove the sanitizer when we don't have to support ivy anymore.
      * @breaking-change Remove the DomSanitizer. (Version: TBD)
@@ -354,20 +479,12 @@ export class DtStackedSeriesChart implements OnDestroy, OnInit {
         .pipe(takeUntil(this._destroy$))
         .subscribe(() => {
           this._updateFilledSeries();
-          this._render();
           this._changeDetectorRef.markForCheck();
         });
     }
 
     merge(this._shouldUpdateTicks, this._resizer.change())
       .pipe(
-        tap(() => {
-          if (this.labelAxisMode === 'auto' && this.mode === 'column') {
-            // Recalculate every time the size changes only if we are on these modes
-            this._isAnyLabelOverflowing();
-            this._changeDetectorRef.detectChanges();
-          }
-        }),
         // Shift the updating/rendering to the next CD cycle,
         // because we need the dimensions of axis first, which is rendered in the main cycle.
         switchMapTo(this._zone.onStable.pipe(first())),
@@ -380,6 +497,7 @@ export class DtStackedSeriesChart implements OnDestroy, OnInit {
         // the template bindings.
         this._zone.run(() => {
           this._updateTicks();
+          this._isAnyLabelOverflowing();
           this._changeDetectorRef.detectChanges();
         });
       });
@@ -391,7 +509,7 @@ export class DtStackedSeriesChart implements OnDestroy, OnInit {
   }
 
   /** @internal Toggle the selection of an element */
-  _toggleSelect(
+  private _toggleSelect(
     series?: DtStackedSeriesChartSeries,
     node?: DtStackedSeriesChartNode,
   ): void {
@@ -461,56 +579,25 @@ export class DtStackedSeriesChart implements OnDestroy, OnInit {
   /**
    * @internal
    * Handles the mouseEnter on a series slice.
-   * Creates an overlay if it is necessary.
    */
-  _handleOnSeriesMouseEnter(
-    event: MouseEvent,
-    slice: DtStackedSeriesChartTooltipData,
-  ): void {
+  _handleOnSeriesMouseEnter(slice: DtStackedSeriesChartTooltipData): void {
     this.hoverStart.emit(this._trackStackHoverEvents(slice));
-    if (this._overlay && !this._overlayRef) {
-      this._overlayRef = this._overlayService.create<DtStackedSeriesChartTooltipData>(
-        event.target as HTMLElement,
-        this._overlay,
-      );
-      this._overlayRef.updateImplicitContext(slice);
-      this._overlayRef.updatePosition(event.offsetX, event.offsetY);
-    }
   }
 
-  /**
-   * @internal
-   * Handles the mouseEnter on a series slice.
-   */
-  _handleOnLegendMouseEnter(legend: DtStackedSeriesChartLegend): void {
-    this.hoverStart.emit(this._trackLegendHoverEvents(legend));
-  }
-
-  /**
-   * @internal
-   * Handles the mouseMove on a series slice.
-   * Updates the position of the overlay to create a mouseFollow position
-   */
-  _handleOnSeriesMouseMove(event: MouseEvent): void {
-    if (this._overlayRef) {
-      this._overlayService._positionStrategy.setOrigin({
-        x: event.clientX,
-        y: event.clientY,
-      });
-      this._overlayRef.updatePosition();
-    }
-  }
   /**
    * @internal
    * Handles the mouseLeave on a series slice.
-   * Dismisses the overlay if there is one defined.
    */
   _handleOnSeriesMouseLeave(slice: DtStackedSeriesChartTooltipData): void {
     this.hoverEnd.emit(this._trackStackHoverEvents(slice));
-    if (this._overlayRef) {
-      this._overlayRef.dismiss();
-      this._overlayRef = null;
-    }
+  }
+
+  /**
+   * @internal
+   * Handles the mouseEnter on a legend.
+   */
+  _handleOnLegendMouseEnter(legend: DtStackedSeriesChartLegend): void {
+    this.hoverStart.emit(this._trackLegendHoverEvents(legend));
   }
 
   /**
@@ -519,6 +606,22 @@ export class DtStackedSeriesChart implements OnDestroy, OnInit {
    */
   _handleOnLegendMouseLeave(legend: DtStackedSeriesChartLegend): void {
     this.hoverEnd.emit(this._trackLegendHoverEvents(legend));
+  }
+
+  /**
+   * Track by function for the renderEvents – speeds up performance
+   * and prevent deletion of mouseout
+   */
+  _renderEventTrackByFn(
+    _: number,
+    _heatFieldLevel: { index: number }[],
+  ): string {
+    return _heatFieldLevel.map(({ index }) => index).join('_');
+  }
+
+  selectHeatField(selectedIndex: number): void {
+    this._selectedHeatFieldIndex =
+      this._selectedHeatFieldIndex === selectedIndex ? -1 : selectedIndex;
   }
 
   /** Returns an object with output data type for hover events on the stack */
@@ -548,13 +651,240 @@ export class DtStackedSeriesChart implements OnDestroy, OnInit {
     };
   }
 
+  /**
+   * Wrapper function that applies different callbacks
+   * depending on the Continuous Axis Type
+   */
+  private _applyFnForContinuousAxisType(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    callbacks: [DtStackedSeriesChartValueContinuousAxisType, () => any][],
+  ): void {
+    callbacks
+      .filter(([type]) => this.continuousAxisType === type)
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      .forEach(([_, callback]) => callback());
+  }
+
+  /** Sets scale depending on the Continuous Axis Type */
+  private _setScale(): void {
+    const mappedSeries = this._filledSeries?.map(this.continuousAxisMap) || [];
+
+    this._applyFnForContinuousAxisType([
+      [
+        'none',
+        () => {
+          this._scale = scalePoint()
+            .domain(mappedSeries as Iterable<string>)
+            .range([0, 100]);
+
+          this._defaultLabel = mappedSeries?.reduce(
+            (a, b) => ((a as string).length > (b as string).length ? a : b),
+            '',
+          ) as string;
+        },
+      ],
+      [
+        'linear',
+        () => {
+          const minValue = Math.min(...(mappedSeries as number[]));
+          const maxValue = Math.max(...(mappedSeries as number[]));
+          this._scale = scaleLinear()
+            .domain([minValue, maxValue])
+            .range([0, 100]);
+
+          this._defaultLabel = this._scale
+            .ticks(1)
+            .map(
+              this._scale.tickFormat(Infinity, this.continuousAxisFormat),
+            )[0];
+        },
+      ],
+      [
+        'date',
+        () => {
+          const minValue = new Date(Math.min.apply(null, mappedSeries));
+          const maxValue = new Date(Math.max.apply(null, mappedSeries));
+          this._scale = scaleTime()
+            .domain([minValue, maxValue])
+            .range([0, 100]);
+
+          this._defaultLabel = this._scale.tickFormat(
+            0,
+            this.continuousAxisFormat,
+          )(mappedSeries[0] as Date);
+        },
+      ],
+    ]);
+
+    this._isScalePoint = this.continuousAxisType === 'none';
+  }
+
+  private _renderHeatFields(
+    getPosition: (value: DtStackedSeriesChartFilledSeries) => number,
+  ): void {
+    if (this._filledSeries?.length > 0) {
+      let bounds = [0, 100];
+      this._applyFnForContinuousAxisType([
+        [
+          'none',
+          () =>
+            (bounds = [
+              this._tracks[0]?.position || 0,
+              this._tracks.slice(-1)?.[0]?.position || 0,
+            ]),
+        ],
+      ]);
+      const defaultColor = getDtChartColorPalette(1, this._theme)[0];
+
+      const heatFieldRenderData: DtStackedSeriesHeatFieldLevel = (
+        this.heatFields || []
+      )
+        .map((heatField, index) => {
+          let [start, end] = [heatField.start, heatField.end]
+            .map(
+              (value) =>
+                (value && {
+                  origin: value,
+                }) as DtStackedSeriesChartFilledSeries,
+            )
+            .map((value, i) => (value && getPosition(value)) ?? bounds[i])
+            // We constrain heat fields to min and max bounds
+            .map((value, i) =>
+              i === 0 ? Math.max(value, bounds[i]) : Math.min(value, bounds[i]),
+            );
+
+          // If a heat field is a specific point -instead of a range, we add some
+          // min width so that overlapping could be detected
+          if (start === end && start != null) {
+            start -= 0.001;
+            end += 0.001;
+          }
+
+          return {
+            index,
+            start,
+            end,
+            position: (end - start) / 2 + start,
+            size: Math.abs(end - start),
+            config: { ...heatField, color: heatField.color || defaultColor },
+          };
+        })
+        .filter(({ start, end }) => start != null && end != null)
+        .sort((a, b) => a.start - b.start || b.size - a.size);
+
+      const hasOverlap = ({ end }, { start }) => end > start;
+
+      this._heatFieldLevels =
+        heatFieldRenderData[0] &&
+        heatFieldRenderData.slice(1).reduce(
+          (arr, heatField) => {
+            const heatFieldLevel = arr.find(
+              (_heatFieldLevel) =>
+                !hasOverlap(_heatFieldLevel.slice(-1)[0], heatField),
+            );
+            if (heatFieldLevel) {
+              heatFieldLevel.push(heatField);
+              return arr;
+            } else {
+              return [...arr, [heatField]];
+            }
+          },
+          [[heatFieldRenderData[0]]] as DtStackedSeriesHeatFieldLevel[],
+        );
+    }
+  }
+
   /** Calculate current state */
   private _render(): void {
+    this._shouldRenderInner.next();
+  }
+
+  private _renderInner(): void {
+    this._setScale();
+
+    const getDistanceByValues = (trackA: number, trackB: number) =>
+      (trackA || Infinity) - (trackB || 0);
+    const getNthTick = (minDistance, i) =>
+      +this._scale.domain()[0] + minDistance * i;
+    let getPosition;
+    let getDistance;
+    let getMappedNthTick;
+
+    this._applyFnForContinuousAxisType([
+      [
+        'none',
+        () =>
+          (getPosition = (mappedValue) =>
+            (this._scale as ScalePoint<string>)(mappedValue)),
+      ],
+      [
+        'linear',
+        () => {
+          getPosition = (mappedValue) =>
+            (this._scale as ScaleLinear<number, number>)(mappedValue);
+          getDistance = (track, i, tracks) =>
+            getDistanceByValues(tracks[i + 1]?.mappedValue, track?.mappedValue);
+          getMappedNthTick = getNthTick;
+        },
+      ],
+      [
+        'date',
+        () => {
+          getPosition = (mappedValue) =>
+            (this._scale as ScaleTime<number, number>)(mappedValue);
+          getDistance = (track, i, tracks) =>
+            getDistanceByValues(
+              +tracks[i + 1]?.mappedValue,
+              +track?.mappedValue,
+            );
+          getMappedNthTick = (minDistance, i) =>
+            new Date(getNthTick(minDistance, i));
+        },
+      ],
+    ]);
+
     this._tracks = getSeriesWithState(
       this._filledSeries,
       this._selected,
       this._fillMode === 'relative' ? this.max : undefined,
+    )
+      .map((track) => ({
+        ...track,
+        mappedValue: this.continuousAxisMap(track),
+      }))
+      .map((track, i, tracks) => ({
+        ...track,
+        position: getPosition(track.mappedValue),
+        distanceToNext: getDistance && getDistance(track, i, tracks),
+      }));
+
+    // Calculating number of tracks (columns or bars) by their position
+    // If there are <= 1 tracks, calculation is not possible so use track length
+    try {
+      if (this._isScalePoint) {
+        throw Error();
+      }
+
+      const range = this._tracks
+        .slice(0, -1)
+        .reduce((acc, { distanceToNext }) => acc + (distanceToNext || 0), 0);
+      const minDistance = Math.min(
+        ...this._tracks.map(({ distanceToNext }) => distanceToNext || Infinity),
+      );
+
+      this._trackAmount = Math.round(range / minDistance) + 1;
+      this._defaultTicks = Array(this._trackAmount)
+        .fill(null)
+        .map((_, i) => getMappedNthTick(minDistance, i));
+    } catch (e) {
+      this._trackAmount = this._tracks.length;
+    }
+
+    this._renderHeatFields((track) =>
+      getPosition(this.continuousAxisMap(track)),
     );
+
+    this._shouldUpdateTicks.next();
   }
 
   /** Calculate legends, colors and fill series */
@@ -563,66 +893,175 @@ export class DtStackedSeriesChart implements OnDestroy, OnInit {
     this._filledSeries = fillSeries(this.series, this._legends);
     this._canShowValue = this.series.length === 1;
 
-    this._shouldUpdateTicks.next();
+    this._render();
+  }
+
+  /** Get usable width of axis container (column mode) */
+  private _getAxisContainerWidth(): number {
+    return this._chartContainer.nativeElement.offsetWidth;
+  }
+
+  /** Get usable width of axis container (column mode) */
+  private _getTickGapWidth(): number {
+    return (
+      (Math.abs(
+        (this._trackTicks[1]?.position ?? 0) -
+          (this._trackTicks[0]?.position ?? 0),
+      ) *
+        this._getAxisContainerWidth()) /
+      100
+    );
+  }
+
+  /** Get usable width of axis container (column mode) */
+  private _getTicksPerWidth(): number {
+    return Math.floor(
+      this._getAxisContainerWidth() /
+        this._defaultLabelElement.nativeElement.offsetWidth,
+    );
+  }
+
+  /** Get number of tick lower or equal than bar length */
+  private _getLowerOrEqualTicks(
+    tickAmount: number,
+  ): DtStackedSeriesContinuousTick[] {
+    const upperBound = tickAmount;
+
+    const isBarMode = this.mode === 'bar';
+    let realTicks = isBarMode
+      ? this._defaultTicks
+      : // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (this._scale as DtStackedSeriesContinuousScale).ticks(<any>tickAmount);
+
+    if (!isBarMode && Number.isInteger(tickAmount)) {
+      while (tickAmount > MIN_TRACK_TICKS && realTicks.length > upperBound) {
+        realTicks = (this._scale as DtStackedSeriesContinuousScale).ticks(
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          <any>--tickAmount,
+        );
+      }
+    }
+
+    return realTicks;
   }
 
   /** Calculate the ticks used for values */
   private _updateTicks(): void {
+    if (!this._platform.isBrowser) {
+      return;
+    }
+    if (this._chartContainer && this._tracks?.length) {
+      // Setting the tick amount to a defined interval
+      // Otherwise, ticks fit the axis. Adding some threshold and min value
+      // to assure certain space between ticks
+      const tickAmount =
+        (this.continuousAxisType === 'date' && this.continuousAxisInterval) ||
+        (this.mode === 'bar'
+          ? this._tracks.length
+          : Math.max(
+              MIN_TRACK_TICKS,
+              Math.min(this._tracks.length, this._getTicksPerWidth()),
+            ));
+
+      this._applyFnForContinuousAxisType([
+        [
+          'none',
+          () => {
+            this._trackTicks = this._tracks.map(
+              ({ mappedValue, position }) => ({
+                position: position || 0,
+                value: <string>mappedValue,
+              }),
+            );
+          },
+        ],
+        [
+          'linear',
+          () => {
+            this._trackTicks = this._getLowerOrEqualTicks(
+              <number>tickAmount,
+            ).map((mappedValue) => ({
+              position: (this._scale as ScaleLinear<number, number>)(
+                mappedValue,
+              ),
+              value: (this._scale as ScaleLinear<number, number>).tickFormat(
+                Infinity,
+                this.continuousAxisFormat,
+              )(mappedValue),
+            }));
+          },
+        ],
+        [
+          'date',
+          () => {
+            this._trackTicks = this._getLowerOrEqualTicks(
+              <number>tickAmount,
+            ).map((mappedValue) => ({
+              position: (this._scale as ScaleTime<number, number>)(mappedValue),
+              value: (this._scale as ScaleTime<number, number>).tickFormat(
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                <any>tickAmount,
+                this.continuousAxisFormat,
+              )(<Date>mappedValue),
+            }));
+          },
+        ],
+      ]);
+    }
+
     if (this._valueAxis) {
       const axisBox = this._valueAxis.nativeElement.getBoundingClientRect();
       const axisLength = this.mode === 'bar' ? axisBox.width : axisBox.height;
-      const tickAmount =
+      const tickAmount = Math.max(
         Math.floor(
           axisLength /
             (this.mode === 'bar' ? TICK_BAR_SPACING : TICK_COLUMN_SPACING),
-        ) + 1;
+        ) + 1,
+        2,
+      );
 
       const scale = scaleLinear()
         .domain([0, this.max ?? 0])
-        .range([0, 100]);
+        .range([0, 100])
+        .nice(tickAmount);
 
       this._axisTicks = scale.ticks(tickAmount).map((value) => {
         return {
           // for column scale must be inverted but d3 does not allow a reverse scale
-          pos: this.mode === 'bar' ? scale(value)! : 100 - scale(value)!,
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          position: this.mode === 'bar' ? scale(value)! : 100 - scale(value)!,
           value: value,
           valueRelative: this.max ? value / this.max : 0,
         };
       });
 
+      const lastAxisTick = this._axisTicks.slice(-1)?.[0];
+
       this._valueAxisSize = {
         absolute:
-          formatCount(this._axisTicks.slice(-1)[0].value).toString().length *
-            0.6 +
-          1.5,
+          formatCount(lastAxisTick?.value ?? 0).toString().length * 0.6 + 1.5,
         relative:
-          (this._axisTicks.slice(-1)[0].valueRelative.toString().length + 1) *
+          // `valueRelative` needs to be formatted to a percentage scale (0-100)
+          // in order to compute the axis size
+          (((lastAxisTick?.valueRelative ?? 0) * 100).toString().length + 1) *
             0.6 +
           1.5,
       };
     }
   }
-  /** Return the width in px of the longest label on the label axis */
-  private _getLongestLabelWidth(): number {
-    return this.labels.reduce((labelCount: number, label: ElementRef) => {
-      return label.nativeElement.scrollWidth > labelCount
-        ? label.nativeElement.scrollWidth
-        : labelCount;
-    }, 0);
-  }
 
   /** Whether there's a label on the label axis that is overflowing its allocated space on the css grid */
   private _isAnyLabelOverflowing(): boolean {
     if (
-      !this.labels ||
-      !this.series?.length ||
+      this.labelAxisMode !== 'auto' ||
+      this.mode !== 'column' ||
+      !this.labels?.first ||
+      !this._trackTicks?.length ||
       !this._chartContainer?.nativeElement
     )
-      return false;
-    return (
-      this._getLongestLabelWidth() >
-      this._chartContainer.nativeElement.offsetWidth / this.series.length -
-        this._gridGap
-    );
+      return (this._isCompactModeEnabled = false);
+
+    return (this._isCompactModeEnabled =
+      this.labels.first.nativeElement.offsetWidth > this._getTickGapWidth());
   }
 }

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -98,7 +98,8 @@ const KEY_RETURN = 13;
 })
 export class DtConsumption
   extends _DtConsumption
-  implements AfterViewInit, OnDestroy {
+  implements AfterViewInit, OnDestroy
+{
   /** Largest possible {@link value} for this consumption component instance. */
   @Input()
   get max(): number {

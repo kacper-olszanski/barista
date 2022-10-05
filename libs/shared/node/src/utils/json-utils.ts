@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,6 +18,7 @@ import { promises as fs } from 'fs';
 
 /**
  * Tries to parse a json file and throws an error if parsing fails
+ *
  * @throws Will throw if the json cannot be parsed
  */
 export async function tryJsonParse<T>(path: string): Promise<T> {

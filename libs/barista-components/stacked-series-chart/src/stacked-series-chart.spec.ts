@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,11 +17,14 @@
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, ViewChild, DebugElement } from '@angular/core';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import {
   waitForAsync,
   ComponentFixture,
   inject,
   TestBed,
+  tick,
+  fakeAsync,
 } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import {
@@ -119,7 +122,10 @@ describe('DtStackedSeriesChart', () => {
   /** Get all track labels */
   function getAllTrackLabels(): DebugElement[] {
     return fixture.debugElement.queryAll(
-      By.css('.dt-stacked-series-chart-track-label'),
+      By.css(
+        '.dt-stacked-series-chart-track-label' +
+          ':not(.dt-stacked-series-chart-track-label-default)',
+      ),
     );
   }
 
@@ -176,6 +182,7 @@ describe('DtStackedSeriesChart', () => {
           DtIconModule.forRoot({ svgIconLocation: `{{name}}.svg` }),
           DtStackedSeriesChartModule,
           DtThemingModule,
+          NoopAnimationsModule,
         ],
         declarations: [TestApp, DefaultsTestApp],
         providers: [{ provide: DT_UI_TEST_CONFIG, useValue: overlayConfig }],
@@ -185,8 +192,9 @@ describe('DtStackedSeriesChart', () => {
       fixture = createComponent(TestApp);
 
       rootComponent = fixture.componentInstance;
-      component = fixture.debugElement.query(By.directive(DtStackedSeriesChart))
-        .componentInstance;
+      component = fixture.debugElement.query(
+        By.directive(DtStackedSeriesChart),
+      ).componentInstance;
 
       selectedChangeSpy = jest.spyOn(component.selectedChange, 'emit');
     }),
@@ -212,7 +220,6 @@ describe('DtStackedSeriesChart', () => {
       visibleTrackBackground: true,
       visibleLabel: true,
       mode: 'bar',
-      maxTrackSize: 16,
       visibleValueAxis: true,
     };
 
@@ -232,12 +239,14 @@ describe('DtStackedSeriesChart', () => {
       );
     });
 
-    it('should update data after series input change', () => {
+    it('should update data after series input change', fakeAsync(() => {
       const oldTracks = getAllTracks();
 
       const newSeries = stackedSeriesChartDemoDataCoffee.slice(1);
       rootComponent.series = newSeries;
       fixture.detectChanges();
+
+      tick();
 
       const newTracks = getAllTracks();
       const newSlice = getSliceByPositionWithinTrack(0, 0);
@@ -248,11 +257,11 @@ describe('DtStackedSeriesChart', () => {
       expect(newSlice.nativeElement.getAttribute('style')).toContain(
         '--dt-stacked-series-chart-length: 40%',
       );
-    });
+    }));
   });
 
   describe('Selectable + Selected', () => {
-    it('should select nodes when input', () => {
+    it('should select nodes when input', fakeAsync(() => {
       rootComponent.selectable = true;
       rootComponent.selected = [
         stackedSeriesChartDemoDataCoffee[1],
@@ -260,16 +269,20 @@ describe('DtStackedSeriesChart', () => {
       ];
       fixture.detectChanges();
 
+      tick();
+
       const sliceByPosition = getSliceByPositionWithinTrack(1, 1);
       const selected = getSelectedSlice();
 
       expect(selected).toBe(sliceByPosition);
-    });
+    }));
 
-    it('should make a node selection', () => {
+    it('should make a node selection', fakeAsync(() => {
       const sliceByPosition = getSliceByPositionWithinTrack(1, 1);
       dispatchFakeEvent(sliceByPosition.nativeElement, 'click');
       fixture.detectChanges();
+
+      tick();
 
       const selected = getSelectedSlice();
 
@@ -278,15 +291,19 @@ describe('DtStackedSeriesChart', () => {
         component._tracks[1].nodes[1].origin,
       ]);
       expect(selected).toBe(sliceByPosition);
-    });
+    }));
 
-    it('should toggle stack selection', () => {
+    it('should toggle stack selection', fakeAsync(() => {
       rootComponent.selectionMode = 'stack';
       fixture.detectChanges();
+
+      tick();
 
       let trackByPosition = getTrackByPosition(2);
       dispatchFakeEvent(trackByPosition.nativeElement, 'click');
       fixture.detectChanges();
+
+      tick();
 
       let selected = getSelectedTrack();
 
@@ -300,10 +317,12 @@ describe('DtStackedSeriesChart', () => {
       dispatchFakeEvent(trackByPosition.nativeElement, 'click');
       fixture.detectChanges();
 
+      tick();
+
       selected = getSelectedTrack();
 
       expect(selected).toBe(trackByPosition);
-    });
+    }));
 
     it('should not allow selection from input if disabled', () => {
       rootComponent.selectable = false;
@@ -328,7 +347,7 @@ describe('DtStackedSeriesChart', () => {
       expect(selectedChangeSpy).not.toHaveBeenCalled();
     });
 
-    it('should clear the selection from the outside on stack mode', () => {
+    it('should clear the selection from the outside on stack mode', fakeAsync(() => {
       rootComponent.selectionMode = 'stack';
       rootComponent.selected = [
         stackedSeriesChartDemoDataCoffee[1],
@@ -336,23 +355,29 @@ describe('DtStackedSeriesChart', () => {
       ];
       fixture.detectChanges();
 
+      tick();
+
       expect(getSelectedSlice() !== null).toBe(true);
 
       rootComponent.selected = [];
       fixture.detectChanges();
 
+      tick();
+
       expect(getSelectedSlice()).toBe(null);
-    });
+    }));
   });
 
   describe('Value Display Mode', () => {
     describe('Single tracked', () => {
-      beforeEach(() => {
+      beforeEach(fakeAsync(() => {
         rootComponent.visibleLegend = true;
 
         rootComponent.series = [stackedSeriesChartDemoDataCoffee[3]];
         fixture.detectChanges();
-      });
+
+        tick();
+      }));
 
       it('should switch to ABSOLUTE display when set', () => {
         rootComponent.valueDisplayMode = 'absolute';
@@ -393,39 +418,45 @@ describe('DtStackedSeriesChart', () => {
   });
 
   describe('Max + Fill mode', () => {
-    it('should allow a max with fillMode=relative', () => {
+    it('should allow a max with fillMode=relative', fakeAsync(() => {
       rootComponent.max = 100;
       fixture.detectChanges();
+
+      tick();
 
       const sliceByPosition = getSliceByPositionWithinTrack(0, 0);
 
       expect(sliceByPosition.nativeElement.getAttribute('style')).toContain(
         '--dt-stacked-series-chart-length: 1%',
       );
-    });
+    }));
 
-    it('should ignore max with fillMode=full', () => {
+    it('should ignore max with fillMode=full', fakeAsync(() => {
       rootComponent.fillMode = 'full';
       rootComponent.max = 100;
       fixture.detectChanges();
 
+      tick();
+
       const sliceByPosition = getSliceByPositionWithinTrack(0, 0);
 
       expect(sliceByPosition.nativeElement.getAttribute('style')).toContain(
         '--dt-stacked-series-chart-length: 100%',
       );
-    });
+    }));
 
-    it('should fill the whole bar if fillMode=full', () => {
+    it('should fill the whole bar if fillMode=full', fakeAsync(() => {
       rootComponent.fillMode = 'full';
       fixture.detectChanges();
 
+      tick();
+
       const sliceByPosition = getSliceByPositionWithinTrack(0, 0);
 
       expect(sliceByPosition.nativeElement.getAttribute('style')).toContain(
         '--dt-stacked-series-chart-length: 100%',
       );
-    });
+    }));
 
     it('should take into account the rest of series when no max if fillMode=relative', () => {
       const sliceByPosition = getSliceByPositionWithinTrack(0, 0);
@@ -487,12 +518,14 @@ describe('DtStackedSeriesChart', () => {
       expect(legend).toBeFalsy();
     });
 
-    it('should hide nodes if hidden in legend', () => {
+    it('should hide nodes if hidden in legend', fakeAsync(() => {
       const legends = component.legends?.slice() ?? [];
       // Coffee node
       legends[0].visible = false;
       rootComponent.legends = legends;
       fixture.detectChanges();
+
+      tick();
 
       const hiddenLegendItem = getAllHiddenLegendItems()[0];
       const tracks = getAllTracks();
@@ -510,7 +543,7 @@ describe('DtStackedSeriesChart', () => {
       expect(tracks.length).toBe(4);
       // nodes to be hidden, coffee is present in all of them
       expect(hiddenSlices.length).toBe(4);
-    });
+    }));
 
     it('should toggle legend on click', () => {
       const firstLegendItem = getAllLegendItems()[0];
@@ -567,13 +600,13 @@ describe('DtStackedSeriesChart', () => {
         expect(slices.length).toBe(8);
       });
 
-      it('should display left aligned labels', () => {
+      it('should display left aligned labels', fakeAsync(() => {
         rootComponent.visibleLabel = true;
         fixture.detectChanges();
 
         const labels = getAllTrackLabels();
         expect(labels.length).toBe(4);
-      });
+      }));
 
       it('should not display the label if required', () => {
         rootComponent.visibleLabel = false;
@@ -600,10 +633,12 @@ describe('DtStackedSeriesChart', () => {
     });
 
     describe('Column', () => {
-      beforeEach(function (): void {
+      beforeEach(fakeAsync(() => {
         rootComponent.mode = 'column';
         fixture.detectChanges();
-      });
+
+        tick();
+      }));
 
       it('should display all the tracks and slices', () => {
         const tracks = getAllTracks();
@@ -740,7 +775,6 @@ describe('DtStackedSeriesChart', () => {
       [labelAxisMode]="labelAxisMode"
       [visibleValueAxis]="visibleValueAxis"
       [mode]="mode"
-      [maxTrackSize]="maxTrackSize"
       (hoverStart)="hoverStart = $event"
       (hoverEnd)="hoverEnd = $event"
     >
@@ -754,23 +788,22 @@ describe('DtStackedSeriesChart', () => {
 })
 class TestApp {
   series: DtStackedSeriesChartSeries[] = stackedSeriesChartDemoDataCoffee;
-  selectable: boolean = true;
+  selectable = true;
   selectionMode: DtStackedSeriesChartSelectionMode = 'node';
   selected: [DtStackedSeriesChartSeries, DtStackedSeriesChartNode] | [] = [];
   valueDisplayMode: DtStackedSeriesChartValueDisplayMode;
   max: number;
   fillMode: DtStackedSeriesChartFillMode = 'relative';
   legends: DtStackedSeriesChartLegend[];
-  visibleLegend: boolean = true;
-  visibleTrackBackground: boolean = true;
-  visibleLabel: boolean = true;
+  visibleLegend = true;
+  visibleTrackBackground = true;
+  visibleLabel = true;
   labelAxisMode: DtStackedSeriesChartLabelAxisMode = 'full';
-  visibleValueAxis: boolean = true;
+  visibleValueAxis = true;
   mode: DtStackedSeriesChartMode;
-  maxTrackSize: number;
 
   theme = 'blue';
-  hasOverlay: boolean = true;
+  hasOverlay = true;
   @ViewChild(DtStackedSeriesChart) stackedSeriesChart: DtStackedSeriesChart;
 
   hoverStart: DtStackedSeriesHoverData;

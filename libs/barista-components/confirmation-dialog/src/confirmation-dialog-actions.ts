@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,7 +17,7 @@
 import { Directive } from '@angular/core';
 
 @Directive({
-  selector: 'dt-confirmation-dialog-actions',
+  selector: 'dt-confirmation-dialog-actions, [dtConfirmationDialogActions]',
   host: {
     class: 'dt-confirmation-dialog-actions',
   },

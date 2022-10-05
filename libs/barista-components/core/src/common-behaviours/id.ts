@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Dynatrace LLC
+ * Copyright 2022 Dynatrace LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -29,6 +29,7 @@ export interface HasId {
 }
 
 /** Mixin to augment a directive with a `id` property. */
+// eslint-disable-next-line @typescript-eslint/ban-types
 export function mixinId<T extends Constructor<{}>>(
   base: T,
   idPreset: string,
@@ -47,9 +48,9 @@ export function mixinId<T extends Constructor<{}>>(
     }
     private _id = `${idPreset}-${uniqueId++}`;
 
-    // tslint:disable-next-line
+    // eslint-disable-next-line
     constructor(...args: any[]) {
-      super(...args); // tslint:disable-line:no-inferred-empty-object-type
+      super(...args); // eslint-disable-line
     }
   };
 }
